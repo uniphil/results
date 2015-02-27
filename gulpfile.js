@@ -24,7 +24,7 @@ gulp.task('test', ['6to5'], function() {
     .pipe(babel())
     .pipe(rename('test.es5.js'))
     .pipe(gulp.dest('.'))
-    .pipe(mocha({reporter: 'nyan'}))
+    .pipe(mocha())
     .pipe(vinylPaths(del));
 });
 
