@@ -143,7 +143,7 @@ describe('Result', () => {
     assert.equal(Err(2).and(Err(-2)).unwrapErr(), 2);
   });
   it('.andThen', () => {
-    var sq = (v) => v * v;
+    var sq = (v) => Ok(v * v);
     assert.equal(Ok(-1).andThen(sq).unwrap(), 1);
     assert.ok(Err(2).andThen(sq).isErr());
   });

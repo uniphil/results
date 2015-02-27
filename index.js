@@ -184,7 +184,7 @@ function Ok(value) {
     return resb;
   };
   r.andThen = function (fn) {
-    return Ok(fn(value));
+    return fn(value);
   };
   r.or = function (resb) {
     return r;

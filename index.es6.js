@@ -96,7 +96,7 @@ function Ok(value) {
   r.mapErr = (fn) => r;
   r.array = () => [value];  // .iter; .into_iter
   r.and = (resb) => resb;
-  r.andThen = (fn) => Ok(fn(value));
+  r.andThen = (fn) => fn(value);
   r.or = (resb) => r;
   r.orElse = (fn) => r;
   r.unwrapOr = (def) => value;
