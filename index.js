@@ -75,11 +75,8 @@ function Some(value) {
     return Ok(value);
   };
   o.array = function () {
-    return [o];
-  }; // .iter
-  o.intoArray = function () {
     return [value];
-  }; // .into_iter
+  }; // .iter; .into_iter
   o.and = function (optb) {
     return optb;
   };
@@ -137,11 +134,8 @@ function None() {
     return Err(errFn());
   };
   o.array = function () {
-    return [o];
-  }; // .iter
-  o.intoArray = function () {
     return [];
-  }; // .into_iter
+  }; // .iter; .into_iter
   o.and = function (optb) {
     return o;
   };
@@ -184,11 +178,8 @@ function Ok(value) {
     return r;
   };
   r.array = function () {
-    return [Some(value)];
-  }; // .iter
-  r.intoArray = function () {
     return [value];
-  }; // .into_iter
+  }; // .iter; .into_iter
   r.and = function (resb) {
     return resb;
   };
@@ -201,7 +192,7 @@ function Ok(value) {
   r.orElse = function (fn) {
     return r;
   };
-  r.unwrapOr = function (resb) {
+  r.unwrapOr = function (def) {
     return value;
   };
   r.unwrapOrElse = function (fn) {
@@ -240,11 +231,8 @@ function Err(errVal) {
     return Err(fn(errVal));
   };
   r.array = function () {
-    return [None()];
-  }; // .iter
-  r.intoArray = function () {
     return [];
-  }; // .into_iter
+  }; // .iter; .into_iter
   r.and = function (resb) {
     return r;
   };
@@ -257,8 +245,8 @@ function Err(errVal) {
   r.orElse = function (fn) {
     return fn();
   };
-  r.unwrapOr = function (resb) {
-    return resb;
+  r.unwrapOr = function (def) {
+    return def;
   };
   r.unwrapOrElse = function (fn) {
     return fn();

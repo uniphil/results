@@ -47,8 +47,7 @@ function Some(value) {
   o.mapOrElse = (defFn, fn) => fn(value);
   o.okOr = (err) => Ok(value);
   o.okOrElse = (errFn) => Ok(value);
-  o.array = () => [o];  // .iter
-  o.intoArray = () => [value];  // .into_iter
+  o.array = () => [value];  // .iter; .into_iter
   o.and = (optb) => optb;
   o.andThen = (fn) => fn(value);
   o.or = (optb) => o;
@@ -74,8 +73,7 @@ function None() {
   o.mapOrElse = (defFn, fn) => defFn();
   o.okOr = (err) => Err(err);
   o.okOrElse = (errFn) => Err(errFn());
-  o.array = () => [o];  // .iter
-  o.intoArray = () => [];  // .into_iter
+  o.array = () => [];  // .iter; .into_iter
   o.and = (optb) => o;
   o.andThen = (fn) => o;
   o.or = (optb) => optb;
@@ -96,13 +94,12 @@ function Ok(value) {
   r.err = () => None();
   r.map = (fn) => Ok(fn(value));
   r.mapErr = (fn) => r;
-  r.array = () => [Some(value)];  // .iter
-  r.intoArray = () => [value];  // .into_iter
+  r.array = () => [value];  // .iter; .into_iter
   r.and = (resb) => resb;
   r.andThen = (fn) => Ok(fn(value));
   r.or = (resb) => r;
   r.orElse = (fn) => r;
-  r.unwrapOr = (resb) => value;
+  r.unwrapOr = (def) => value;
   r.unwrapOrElse = (fn) => value;
   r.unwrap = () => value;
   r.unwrapErr = () => { throw error(errors.OK_AS_ERR, 'Tried to unwrap Ok as Err'); };
@@ -121,13 +118,12 @@ function Err(errVal) {
   r.err = () => Some(errVal);
   r.map = (fn) => r;
   r.mapErr = (fn) => Err(fn(errVal));
-  r.array = () => [None()];  // .iter
-  r.intoArray = () => [];  // .into_iter
+  r.array = () => [];  // .iter; .into_iter
   r.and = (resb) => r;
   r.andThen = (fn) => r;
   r.or = (resb) => resb;
   r.orElse = (fn) => fn();
-  r.unwrapOr = (resb) => resb;
+  r.unwrapOr = (def) => def;
   r.unwrapOrElse = (fn) => fn();
   r.unwrap = () => { throw error(errors.ERR_AS_OK, 'Tried to unwrap an Err as Ok'); };
   r.unwrapErr = () => errVal;
