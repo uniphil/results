@@ -92,3 +92,15 @@ function parseDocument(doc) {
       Ok({version: v, content: c})));
 }
 ```
+
+
+Changes
+-------
+
+### v0.0.3
+
+2015-03-06
+
+  * `Err(errValue).unwrap()` now throws with `UNWRAP_ERR` and `errValue`, more closely matching Rust's behaviour (and mor useful).
+  * Likewise, `Some(value).unwrapErr()` now throws with `UNWRAPERR_SOME` and `value`, and
+  * `None().unwrap()` now throws with `UNWRAP_NONE` and a message.

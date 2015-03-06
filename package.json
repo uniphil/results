@@ -1,6 +1,6 @@
 {
   "name": "results",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Rust-inspired Result and Option tools for javascript",
   "main": "index.js",
   "scripts": {

@@ -15,15 +15,15 @@ var errors = (function (s) {
   }, {});
 })({
   MISSING_CASE: $,
-  NONE_AS_SOME: $,
-  OK_AS_ERR: $,
-  ERR_AS_OK: $ });
+  UNWRAP_NONE: $,
+  UNWRAPERR_OK: $,
+  UNWRAP_ERR: $ });
 function error(errKey, message) {
   return {
     key: errKey,
     message: message,
     toString: function toString() {
-      return this.key + ": " + this.message;
+      return this.key + ": " + (JSON.stringify(this.message) || this.message);
     } };
 }
 
@@ -110,7 +110,7 @@ function None() {
     throw err;
   };
   o.unwrap = function () {
-    throw error(errors.NONE_AS_SOME, "Tried to unwrap None as Some");
+    throw error(errors.UNWRAP_NONE, "Tried to unwrap None");
   };
   o.unwrapOr = function (def) {
     return def;
@@ -202,7 +202,7 @@ function Ok(value) {
     return value;
   };
   r.unwrapErr = function () {
-    throw error(errors.OK_AS_ERR, "Tried to unwrap Ok as Err");
+    throw error(errors.UNWRAPERR_OK, value);
   };
   return r;
 }
@@ -252,7 +252,7 @@ function Err(errVal) {
     return fn();
   };
   r.unwrap = function () {
-    throw error(errors.ERR_AS_OK, "Tried to unwrap an Err as Ok");
+    throw error(errors.UNWRAP_ERR, errVal);
   };
   r.unwrapErr = function () {
     return errVal;

@@ -10,15 +10,17 @@ var assign = require('object-assign');
 var $;  // key mirror
 var errors = ((s)=>Object.keys(s).reduce((o,k)=>{o[k]=k;return o;},{}))({
   MISSING_CASE: $,
-  NONE_AS_SOME: $,
-  OK_AS_ERR: $,
-  ERR_AS_OK: $,
+  UNWRAP_NONE: $,
+  UNWRAPERR_OK: $,
+  UNWRAP_ERR: $,
 });
 function error(errKey, message) {
   return {
     key: errKey,
     message: message,
-    toString: function() { return this.key + ': ' + this.message; },
+    toString: function() {
+      return this.key + ': ' + (JSON.stringify(this.message) || this.message);
+    },
   };
 }
 
@@ -65,7 +67,7 @@ function None() {
   o.isSome = () => false;
   o.isNone = () => true;
   o.expect = (err) => { throw err };
-  o.unwrap = () => { throw error(errors.NONE_AS_SOME, 'Tried to unwrap None as Some'); };
+  o.unwrap = () => { throw error(errors.UNWRAP_NONE, 'Tried to unwrap None'); };
   o.unwrapOr = (def) => def;
   o.unwrapOrElse = (fn) => fn();
   o.map = (fn) => o;
@@ -102,7 +104,7 @@ function Ok(value) {
   r.unwrapOr = (def) => value;
   r.unwrapOrElse = (fn) => value;
   r.unwrap = () => value;
-  r.unwrapErr = () => { throw error(errors.OK_AS_ERR, 'Tried to unwrap Ok as Err'); };
+  r.unwrapErr = () => { throw error(errors.UNWRAPERR_OK, value); };
   return r;
 }
 
@@ -125,11 +127,11 @@ function Err(errVal) {
   r.orElse = (fn) => fn();
   r.unwrapOr = (def) => def;
   r.unwrapOrElse = (fn) => fn();
-  r.unwrap = () => { throw error(errors.ERR_AS_OK, 'Tried to unwrap an Err as Ok'); };
+  r.unwrap = () => { throw error(errors.UNWRAP_ERR, errVal); };
   r.unwrapErr = () => errVal;
   return r;
 }
-          
+
 
 module.exports = {
   Some: Some,
