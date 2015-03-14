@@ -1,6 +1,6 @@
 {
   "name": "results",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Rust-inspired Result and Option tools for javascript",
   "main": "index.js",
   "scripts": {
@@ -34,8 +34,9 @@
     "gulp-babel": "^4.0.0",
     "gulp-mocha": "^2.0.0",
     "gulp-rename": "^1.2.0",
-    "object-assign": "^2.0.0",
     "vinyl-paths": "^1.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "object-assign": "^2.0.0"
+  }
 }

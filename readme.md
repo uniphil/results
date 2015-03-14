@@ -97,12 +97,19 @@ function parseDocument(doc) {
 Changes
 -------
 
+
+### v0.2.1
+
+  * `object-assign` is a real dependency, not a dev-dependency. It is now in the right place in `package.json`, so this library should work...
+
+
 ### v0.2.0
 
 2015-03-14
 
   * `Err(errValue).orElse(fn)` now calls `fn` with `errValue`, as it does in rust.
   * and, `Err(errValue).unwrapOrElse(fn)` does the same.
+
 
 ### v0.0.3
 
