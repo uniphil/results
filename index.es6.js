@@ -124,9 +124,9 @@ function Err(errVal) {
   r.and = (resb) => r;
   r.andThen = (fn) => r;
   r.or = (resb) => resb;
-  r.orElse = (fn) => fn();
+  r.orElse = (fn) => fn(errVal);
   r.unwrapOr = (def) => def;
-  r.unwrapOrElse = (fn) => fn();
+  r.unwrapOrElse = (fn) => fn(errVal);
   r.unwrap = () => { throw error(errors.UNWRAP_ERR, errVal); };
   r.unwrapErr = () => errVal;
   return r;

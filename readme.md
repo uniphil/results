@@ -97,6 +97,13 @@ function parseDocument(doc) {
 Changes
 -------
 
+### v0.2.0
+
+2015-03-14
+
+  * `Err(errValue).orElse(fn)` now calls `fn` with `errValue`, as it does in rust.
+  * and, `Err(errValue).unwrapOrElse(fn)` does the same.
+
 ### v0.0.3
 
 2015-03-06

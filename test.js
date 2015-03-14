@@ -158,17 +158,18 @@ describe('Result', () => {
     assert.equal(Err(2).or(Err(-2)).unwrapErr(), -2);
   });
   it('.orElse', () => {
-    var getTwo = () => Ok(2);
-    assert.equal(Ok(1).orElse(getTwo).unwrap(), 1);
-    assert.equal(Err(-2).orElse(getTwo).unwrap(), 2);
+    var timesTwo = (n) => Ok(n*2);
+    assert.equal(Ok(1).orElse(timesTwo).unwrap(), 1);
+    assert.equal(Err(-2).orElse(timesTwo).unwrap(), -4);
   });
   it('.unwrapOr', () => {
     assert.equal(Ok(1).unwrapOr(5), 1);
     assert.equal(Err(2).unwrapOr(5), 5);
   });
   it('.unwrapOrElse', () => {
-    assert.equal(Ok(1).unwrapOrElse(() => 5), 1);
-    assert.equal(Err(2).unwrapOrElse(() => 5), 5);
+    var timesTwo = (n) => n*2;
+    assert.equal(Ok(1).unwrapOrElse(timesTwo), 1);
+    assert.equal(Err(2).unwrapOrElse(timesTwo), 4);
   });
   it('.unwrap', () => {
     assert.equal(Ok(1).unwrap(), 1);

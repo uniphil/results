@@ -243,13 +243,13 @@ function Err(errVal) {
     return resb;
   };
   r.orElse = function (fn) {
-    return fn();
+    return fn(errVal);
   };
   r.unwrapOr = function (def) {
     return def;
   };
   r.unwrapOrElse = function (fn) {
-    return fn();
+    return fn(errVal);
   };
   r.unwrap = function () {
     throw error(errors.UNWRAP_ERR, errVal);
