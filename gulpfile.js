@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var del = require('del');
 var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
+var shell = require('gulp-shell');
 var rename = require('gulp-rename');
 var vinylPaths = require('vinyl-paths');
 
@@ -28,3 +29,8 @@ gulp.task('test', ['6to5'], function() {
     .pipe(vinylPaths(del));
 });
 
+
+gulp.task('docs', ['6to5'], function() {
+  return gulp.src('index.js', {read: false})
+    .pipe(shell(['jsdoc -d docs/ <%= file.path %>']));
+});

@@ -35,6 +35,8 @@
     "gulp-babel": "^4.0.0",
     "gulp-mocha": "^2.0.0",
     "gulp-rename": "^1.2.0",
+    "gulp-shell": "^0.4.0",
+    "jsdoc": "^3.3.0-beta2",
     "vinyl-paths": "^1.0.0"
   },
   "dependencies": {
