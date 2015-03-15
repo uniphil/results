@@ -97,6 +97,20 @@ function parseDocument(doc) {
 Changes
 -------
 
+Todo for v1.0.0:
+
+ * [ ] Make errors nice.
+     * [ ] Can we do nice things with the stack trace?
+     * [ ] What's the nicest thing we could be throwing?
+
+ * [ ] Maaaaaaybe add some methods like `.equals` and `.toString`
+
+ * [ ] Annotate types (Flow? PureScript? TypeScript?)
+
+ * [ ] Improve the readme
+     * [ ] Get better examples
+     * [ ] Add API docs
+
 
 ### v0.3.0
 
