@@ -15,6 +15,12 @@ $ npm install results
 ```
 
 
+Docs
+----
+
+[API Docs](http://uniphil.github.io/results/)
+
+
 Features
 --------
 
@@ -105,7 +111,7 @@ Todo for v1.0.0:
 
  * [ ] Maaaaaaybe add some methods like `.equals` and `.toString`
 
- * [ ] Annotate types (Flow? PureScript? TypeScript?)
+ * [ ] Fix up jsdoc API docs
 
  * [ ] Improve the readme
      * [ ] Get better examples
