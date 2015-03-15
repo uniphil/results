@@ -4,8 +4,8 @@ var {Ok, Err, Some, None, errors} = require('./index');
 
 describe('Option', () => {
   it('should map to Some or None callbacks', () => {
-    assert.equal(Some(1)({Some: (v) => v, None: () => null}), 1);
-    assert.equal(None()({Some: () => null, None: () => 1}), 1);
+    assert.equal(Some(1).match({Some: (v) => v, None: () => null}), 1);
+    assert.equal(None().match({Some: () => null, None: () => 1}), 1);
   });
   it('should self-identify', () => {
     assert.ok(Some(1).isSome());
@@ -98,8 +98,8 @@ describe('Option', () => {
 
 describe('Result', () => {
   it('should map to Ok or Err callbacks', () => {
-    assert.equal(Ok(1)({Ok: (v) => v, Err: (e) => e}), 1);
-    assert.equal(Err(2)({Ok: (v) => v, Err: (e) => e}), 2);
+    assert.equal(Ok(1).match({Ok: (v) => v, Err: (e) => e}), 1);
+    assert.equal(Err(2).match({Ok: (v) => v, Err: (e) => e}), 2);
   });
   it('should self-identify', () => {
     assert.ok(Ok(1).isOk());

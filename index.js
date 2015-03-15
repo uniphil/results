@@ -36,233 +36,252 @@ function mustHave(keys, obj) {
   }
 }
 
-function Some(value) {
-  var o = function Option(cases) {
-    mustHave(["Some", "None"], cases);
-    return cases.Some(value);
-  };
-  o.isSome = function () {
-    return true;
-  };
-  o.isNone = function () {
-    return false;
-  };
-  o.expect = function (err) {
-    return value;
-  };
-  o.unwrap = function () {
-    return value;
-  };
-  o.unwrapOr = function (def) {
-    return value;
-  };
-  o.unwrapOrElse = function (fn) {
-    return value;
-  };
-  o.map = function (fn) {
-    return Some(fn(value));
-  };
-  o.mapOr = function (def, fn) {
-    return fn(value);
-  };
-  o.mapOrElse = function (defFn, fn) {
-    return fn(value);
-  };
-  o.okOr = function (err) {
-    return Ok(value);
-  };
-  o.okOrElse = function (errFn) {
-    return Ok(value);
-  };
-  o.array = function () {
-    return [value];
-  }; // .iter; .into_iter
-  o.and = function (optb) {
-    return optb;
-  };
-  o.andThen = function (fn) {
-    return fn(value);
-  };
-  o.or = function (optb) {
-    return o;
-  };
-  o.orElse = function (fn) {
-    return o;
-  };
-  o.take = function () {
-    assign(o, None());return Some(value);
-  };
-  return o;
+function _Some(value) {
+  this._value = value;
 }
 
-function None() {
-  var o = function Option(cases) {
+_Some.prototype = {
+  match: function match(cases) {
+    mustHave(["Some", "None"], cases);
+    return cases.Some(this._value);
+  },
+  isSome: function isSome() {
+    return true;
+  },
+  isNone: function isNone() {
+    return false;
+  },
+  expect: function expect(err) {
+    return this._value;
+  },
+  unwrap: function unwrap() {
+    return this._value;
+  },
+  unwrapOr: function unwrapOr(def) {
+    return this._value;
+  },
+  unwrapOrElse: function unwrapOrElse(fn) {
+    return this._value;
+  },
+  map: function map(fn) {
+    return new _Some(fn(this._value));
+  },
+  mapOr: function mapOr(def, fn) {
+    return fn(this._value);
+  },
+  mapOrElse: function mapOrElse(defFn, fn) {
+    return fn(this._value);
+  },
+  okOr: function okOr(err) {
+    return new _Ok(this._value);
+  },
+  okOrElse: function okOrElse(errFn) {
+    return new _Ok(this._value);
+  },
+  array: function array() {
+    return [this._value]; // .iter; .into_item
+  },
+  and: function and(optb) {
+    return optb;
+  },
+  andThen: function andThen(fn) {
+    return fn(this._value);
+  },
+  or: function or(optb) {
+    return this;
+  },
+  orElse: function orElse(fn) {
+    return this;
+  },
+  take: function take() {
+    var taken = new _Some(this._value);
+    assign(this, _None.prototype);
+    delete this._value;
+    return taken;
+  } };
+
+function _None() {}
+
+_None.prototype = {
+  match: function match(cases) {
     mustHave(["Some", "None"], cases);
     return cases.None();
-  };
-  o.isSome = function () {
+  },
+  isSome: function isSome() {
     return false;
-  };
-  o.isNone = function () {
+  },
+  isNone: function isNone() {
     return true;
-  };
-  o.expect = function (err) {
+  },
+  expect: function expect(err) {
     throw err;
-  };
-  o.unwrap = function () {
+  },
+  unwrap: function unwrap() {
     throw error(errors.UNWRAP_NONE, "Tried to unwrap None");
-  };
-  o.unwrapOr = function (def) {
+  },
+  unwrapOr: function unwrapOr(def) {
     return def;
-  };
-  o.unwrapOrElse = function (fn) {
+  },
+  unwrapOrElse: function unwrapOrElse(fn) {
     return fn();
-  };
-  o.map = function (fn) {
-    return o;
-  };
-  o.mapOr = function (def, fn) {
+  },
+  map: function map(fn) {
+    return this;
+  },
+  mapOr: function mapOr(def, fn) {
     return def;
-  };
-  o.mapOrElse = function (defFn, fn) {
+  },
+  mapOrElse: function mapOrElse(defFn, fn) {
     return defFn();
-  };
-  o.okOr = function (err) {
-    return Err(err);
-  };
-  o.okOrElse = function (errFn) {
-    return Err(errFn());
-  };
-  o.array = function () {
-    return [];
-  }; // .iter; .into_iter
-  o.and = function (optb) {
-    return o;
-  };
-  o.andThen = function (fn) {
-    return o;
-  };
-  o.or = function (optb) {
+  },
+  okOr: function okOr(err) {
+    return new _Err(err);
+  },
+  okOrElse: function okOrElse(errFn) {
+    return new _Err(errFn());
+  },
+  array: function array() {
+    return []; // .iter; .into_item
+  },
+  and: function and(optb) {
+    return this;
+  },
+  andThen: function andThen(fn) {
+    return this;
+  },
+  or: function or(optb) {
     return optb;
-  };
-  o.orElse = function (fn) {
+  },
+  orElse: function orElse(fn) {
     return fn();
-  };
-  o.take = function () {
-    return o;
-  };
-  return o;
+  },
+  take: function take() {
+    return new _None();
+  } };
+
+// builder tests: 201, 205ms
+
+function _Ok(value) {
+  this._value = value;
 }
 
-function Ok(value) {
-  var r = function Result(cases) {
+_Ok.prototype = {
+  match: function match(cases) {
     mustHave(["Ok", "Err"], cases);
-    return cases.Ok(value);
-  };
-  r.isOk = function () {
+    return cases.Ok(this._value);
+  },
+  isOk: function isOk() {
     return true;
-  };
-  r.isErr = function () {
+  },
+  isErr: function isErr() {
     return false;
-  };
-  r.ok = function () {
-    return Some(value);
-  };
-  r.err = function () {
-    return None();
-  };
-  r.map = function (fn) {
-    return Ok(fn(value));
-  };
-  r.mapErr = function (fn) {
-    return r;
-  };
-  r.array = function () {
-    return [value];
-  }; // .iter; .into_iter
-  r.and = function (resb) {
+  },
+  ok: function ok() {
+    return new _Some(this._value);
+  },
+  err: function err() {
+    return new _None();
+  },
+  map: function map(fn) {
+    return new _Ok(fn(this._value));
+  },
+  mapErr: function mapErr(fn) {
+    return this;
+  },
+  array: function array() {
+    return [this._value]; // .iter; .into_item
+  },
+  and: function and(resb) {
     return resb;
-  };
-  r.andThen = function (fn) {
-    return fn(value);
-  };
-  r.or = function (resb) {
-    return r;
-  };
-  r.orElse = function (fn) {
-    return r;
-  };
-  r.unwrapOr = function (def) {
-    return value;
-  };
-  r.unwrapOrElse = function (fn) {
-    return value;
-  };
-  r.unwrap = function () {
-    return value;
-  };
-  r.unwrapErr = function () {
-    throw error(errors.UNWRAPERR_OK, value);
-  };
-  return r;
+  },
+  andThen: function andThen(fn) {
+    return fn(this._value);
+  },
+  or: function or(resb) {
+    return this;
+  },
+  orElse: function orElse(fn) {
+    return this;
+  },
+  unwrapOr: function unwrapOr(def) {
+    return this._value;
+  },
+  unwrapOrElse: function unwrapOrElse(fn) {
+    return this._value;
+  },
+  unwrap: function unwrap() {
+    return this._value;
+  },
+  unwrapErr: function unwrapErr() {
+    throw error(errors.UNWRAPERR_OK, this._value);
+  } };
+
+function _Err(errVal) {
+  this._errVal = errVal;
 }
 
-function Err(errVal) {
-  var r = function Result(cases) {
+_Err.prototype = {
+  match: function match(cases) {
     mustHave(["Ok", "Err"], cases);
-    return cases.Err(errVal);
-  };
-  r.isOk = function () {
+    return cases.Err(this._errVal);
+  },
+  isOk: function isOk() {
     return false;
-  };
-  r.isErr = function () {
+  },
+  isErr: function isErr() {
     return true;
-  };
-  r.ok = function () {
-    return None();
-  };
-  r.err = function () {
-    return Some(errVal);
-  };
-  r.map = function (fn) {
-    return r;
-  };
-  r.mapErr = function (fn) {
-    return Err(fn(errVal));
-  };
-  r.array = function () {
-    return [];
-  }; // .iter; .into_iter
-  r.and = function (resb) {
-    return r;
-  };
-  r.andThen = function (fn) {
-    return r;
-  };
-  r.or = function (resb) {
+  },
+  ok: function ok() {
+    return new _None();
+  },
+  err: function err() {
+    return new _Some(this._errVal);
+  },
+  map: function map(fn) {
+    return this;
+  },
+  mapErr: function mapErr(fn) {
+    return new _Err(fn(this._errVal));
+  },
+  array: function array() {
+    return []; // .iter; .into_item
+  },
+  and: function and(resb) {
+    return this;
+  },
+  andThen: function andThen(fn) {
+    return this;
+  },
+  or: function or(resb) {
     return resb;
-  };
-  r.orElse = function (fn) {
-    return fn(errVal);
-  };
-  r.unwrapOr = function (def) {
+  },
+  orElse: function orElse(fn) {
+    return fn(this._errVal);
+  },
+  unwrapOr: function unwrapOr(def) {
     return def;
-  };
-  r.unwrapOrElse = function (fn) {
-    return fn(errVal);
-  };
-  r.unwrap = function () {
-    throw error(errors.UNWRAP_ERR, errVal);
-  };
-  r.unwrapErr = function () {
-    return errVal;
-  };
-  return r;
-}
+  },
+  unwrapOrElse: function unwrapOrElse(fn) {
+    return fn(this._errVal);
+  },
+  unwrap: function unwrap() {
+    throw error(errors.UNWRAP_ERR, this._errVal);
+  },
+  unwrapErr: function unwrapErr() {
+    return this._errVal;
+  } };
 
 module.exports = {
-  Some: Some,
-  None: None,
-  Ok: Ok,
-  Err: Err,
+  Some: function (v) {
+    return new _Some(v);
+  },
+  None: function () {
+    return new _None();
+  },
+  Ok: function (v) {
+    return new _Ok(v);
+  },
+  Err: function (e) {
+    return new _Err(e);
+  },
   errors: errors };

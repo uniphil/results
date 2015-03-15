@@ -4,7 +4,7 @@ Results
 [![Build Status](https://travis-ci.org/uniphil/results.svg)](https://travis-ci.org/uniphil/results)
 
 
-Rust-inspired Result and Option type-ish tools for JavaScript.
+Lightweight rust-inspired `Result`s and `Option`s for JavaScript.
 
 
 Install
@@ -33,7 +33,7 @@ function mightFindAResult() {
 }
 
 
-mightFindAResult()({
+mightFindAResult().match({
   Some: (result) => { console.log('we got a result!', result); },
   None: () => { console.log('no results found :('); },
 });
@@ -55,7 +55,7 @@ function parseVersion(header) {
 
 var docHeader = '1        ';
 
-parseVersion(docHeader)({
+parseVersion(docHeader).match({
   Ok: (version) => { console.log('successfully parsed version:', version); },
   Err: (err) => { console.error('failed to parse version with message:', err); },
 });
@@ -68,9 +68,9 @@ Pattern expression functions' return values are propagated
 function parseDocument(doc) {
   var header = doc.slice(0, 10),
       body = doc.slice(10);
-  return parseVersion(header)({
+  return parseVersion(header).match({
     Ok: (version) => {
-      return parseBody(body)({
+      return parseBody(body).match({
         Ok: (content) => {version: version, content: content},
         Err: (err) => Err(err),
       });
@@ -98,7 +98,17 @@ Changes
 -------
 
 
+### v0.3.0
+
+2015-03-14
+
+  * Rewrote constructors to be empty (or nearly-empty) functions with all the methods on the prototype. This required:
+  * Breaking change -- the `match` functionality is now a method just like all the other functions. See the updated examples in the readme.
+
+
 ### v0.2.1
+
+2015-03-14
 
   * `object-assign` is a real dependency, not a dev-dependency. It is now in the right place in `package.json`, so this library should work...
 
