@@ -106,7 +106,7 @@ var Option = Enum(['Some', 'None'], {
    * assert(None().isSome() === false);
    * @returns {boolean}
    */
-  isSome: function isSome() {
+  isSome() {
     return this.option === 'Some';
   },
 
@@ -116,7 +116,7 @@ var Option = Enum(['Some', 'None'], {
    * assert(None().isNone() === true);
    * @returns {boolean}
    */
-  isNone: function isNone() {
+  isNone() {
     return this.option === 'None';
   },
 
@@ -132,7 +132,7 @@ var Option = Enum(['Some', 'None'], {
    * @throws {err} The error privded as a param
    * @returns {value}
    */
-  expect: function expect(err) {
+  expect(err) {
     if (this.option === 'Some') {
       return this.value;
     } else {
@@ -153,7 +153,7 @@ var Option = Enum(['Some', 'None'], {
    * @throws Error.UnwrapNone
    * @returns {value}
    */
-  unwrap: function unwrap() {
+  unwrap() {
     if (this.option === 'Some') {
       return this.value;
     } else {
@@ -165,7 +165,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {value} def - A default value to return if the Option is None
    * @returns {value}
    */
-  unwrapOr: function unwrapOr(def) {
+  unwrapOr(def) {
     return (this.option === 'Some') ? this.value : def;
   },
 
@@ -173,7 +173,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {valueCb} fn - A function to call to obtain a value to return if the Option is None
    * @returns {value}
    */
-  unwrapOrElse: function unwrapOrElse(fn) {
+  unwrapOrElse(fn) {
     return (this.option === 'Some') ? this.value : fn();
   },
 
@@ -181,7 +181,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {OptionCb} fn - A function to call on the value wrapped by Some
    * @returns {Option}
    */
-  map: function map(fn) {
+  map(fn) {
     return (this.option === 'Some') ? Option.Some(fn(this.value)) : this;
   },
 
@@ -190,7 +190,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {valueCb} fn - A function to apply to a Some's value
    * @returns {value}
    */
-  mapOr: function mapOr(def, fn) {
+  mapOr(def, fn) {
     return (this.option === 'Some') ? fn(this.value) : def;
   },
 
@@ -199,7 +199,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {valueCb} fn
    * @returns {value}
    */
-  mapOrElse: function mapOrElse(defFn, fn) {
+  mapOrElse(defFn, fn) {
     return (this.option === 'Some') ? fn(this.value) : defFn();
   },
 
@@ -207,7 +207,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {err} err
    * @returns {Result}
    */
-  okOr: function okOr(err) {
+  okOr(err) {
     return (this.option === 'Some') ? Result.Ok(this.value) : Result.Err(err);
   },
 
@@ -215,14 +215,14 @@ var Option = Enum(['Some', 'None'], {
    * @param {errCb} errFn
    * @returns {Result}
    */
-  okOrElse: function okOrElse(errFn) {
+  okOrElse(errFn) {
     return (this.option === 'Some') ? Result.Ok(this.value) : Result.Err(errFn());
   },
 
   /**
    * @returns {Array<value>}
    */
-  array: function array() {
+  array() {
     return (this.option === 'Some') ? [this.value] : [];  // .iter; .into_item
   },
 
@@ -230,7 +230,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {Option} other
    * @returns {Option}
    */
-  and: function and(other) {
+  and(other) {
     return (this.option === 'Some') ? other : this;
   },
 
@@ -238,7 +238,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {OptionCb} fn
    * @returns {Option}
    */
-  andThen: function andThen(fn) {
+  andThen(fn) {
     return (this.option === 'Some') ? fn(this.value) : this;
   },
 
@@ -246,7 +246,7 @@ var Option = Enum(['Some', 'None'], {
    * @param {Option} other
    * @rturns {Option}
    */
-  or: function or(other) {
+  or(other) {
     return (this.option === 'Some') ? this : other;
   },
 
@@ -254,14 +254,14 @@ var Option = Enum(['Some', 'None'], {
    * @param {OptionCb} fn
    * @returns {Option}
    */
-  orElse: function orElse(fn) {
+  orElse(fn) {
     return (this.option === 'Some') ? this : fn();
   },
 
   /**
    * @returns {Option}
    */
-  take: function take() {
+  take() {
     if (this.option === 'Some') {
       var taken = Option.Some(this.value);
       this.value = undefined;
@@ -280,53 +280,53 @@ var ResultError = Enum({
 });
 
 var Result = Enum(['Ok', 'Err'], {
-  isOk: function isOk() {
+  isOk() {
     return this.option === 'Ok';
   },
-  isErr: function isErr() {
+  isErr() {
     return this.option === 'Err';
   },
-  ok: function ok() {
+  ok() {
     return (this.option === 'Ok') ? Option.Some(this.value) : Option.None();
   },
-  err: function err() {
+  err() {
     return (this.option === 'Ok') ? Option.None() : Option.Some(this.value);
   },
-  map: function map(fn) {
+  map(fn) {
     return (this.option === 'Ok') ? Result.Ok(fn(this.value)) : this;
   },
-  mapErr: function mapErr(fn) {
+  mapErr(fn) {
     return (this.option === 'Ok') ? this : Result.Err(fn(this.value));
   },
-  array: function array() {
+  array() {
     return (this.option === 'Ok') ? [this.value] : [];  // .iter; .into_item
   },
-  and: function and(other) {
+  and(other) {
     return (this.option === 'Ok') ? other : this;
   },
-  andThen: function andThen(fn) {
+  andThen(fn) {
     return (this.option === 'Ok') ? fn(this.value) : this;
   },
-  or: function or(other) {
+  or(other) {
     return (this.option === 'Ok') ? this : other;
   },
-  orElse: function orElse(fn) {
+  orElse(fn) {
     return (this.option === 'Ok') ? this : fn(this.value);
   },
-  unwrapOr: function unwrapOr(def) {
+  unwrapOr(def) {
     return (this.option === 'Ok') ? this.value : def;
   },
-  unwrapOrElse: function unwrapOrElse(fn) {
+  unwrapOrElse(fn) {
     return (this.option === 'Ok') ? this.value : fn(this.value);
   },
-  unwrap: function unwrap() {
+  unwrap() {
     if (this.option === 'Ok') {
       return this.value;
     } else {
       throw ResultError.UnwrapErr(this.value);
     }
   },
-  unwrapErr: function unwrapErr() {
+  unwrapErr() {
     if (this.option === 'Ok') {
       throw ResultError.UnwrapErrAsOk(this.value);
     } else {
