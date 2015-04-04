@@ -1,5 +1,5 @@
 var assert = require('assert');
-var {Ok, Err, Some, None, errors} = require('./index');
+var {Ok, Err, Some, None} = require('./index');
 
 
 describe('Option', () => {
@@ -22,6 +22,15 @@ describe('Option', () => {
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
     assert.throws(() => {None().unwrap()});
+    try {
+      None().unwrap();
+    } catch (err) {
+      var answer = err.match({
+        UnwrapNone: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+      assert.equal(answer, 'the right answer');
+    }
   });
   it('should unwrap its value or a default for unwrapOr', () => {
     assert.equal(Some(1).unwrapOr(2), 1);
@@ -72,7 +81,7 @@ describe('Option', () => {
   });
   it('.or', () => {
     assert.equal(Some(1).or(Some(2)).unwrap(), 1);
-    assert.equal(None(1).or(Some(2)).unwrap(), 2);
+    assert.equal(None().or(Some(2)).unwrap(), 2);
     assert.equal(Some(1).or(None()).unwrap(), 1);
     assert.ok(None().or(None()).isNone());
   });
@@ -174,9 +183,27 @@ describe('Result', () => {
   it('.unwrap', () => {
     assert.equal(Ok(1).unwrap(), 1);
     assert.throws(() => Err(2).unwrap());
+    try {
+      Err(2).unwrap();
+    } catch (err) {
+      var answer = err.match({
+        UnwrapErr: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+      assert.equal(answer, 'the right answer');
+    }
   });
   it('.unwrapErr', () => {
     assert.throws(() => Ok(1).unwrapErr());
+    try {
+      Ok(1).unwrapErr();
+    } catch (err) {
+      var answer = err.match({
+        UnwrapErrAsOk: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+      assert.equal(answer, 'the right answer');
+    }
     assert.equal(Err(2).unwrapErr(), 2);
   });
 });
