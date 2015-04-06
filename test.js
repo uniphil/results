@@ -48,12 +48,15 @@ describe('Enum', () => {
   it('should always be exhaustive with a wildcard match', () => {
     assert.equal(Enum(['A', 'B']).A().match({_: () => 42}), 42);
   });
-  it('should pass the value to `match` callbacks', () => {
+  it('should pass a value to `match` callbacks', () => {
     assert.equal(Enum(['A']).A(42).match({A: (v) => v}), 42);
   });
-  it('should pass the option and the value to `match` callbacks', () => {
-    assert.equal(Enum(['A']).A(42).match({_: (o, v) => o}), 'A');
-    assert.equal(Enum(['A']).A(42).match({_: (o, v) => v}), 42);
+  it('should pass all values to `match` callbacks', () => {
+    assert.equal(Enum(['A']).A(42, 41).match({A: (v, z) => z}), 41);
+  });
+  it('should pass itself to catch-all `match` callbacks', () => {
+    assert.equal(Enum(['A']).A(42).match({_: (en) => en.option}), 'A');
+    assert.equal(Enum(['A']).A(42).match({_: (en) => en.args[0]}), 42);
   });
 });
 
