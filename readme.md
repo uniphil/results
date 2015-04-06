@@ -4,7 +4,7 @@ Results
 [![Build Status](https://travis-ci.org/uniphil/results.svg)](https://travis-ci.org/uniphil/results)
 
 
-Lightweight rust-inspired `Result`s and `Option`s for JavaScript.
+Lightweight rust-inspired `Option`, `Result`, and `Enum` program flow control for JavaScript.
 
 
 Install
@@ -24,79 +24,164 @@ Docs
 Features
 --------
 
-Rust-like matching syntax with es6 arrow functions
+Rust-like `Option` and `Result` for nice data processing flows:
 
 ```javascript
 var {Some, None, Ok, Err} = require('results');
 
 
-function mightFindAResult() {
-  if (Math.random() > 0.5) {
-    return Some(42);
-  } else {
-    return None();
-  }
+function getLatest() {
+  // this function might fetch data from a server or something, but we'll just
+  // hard-code it for illustration
+  return Some('{ "nums": [1, 7, 3, 3] }');
 }
 
 
-mightFindAResult().match({
-  Some: (result) => { console.log('we got a result!', result); },
-  None: () => { console.log('no results found :('); },
-});
-
-
-
-function parseVersion(header) {
-  if (header.length < 1) {
-    return Err('invalid header');
-  } else if (header[0] === '1') {
-    return Ok(1);
-  } else if (header[0] === '2') {
-    return Ok(2);
-  } else {
-    return Err('invalid header version: ' + header[0]);
+function parseJSON(raw) {
+  try {
+    return Ok(JSON.parse(raw));
+  } catch (parseErr) {
+    return Err(parseErr);
   }
 }
 
+function validate(data) {
+  if (!(data.nums instanceof Array)) {
+    return Err('nums property was not an Array');
+  }
+  if (!(data.nums.length > 0)) {
+    return Err('nums array must have at least one number');
+  }
+  if (!data.nums.every((n) => typeof n === 'number')) {
+    return Err('nums array should contain only numbers');
+  }
+  return Ok(data);
+}
 
-var docHeader = '1        ';
+function summarize(data) {
+  var total = data.nums.reduce((sum, val) => sum + val, 0),
+      min = Math.min.apply(null, data.nums),
+      max = Math.max.apply(null, data.nums),
+      avg = total / data.nums.length;
 
-parseVersion(docHeader).match({
-  Ok: (version) => { console.log('successfully parsed version:', version); },
-  Err: (err) => { console.error('failed to parse version with message:', err); },
-});
+  if ([total, min, max, avg].some(isNaN)) {
+    console.log(data, total, min, max, avg);
+    return Err('Math error -- found a NaN');
+  }
 
-```
+  return Ok({total, min, max, avg});
+}
 
-Pattern expression functions' return values are propagated
+function prettyPrint(data) {
+  var pretty = JSON.stringify(data, null, 2);
+  if (pretty === undefined) {
+    return Err('prettyPrint failed :(');
+  } else {
+    return Ok(pretty);
+  }
+}
 
-```javascript
-function parseDocument(doc) {
-  var header = doc.slice(0, 10),
-      body = doc.slice(10);
-  return parseVersion(header).match({
-    Ok: (version) => {
-      return parseBody(body).match({
-        Ok: (content) => {version: version, content: content},
-        Err: (err) => Err(err),
-      });
-    },
-    Err: (err) => Err(err),
+// We can now compose these functions with their nice methods:
+function logLatestReport() {
+  var latestReport = getLatest().okOr('Nothing new')
+    .andThen(parseJSON)
+    .andThen(validate)
+    .andThen(summarize)
+    .andThen(prettyPrint);
+
+  latestReport.match({
+    Ok: (report) => console.log(report),
+    Err: (reason) => console.error(':(', reason),
   });
 }
+
 ```
+All of the methods for `Result` and `Option` that make sense in JavaScript should be there.
 
-
-Most of rust's Option and Result methods are also available
+Match expressions are almost like Rust with es6 arrow functions:
 
 ```javascript
-function parseDocument(doc) {
-  var header = doc.slice(0, 10),
-      body = doc.slice(10);
-  return parseVersion(header).andThen((v) =>
-    parseBody(body).andThen((c) =>
-      Ok({version: v, content: c})));
+
+var messageSent = Ok('sent!');  // or Err(why) as the case may be...
+
+messageSent.match({
+  Ok: (okMessage) => console.log(okMessage, 'woo hoo!'),
+  Err: (why) => {
+    console.error(why, ':(');
+    notifyFailure('message sending', why);
+  },
+});
+
+```
+
+`Option` and `Result` are generalized as `Enum` (which is a sort of Sum Type or Discriminated Union-ish tool). `Enum` comes with the `match` expression for nice control flow everywhere:
+
+```javascript
+
+var HTTPVerbs = Enum([
+  'Options',
+  'Head',
+  'Get',
+  'Post',
+  'Put',
+  'Delete',
+]);
+
+
+function isIdempotent(verb) {
+  return verb.match({
+    Post: () => false,
+    _: () => true,      // `_` is catch-all, just like in rust!
+  });
 }
+
+isIdempotent(HTTPVerbs.Options());
+// => true
+
+isIdempotent(HTTPVerbs.Post());
+// => false
+
+```
+
+Methods, like the ones on `Result`s and `Option`s, can be attached when creating the `Enum`:
+
+```javascript
+var HTTPVerbs = Enum([
+  'Options',
+  'Head',
+  'Get',
+  'Post',
+  'Put',
+  'Delete',
+], {
+  isIdempotent: function() {
+    return this.option === 'POST' ? false : true;
+  }
+});
+
+// or, since we are a method on the EnumOption, we can even use `match` in the method:
+
+```javascript
+var HTTPVerbs = Enum([
+  'Options',
+  'Head',
+  'Get',
+  'Post',
+  'Put',
+  'Delete',
+], {
+  isIdempotent: function() {
+    return this.match({
+      Post: () => false,
+      _: () => true,
+    });
+  }
+});
+
+
+HTTPVerbs.Put().isIdempotent();
+// => true
+
 ```
 
 
