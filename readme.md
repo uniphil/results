@@ -119,26 +119,26 @@ messageSent.match({
 ```javascript
 
 var HTTPVerbs = Enum([
-  'Options',
-  'Head',
-  'Get',
-  'Post',
-  'Put',
-  'Delete',
+  'OPTIONS',
+  'HEAD',
+  'GET',
+  'POST',
+  'PUT',
+  'DELETE',
 ]);
 
 
 function isIdempotent(verb) {
   return verb.match({
-    Post: () => false,
+    POST: () => false,
     _: () => true,      // `_` is catch-all, just like in rust!
   });
 }
 
-isIdempotent(HTTPVerbs.Options());
+isIdempotent(HTTPVerbs.OPTIONS());
 // => true
 
-isIdempotent(HTTPVerbs.Post());
+isIdempotent(HTTPVerbs.POST());
 // => false
 
 ```
@@ -147,12 +147,12 @@ Methods, like the ones on `Result`s and `Option`s, can be attached when creating
 
 ```javascript
 var HTTPVerbs = Enum([
-  'Options',
-  'Head',
-  'Get',
-  'Post',
-  'Put',
-  'Delete',
+  'OPTIONS',
+  'HEAD',
+  'GET',
+  'POST',
+  'PUT',
+  'DELETE',
 ], {
   isIdempotent: function() {
     return this.option === 'POST' ? false : true;
@@ -163,23 +163,23 @@ var HTTPVerbs = Enum([
 
 ```javascript
 var HTTPVerbs = Enum([
-  'Options',
-  'Head',
-  'Get',
-  'Post',
-  'Put',
-  'Delete',
+  'OPTIONS',
+  'HEAD',
+  'GET',
+  'POST',
+  'PUT',
+  'DELETE',
 ], {
   isIdempotent: function() {
     return this.match({
-      Post: () => false,
+      POST: () => false,
       _: () => true,
     });
   }
 });
 
 
-HTTPVerbs.Put().isIdempotent();
+HTTPVerbs.PUT().isIdempotent();
 // => true
 
 ```
