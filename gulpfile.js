@@ -3,15 +3,18 @@ var del = require('del');
 var merge = require('merge2');
 var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
-var shell = require('gulp-shell');
 var rename = require('gulp-rename');
+var typedoc = require('gulp-typedoc');
 var ghPages = require('gulp-gh-pages');
 var vinylPaths = require('vinyl-paths');
 var typescript = require('gulp-typescript');
 
 
 gulp.task('clean', function(cb) {
-  del('./index.js', cb);
+  del([
+    './index.js',
+    './docs/',
+  ], cb);
 });
 
 
@@ -39,8 +42,14 @@ gulp.task('test', ['typescript'], function() {
 
 
 gulp.task('docs', ['typescript'], function() {
-  return gulp.src('index.js', {read: false})
-    .pipe(shell(['jsdoc -d docs/ <%= file.path %>']));
+  return gulp.src('index.ts')
+    .pipe(typedoc({
+      module: 'commonjs',
+      name: 'Results',
+      out: 'docs/',
+      target: 'es5',
+      theme: 'minimal',
+    }));
 });
 
 
