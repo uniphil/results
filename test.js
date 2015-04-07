@@ -1,5 +1,64 @@
 var assert = require('assert');
-var {Ok, Err, Some, None, errors} = require('./index');
+var {Enum, Ok, Err, Some, None} = require('./index');
+
+
+describe('Enum', () => {
+  it('should fail if options are missing', () => {
+    var answer;
+    try {
+      Enum();
+    } catch(err) {
+      answer = err.match({
+        MissingOptions: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+    }
+    assert.equal(answer, 'the right answer');
+  });
+  it('should fail for bad option type', () => {
+    var answer;
+    try {
+      Enum('abc');
+    } catch(err) {
+      answer = err.match({
+        BadOptionType: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+    }
+    assert.equal(answer, 'the right answer');
+  });
+  it('should accept an object or an array', () => {
+    assert.equal(Enum(['A']).A().match({A: () => 42}), 42);
+  });
+  it('should accept an object or an object', () => {
+    assert.equal(Enum({A: null}).A().match({A: () => 42}), 42);
+  });
+  it('should ensure that the match paths are exhaustive', () => {
+    var answer;
+    try {
+      Enum(['A', 'B']).A().match({A: () => 'whatever'});
+    } catch(err) {
+      answer = err.match({
+        NonExhaustiveMatch: () => 'the right answer',
+        _: () => 'the wrong answer',
+      });
+    }
+    assert.equal(answer, 'the right answer');
+  });
+  it('should always be exhaustive with a wildcard match', () => {
+    assert.equal(Enum(['A', 'B']).A().match({_: () => 42}), 42);
+  });
+  it('should pass a value to `match` callbacks', () => {
+    assert.equal(Enum(['A']).A(42).match({A: (v) => v}), 42);
+  });
+  it('should pass all values to `match` callbacks', () => {
+    assert.equal(Enum(['A']).A(42, 41).match({A: (v, z) => z}), 41);
+  });
+  it('should pass itself to catch-all `match` callbacks', () => {
+    assert.equal(Enum(['A']).A(42).match({_: (en) => en.option}), 'A');
+    assert.equal(Enum(['A']).A(42).match({_: (en) => en.args[0]}), 42);
+  });
+});
 
 
 describe('Option', () => {
@@ -22,6 +81,16 @@ describe('Option', () => {
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
     assert.throws(() => {None().unwrap()});
+    var answer;
+    try {
+      None().unwrap();
+    } catch (err) {
+      answer = err.match({
+        UnwrapNone: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+      assert.equal(answer, 'the right answer');
+    }
   });
   it('should unwrap its value or a default for unwrapOr', () => {
     assert.equal(Some(1).unwrapOr(2), 1);
@@ -72,7 +141,7 @@ describe('Option', () => {
   });
   it('.or', () => {
     assert.equal(Some(1).or(Some(2)).unwrap(), 1);
-    assert.equal(None(1).or(Some(2)).unwrap(), 2);
+    assert.equal(None().or(Some(2)).unwrap(), 2);
     assert.equal(Some(1).or(None()).unwrap(), 1);
     assert.ok(None().or(None()).isNone());
   });
@@ -174,9 +243,29 @@ describe('Result', () => {
   it('.unwrap', () => {
     assert.equal(Ok(1).unwrap(), 1);
     assert.throws(() => Err(2).unwrap());
+    var answer;
+    try {
+      Err(2).unwrap();
+    } catch (err) {
+      answer = err.match({
+        UnwrapErr: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+      assert.equal(answer, 'the right answer');
+    }
   });
   it('.unwrapErr', () => {
     assert.throws(() => Ok(1).unwrapErr());
+    var answer;
+    try {
+      Ok(1).unwrapErr();
+    } catch (err) {
+      answer = err.match({
+        UnwrapErrAsOk: () => 'the right answer',
+        _: (what) => 'the wrong answer: ' + what,
+      });
+      assert.equal(answer, 'the right answer');
+    }
     assert.equal(Err(2).unwrapErr(), 2);
   });
 });

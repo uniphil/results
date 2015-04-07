@@ -41,36 +41,57 @@
 
 var assign = require('object-assign');
 
-
-var $;  // key mirror
-var errors = ((s)=>Object.keys(s).reduce((o,k)=>{o[k]=k;return o;},{}))({
-  MISSING_CASE: $,
-  UNWRAP_NONE: $,
-  UNWRAPERR_OK: $,
-  UNWRAP_ERR: $,
-});
-function error(errKey, message) {
-  return {
-    key: errKey,
-    message: message,
-    toString: function() {
-      return this.key + ': ' + (JSON.stringify(this.message) || this.message);
-    },
-  };
+function covers(/*Array:*/ options, /*Object:*/ paths) {
+  return paths.hasOwnProperty('_') ? true :
+    options.every((opt) => paths.hasOwnProperty(opt)) &&
+    options.length === Object.keys(paths).length;
 }
 
+function match(paths) {
+  if (!covers(this.options, paths)) { throw EnumErr.NonExhaustiveMatch(); }
+  return paths.hasOwnProperty(this.option) ?
+    paths[this.option].apply(null, this.args) :
+    paths['_'](this);
+};
 
-/**
- * @private
- * @param {Array<string>} props - What properties must @obj have?
- * @param {Object} obj - The object whose properties we are checking for.
- */
-function mustHave(props, obj) {
-  if (!props.every(Object.prototype.hasOwnProperty.bind(obj))) {
-    var missingKeys = props.filter((k) => !obj.hasOwnProperty(k)).join(', ');
-    throw error(errors.MISSING_CASE, missingKeys);
+function Enum(options, proto) {
+  if (!options) { throw EnumErr.MissingOptions(); }
+  if (!(options instanceof Array)) {
+    if (options instanceof Object) {
+      options = Object.keys(options);
+    } else {
+      throw EnumErr.BadOptionType();
+    }
   }
+  function EnumOption(options, option, args) {
+    this.options = options;
+    this.option = option;
+    this.args = args;
+  }
+  function mkEnumOption(options, option) {
+    var args = [];
+    for (var i=2, l=arguments.length; i<l; i++) {
+      args.push(arguments[i]);
+    }
+    return new EnumOption(options, option, args);
+  }
+  EnumOption.prototype = assign({match}, proto);
+  return options.reduce((obj, opt) => {
+    obj[opt] = mkEnumOption.bind(null, options, opt);
+    return obj;
+  }, {});
 }
+
+var EnumErr = Enum({
+  MissingOptions:     null,
+  BadOptionType:      null,
+  NonExhaustiveMatch: null,
+});
+
+
+var OptionError = Enum({
+  UnwrapNone: null,
+});
 
 
 /**
@@ -84,39 +105,7 @@ function mustHave(props, obj) {
  *   return None();
  * }
  */
-function Option(isSome, value) {
-  this._ = isSome
-  this._value = value;
-}
-
-Option.prototype = {
-
-  /**
-   * Program control flow
-   *
-   * @example
-   * // with es6 arrow functions:
-   * var answer = Some(42).match({
-   *   Some: (v) => v,
-   *   None: () => 0,
-   * });
-   * assert(answer === 42);
-   *
-   * // regular functions are just slightly more verbose
-   * var answer = None().match({
-   *   Some: function(v) { return v; },
-   *   None: function() { return 0; },
-   * });
-   * assert(answer === 0);
-   * @param {Object} cases
-   * @param {valueCb} cases.Some - function to call if the Option is a Some
-   * @param {valueCb} cases.None - function to call if the Option is a None
-   * @returns {value} the result of calling the callback for either Some or None
-   */
-  match: function match(cases) {
-    mustHave(['Some', 'None'], cases);
-    return this._ ? cases.Some(this._value) : cases.None();
-  },
+var Option = Enum(['Some', 'None'], {
 
   /**
    * @example
@@ -124,8 +113,8 @@ Option.prototype = {
    * assert(None().isSome() === false);
    * @returns {boolean}
    */
-  isSome: function isSome() {
-    return this._;
+  isSome() {
+    return this.option === 'Some';
   },
 
   /**
@@ -134,8 +123,8 @@ Option.prototype = {
    * assert(None().isNone() === true);
    * @returns {boolean}
    */
-  isNone: function isNone() {
-    return !this._;
+  isNone() {
+    return this.option === 'None';
   },
 
   /**
@@ -150,9 +139,9 @@ Option.prototype = {
    * @throws {err} The error privded as a param
    * @returns {value}
    */
-  expect: function expect(err) {
-    if (this._) {
-      return this._value;
+  expect(err) {
+    if (this.option === 'Some') {
+      return this.args[0];
     } else {
       throw err;
     }
@@ -168,14 +157,14 @@ Option.prototype = {
    *   answer = 'forty-two';
    * }
    * assert(anser === 'forty-two');
-   * @throws UNWRAP_NONE
+   * @throws Error.UnwrapNone
    * @returns {value}
    */
-  unwrap: function unwrap() {
-    if (this._) {
-      return this._value;
+  unwrap() {
+    if (this.option === 'Some') {
+      return this.args[0];
     } else {
-      throw error(errors.UNWRAP_NONE, "Tried to unwrap None");
+      throw OptionError.UnwrapNone('Tried to unwrap None');
     }
   },
 
@@ -183,24 +172,24 @@ Option.prototype = {
    * @param {value} def - A default value to return if the Option is None
    * @returns {value}
    */
-  unwrapOr: function unwrapOr(def) {
-    return this._ ? this._value : def;
+  unwrapOr(def) {
+    return (this.option === 'Some') ? this.args[0] : def;
   },
 
   /**
    * @param {valueCb} fn - A function to call to obtain a value to return if the Option is None
    * @returns {value}
    */
-  unwrapOrElse: function unwrapOrElse(fn) {
-    return this._ ? this._value : fn();
+  unwrapOrElse(fn) {
+    return (this.option === 'Some') ? this.args[0] : fn();
   },
 
   /**
    * @param {OptionCb} fn - A function to call on the value wrapped by Some
    * @returns {Option}
    */
-  map: function map(fn) {
-    return this._ ? Some(fn(this._value)) : this;
+  map(fn) {
+    return (this.option === 'Some') ? Option.Some(fn(this.args[0])) : this;
   },
 
   /**
@@ -208,8 +197,8 @@ Option.prototype = {
    * @param {valueCb} fn - A function to apply to a Some's value
    * @returns {value}
    */
-  mapOr: function mapOr(def, fn) {
-    return this._ ? fn(this._value) : def;
+  mapOr(def, fn) {
+    return (this.option === 'Some') ? fn(this.args[0]) : def;
   },
 
   /**
@@ -217,177 +206,151 @@ Option.prototype = {
    * @param {valueCb} fn
    * @returns {value}
    */
-  mapOrElse: function mapOrElse(defFn, fn) {
-    return this._ ? fn(this._value) : defFn();
+  mapOrElse(defFn, fn) {
+    return (this.option === 'Some') ? fn(this.args[0]) : defFn();
   },
 
   /**
    * @param {err} err
    * @returns {Result}
    */
-  okOr: function okOr(err) {
-    return this._ ? Ok(this._value) : Err(err);
+  okOr(err) {
+    return (this.option === 'Some') ? Result.Ok(this.args[0]) : Result.Err(err);
   },
 
   /**
    * @param {errCb} errFn
    * @returns {Result}
    */
-  okOrElse: function okOrElse(errFn) {
-    return this._ ? Ok(this._value) : Err(errFn());
+  okOrElse(errFn) {
+    return (this.option === 'Some') ? Result.Ok(this.args[0]) : Result.Err(errFn());
   },
 
   /**
    * @returns {Array<value>}
    */
-  array: function array() {
-    return this._ ? [this._value] : [];  // .iter; .into_item
+  array() {
+    return (this.option === 'Some') ? [this.args[0]] : [];  // .iter; .into_item
   },
 
   /**
    * @param {Option} other
    * @returns {Option}
    */
-  and: function and(other) {
-    return this._ ? other : this;
+  and(other) {
+    return (this.option === 'Some') ? other : this;
   },
 
   /**
    * @param {OptionCb} fn
    * @returns {Option}
    */
-  andThen: function andThen(fn) {
-    return this._ ? fn(this._value) : this;
+  andThen(fn) {
+    return (this.option === 'Some') ? fn(this.args[0]) : this;
   },
 
   /**
    * @param {Option} other
    * @rturns {Option}
    */
-  or: function or(other) {
-    return this._ ? this : other;
+  or(other) {
+    return (this.option === 'Some') ? this : other;
   },
 
   /**
    * @param {OptionCb} fn
    * @returns {Option}
    */
-  orElse: function orElse(fn) {
-    return this._ ? this : fn();
+  orElse(fn) {
+    return (this.option === 'Some') ? this : fn();
   },
 
   /**
    * @returns {Option}
    */
-  take: function take() {
-    if (this._) {
-      var taken = Some(this._value);
-      this._ = false;
-      this._value = null;
+  take() {
+    if (this.option === 'Some') {
+      var taken = Option.Some(this.args[0]);
+      this.args[0] = undefined;
+      this.option = 'None';
       return taken;
     } else {
-      return None();
+      return Option.None();
     }
   },
-};
+});
 
 
-function Result(isOk, value) {
-  this._ = isOk;
-  this._value = value;
-}
+var ResultError = Enum({
+  UnwrapErrAsOk: null,
+  UnwrapErr: null,
+});
 
-Result.prototype = {
-  match: function match(cases) {
-    mustHave(['Ok', 'Err'], cases);
-    return cases[this._ ? 'Ok' : 'Err'](this._value);
+var Result = Enum(['Ok', 'Err'], {
+  isOk() {
+    return this.option === 'Ok';
   },
-  isOk: function isOk() {
-    return this._;
+  isErr() {
+    return this.option === 'Err';
   },
-  isErr: function isErr() {
-    return !this._;
+  ok() {
+    return (this.option === 'Ok') ? Option.Some(this.args[0]) : Option.None();
   },
-  ok: function ok() {
-    return this._ ? Some(this._value) : None();
+  err() {
+    return (this.option === 'Ok') ? Option.None() : Option.Some(this.args[0]);
   },
-  err: function err() {
-    return this._ ? None() : Some(this._value);
+  map(fn) {
+    return (this.option === 'Ok') ? Result.Ok(fn(this.args[0])) : this;
   },
-  map: function map(fn) {
-    return this._ ? Ok(fn(this._value)) : this;
+  mapErr(fn) {
+    return (this.option === 'Ok') ? this : Result.Err(fn(this.args[0]));
   },
-  mapErr: function mapErr(fn) {
-    return this._ ? this : Err(fn(this._value));
+  array() {
+    return (this.option === 'Ok') ? [this.args[0]] : [];  // .iter; .into_item
   },
-  array: function array() {
-    return this._ ? [this._value] : [];  // .iter; .into_item
+  and(other) {
+    return (this.option === 'Ok') ? other : this;
   },
-  and: function and(other) {
-    return this._ ? other : this;
+  andThen(fn) {
+    return (this.option === 'Ok') ? fn(this.args[0]) : this;
   },
-  andThen: function andThen(fn) {
-    return this._ ? fn(this._value) : this;
+  or(other) {
+    return (this.option === 'Ok') ? this : other;
   },
-  or: function or(other) {
-    return this._ ? this : other;
+  orElse(fn) {
+    return (this.option === 'Ok') ? this : fn(this.args[0]);
   },
-  orElse: function orElse(fn) {
-    return this._ ? this : fn(this._value);
+  unwrapOr(def) {
+    return (this.option === 'Ok') ? this.args[0] : def;
   },
-  unwrapOr: function unwrapOr(def) {
-    return this._ ? this._value : def;
+  unwrapOrElse(fn) {
+    return (this.option === 'Ok') ? this.args[0] : fn(this.args[0]);
   },
-  unwrapOrElse: function unwrapOrElse(fn) {
-    return this._ ? this._value : fn(this._value);
-  },
-  unwrap: function unwrap() {
-    if (this._) {
-      return this._value;
+  unwrap() {
+    if (this.option === 'Ok') {
+      return this.args[0];
     } else {
-      throw error(errors.UNWRAP_ERR, this._value);
+      throw ResultError.UnwrapErr(this.args[0]);
     }
   },
-  unwrapErr: function unwrapErr() {
-    if (this._) {
-      throw error(errors.UNWRAPERR_OK, this._value);
+  unwrapErr() {
+    if (this.option === 'Ok') {
+      throw ResultError.UnwrapErrAsOk(this.args[0]);
     } else {
-      return this._value;
+      return this.args[0];
     }
   },
-};
-
-
-
-
-/**
- * @example
- * var opt = Some(42);
- * @returns {Option}
- */
-var Some = Option.Some = function Some(value) {
-  return new Option(true, value);
-}
-
-var None = Option.None = function None() {
-  return new Option(false, null);
-}
-
-var Ok = Result.Ok = function Ok(value) {
-  return new Result(true, value);
-}
-
-var Err = Result.Err = function Err(errVal) {
-  return new Result(false, errVal);
-}
+});
 
 
 module.exports = {
-  Option: Option,
-  Some: Some,
-  None: None,
-  Result: Result,
-  Ok: Ok,
-  Err: Err,
-  errors: errors,
+  Enum,
+
+  Option,
+  Some: Option.Some,
+  None: Option.None,
+
+  Result,
+  Ok: Result.Ok,
+  Err: Result.Err,
 };
