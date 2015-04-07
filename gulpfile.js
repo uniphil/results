@@ -10,6 +10,14 @@ var vinylPaths = require('vinyl-paths');
 var typescript = require('gulp-typescript');
 
 
+var tsProject = typescript.createProject({
+  declarationFiles: true,
+  module: 'commonjs',
+  noExternalResolve: true,
+  target: 'es5',
+});
+
+
 gulp.task('clean', function(cb) {
   del([
     './index.js',
@@ -20,14 +28,17 @@ gulp.task('clean', function(cb) {
 
 gulp.task('typescript', ['clean'], function() {
   var tsResult = gulp.src('index.ts')
-    .pipe(typescript({
-      declarationFiles: true,
-      noExternalResolve: true,
-    }));
+    .pipe(typescript(tsProject));
+
   return merge([
     tsResult.dts.pipe(gulp.dest('./')),
     tsResult.js.pipe(gulp.dest('./')),
   ]);
+});
+
+
+gulp.task('watch', ['typescript'], function() {
+  gulp.watch('index.ts', ['typescript']);
 });
 
 
