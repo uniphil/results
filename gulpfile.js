@@ -1,11 +1,13 @@
 var gulp = require('gulp');
 var del = require('del');
+var merge = require('merge2');
 var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
 var shell = require('gulp-shell');
 var rename = require('gulp-rename');
 var ghPages = require('gulp-gh-pages');
 var vinylPaths = require('vinyl-paths');
+var typescript = require('gulp-typescript');
 
 
 gulp.task('clean', function(cb) {
@@ -13,15 +15,20 @@ gulp.task('clean', function(cb) {
 });
 
 
-gulp.task('6to5', ['clean'], function() {
-  return gulp.src('index.es6.js')
-    .pipe(babel())
-    .pipe(rename('index.js'))
-    .pipe(gulp.dest('.'));
+gulp.task('typescript', ['clean'], function() {
+  var tsResult = gulp.src('index.ts')
+    .pipe(typescript({
+      declarationFiles: true,
+      noExternalResolve: true,
+    }));
+  return merge([
+    tsResult.dts.pipe(gulp.dest('./')),
+    tsResult.js.pipe(gulp.dest('./')),
+  ]);
 });
 
 
-gulp.task('test', ['6to5'], function() {
+gulp.task('test', ['typescript'], function() {
   return gulp.src('test.js')
     .pipe(babel())
     .pipe(rename('test.es5.js'))
@@ -31,7 +38,7 @@ gulp.task('test', ['6to5'], function() {
 });
 
 
-gulp.task('docs', ['6to5'], function() {
+gulp.task('docs', ['typescript'], function() {
   return gulp.src('index.js', {read: false})
     .pipe(shell(['jsdoc -d docs/ <%= file.path %>']));
 });

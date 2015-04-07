@@ -1,5 +1,10 @@
+declare var require;
+declare var assign;
+declare var module;
+
+
 /**
- * Rust-inspired Result<T, E> and Option<T> wrappers for Javascript.
+ * Rust-inspired Result<T, E> and Option<T> (called Maybe) wrappers for Javascript.
  *
  * @module results
  * @requires object-assign
@@ -33,9 +38,9 @@
  */
 
 /**
- * @callback OptionCb
+ * @callback MaybeCb
  * @param {value} value
- * @returns {Option}
+ * @returns {Maybe}
  */
 
 
@@ -54,7 +59,7 @@ function match(paths) {
     paths['_'](this);
 };
 
-function Enum(options, proto) {
+function Enum(options, proto={}) {
   if (!options) { throw EnumErr.MissingOptions(); }
   if (!(options instanceof Array)) {
     if (options instanceof Object) {
@@ -89,7 +94,7 @@ var EnumErr = Enum({
 });
 
 
-var OptionError = Enum({
+var MaybeError = Enum({
   UnwrapNone: null,
 });
 
@@ -105,7 +110,7 @@ var OptionError = Enum({
  *   return None();
  * }
  */
-var Option = Enum(['Some', 'None'], {
+var Maybe = Enum(['Some', 'None'], {
 
   /**
    * @example
@@ -135,7 +140,7 @@ var Option = Enum(['Some', 'None'], {
    * } catch (e) {
    *   assert(e === 'nope');
    * }
-   * @param {err} err - the error to throw if the Option is None
+   * @param {err} err - the error to throw if the Maybe is None
    * @throws {err} The error privded as a param
    * @returns {value}
    */
@@ -164,12 +169,12 @@ var Option = Enum(['Some', 'None'], {
     if (this.option === 'Some') {
       return this.args[0];
     } else {
-      throw OptionError.UnwrapNone('Tried to unwrap None');
+      throw MaybeError.UnwrapNone('Tried to unwrap None');
     }
   },
 
   /**
-   * @param {value} def - A default value to return if the Option is None
+   * @param {value} def - A default value to return if the Maybe is None
    * @returns {value}
    */
   unwrapOr(def) {
@@ -177,7 +182,7 @@ var Option = Enum(['Some', 'None'], {
   },
 
   /**
-   * @param {valueCb} fn - A function to call to obtain a value to return if the Option is None
+   * @param {valueCb} fn - A function to call to obtain a value to return if the Maybe is None
    * @returns {value}
    */
   unwrapOrElse(fn) {
@@ -185,11 +190,11 @@ var Option = Enum(['Some', 'None'], {
   },
 
   /**
-   * @param {OptionCb} fn - A function to call on the value wrapped by Some
-   * @returns {Option}
+   * @param {MaybeCb} fn - A function to call on the value wrapped by Some
+   * @returns {Maybe}
    */
   map(fn) {
-    return (this.option === 'Some') ? Option.Some(fn(this.args[0])) : this;
+    return (this.option === 'Some') ? Maybe.Some(fn(this.args[0])) : this;
   },
 
   /**
@@ -234,48 +239,48 @@ var Option = Enum(['Some', 'None'], {
   },
 
   /**
-   * @param {Option} other
-   * @returns {Option}
+   * @param {Maybe} other
+   * @returns {Maybe}
    */
   and(other) {
     return (this.option === 'Some') ? other : this;
   },
 
   /**
-   * @param {OptionCb} fn
-   * @returns {Option}
+   * @param {MaybeCb} fn
+   * @returns {Maybe}
    */
   andThen(fn) {
     return (this.option === 'Some') ? fn(this.args[0]) : this;
   },
 
   /**
-   * @param {Option} other
-   * @rturns {Option}
+   * @param {Maybe} other
+   * @rturns {Maybe}
    */
   or(other) {
     return (this.option === 'Some') ? this : other;
   },
 
   /**
-   * @param {OptionCb} fn
-   * @returns {Option}
+   * @param {MaybeCb} fn
+   * @returns {Maybe}
    */
   orElse(fn) {
     return (this.option === 'Some') ? this : fn();
   },
 
   /**
-   * @returns {Option}
+   * @returns {Maybe}
    */
   take() {
     if (this.option === 'Some') {
-      var taken = Option.Some(this.args[0]);
+      var taken = Maybe.Some(this.args[0]);
       this.args[0] = undefined;
       this.option = 'None';
       return taken;
     } else {
-      return Option.None();
+      return Maybe.None();
     }
   },
 });
@@ -294,10 +299,10 @@ var Result = Enum(['Ok', 'Err'], {
     return this.option === 'Err';
   },
   ok() {
-    return (this.option === 'Ok') ? Option.Some(this.args[0]) : Option.None();
+    return (this.option === 'Ok') ? Maybe.Some(this.args[0]) : Maybe.None();
   },
   err() {
-    return (this.option === 'Ok') ? Option.None() : Option.Some(this.args[0]);
+    return (this.option === 'Ok') ? Maybe.None() : Maybe.Some(this.args[0]);
   },
   map(fn) {
     return (this.option === 'Ok') ? Result.Ok(fn(this.args[0])) : this;
@@ -346,9 +351,9 @@ var Result = Enum(['Ok', 'Err'], {
 module.exports = {
   Enum,
 
-  Option,
-  Some: Option.Some,
-  None: Option.None,
+  Maybe: Maybe,
+  Some: Maybe.Some,
+  None: Maybe.None,
 
   Result,
   Ok: Result.Ok,
