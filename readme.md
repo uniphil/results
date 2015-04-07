@@ -192,7 +192,7 @@ Todo for v1.0.0:
 
  * [ ] Make errors nice.
      * [ ] Can we do nice things with the stack trace?
-     * [ ] What's the nicest thing we could be throwing?
+     * [x] What's the nicest thing we could be throwing? _EnumOptions!_
 
  * [ ] Maaaaaaybe add some methods like `.equals` and `.toString`
 
@@ -201,6 +201,12 @@ Todo for v1.0.0:
  * [ ] Improve the readme
      * [ ] Get better examples
      * [ ] Add API docs
+
+
+### v0.4.0
+
+  * Generalize `Result` and `Option` to be built from `Enum`, and make `Enum` public
+  * Breaking change -- errors are now `EnumOption`s
 
 
 ### v0.3.0
