@@ -13,7 +13,6 @@ var typescript = require('gulp-typescript');
 var tsProject = typescript.createProject({
   declarationFiles: true,
   module: 'commonjs',
-  noExternalResolve: true,
   target: 'es5',
 });
 
@@ -52,7 +51,7 @@ gulp.task('test', ['typescript'], function() {
 });
 
 
-gulp.task('docs', ['typescript'], function() {
+gulp.task('docs', function() {
   return gulp.src('index.ts')
     .pipe(typedoc({
       module: 'commonjs',

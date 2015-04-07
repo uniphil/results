@@ -1,57 +1,120 @@
-declare var require: any;
-declare var assign: any;
-declare var module: any;
+/// <reference path="node.d.ts" />
 /**
  * Rust-inspired Result<T, E> and Option<T> (called Maybe) wrappers for Javascript.
- *
- * @module results
- * @requires object-assign
  *
  * @author mystor
  * @author uniphil
  */
 /**
- * Any user-provided value, including `undefined`
- * @typedef {T} value
- * @template T
+ * Object.assign ponyfill
  */
+declare var assign: (...objs: Object[]) => Object;
+declare function covers(options: string[], paths: Object): boolean;
 /**
- * Any user-provided throwable error, including `undefined`
- * @typedef {E} err
- * @template E
+ * @throws EnumError.NonExhaustiveMatch
  */
-/**
- * @callback valueCb
- * @param {value} value
- * @returns {value}
- */
-/**
- * @callback errCb
- * @param {err} err
- * @returns {value}
- */
-/**
- * @callback MaybeCb
- * @param {value} value
- * @returns {Maybe}
- */
-declare var assign: any;
-declare function covers(options: any, paths: any): boolean;
-declare function match(paths: any): any;
-declare function Enum(options: any, proto?: {}): any;
-declare var EnumErr: any;
-declare var MaybeError: any;
-/**
- * @class
- * @example
- * function find(arr, test) {
- * for (var i=0; i<arr.length; i++) {
- *   if (test(arr[i])) {
- *     return Some(arr[i]);
- *   }
- *   return None();
- * }
- */
-declare var Maybe: any;
-declare var ResultError: any;
-declare var Result: any;
+declare function match(paths: Object): any;
+interface EnumOption {
+    match: (paths: Object) => any;
+}
+declare function Enum<T>(options: T | string[], proto?: {}): T;
+declare var $: (...args) => any;
+declare var EnumErr: {
+    [x: number]: undefined;
+    MissingOptions: (...args: any[]) => any;
+    BadOptionType: (...args: any[]) => any;
+    NonExhaustiveMatch: (...args: any[]) => any;
+};
+declare var MaybeError: {
+    [x: number]: undefined;
+    UnwrapNone: (...args: any[]) => any;
+};
+interface Maybe {
+    Some: (someValue) => EnumOption;
+    None: () => EnumOption;
+}
+interface MaybeOption {
+    isSome: () => boolean;
+    isNone: () => boolean;
+    /**
+     * @throws whatever is passed as the arg
+     */
+    expect: (err) => any;
+    /**
+     * @throws MaybeError.UnwrapNone
+     */
+    unwrap: () => any;
+    unwrapOr: (def) => any;
+    unwrapOrElse: (fn: () => any) => any;
+    map: (fn: (someValue) => any) => Maybe;
+    mapOr: (def, fn: (someValue) => any) => any;
+    mapOrElse: (defFn: () => any, fn: (someValue) => any) => any;
+    okOr: (err) => Result;
+    okOrElse: (errFn: () => any) => Result;
+    array: () => Array<any>;
+    and: (other: Maybe) => Maybe;
+    andThen: (fn: (someValue) => Maybe) => Maybe;
+    or: (other: Maybe) => Maybe;
+    orElse: (fn: () => Maybe) => Maybe;
+    take: () => Maybe;
+}
+declare var maybeProto: MaybeOption;
+declare var Maybe: {
+    [x: number]: undefined;
+    Some: (...args: any[]) => any;
+    None: (...args: any[]) => any;
+};
+declare var ResultError: {
+    [x: number]: any;
+    UnwrapErrAsOk: any;
+    UnwrapErr: any;
+};
+interface Result {
+    Ok: (okValue) => EnumOption;
+    Err: (errValue) => EnumOption;
+}
+interface ResultOption {
+    isOk: boolean;
+    isErr: boolean;
+    ok: Maybe;
+    err: Maybe;
+    map: (fn: (okValue) => any) => Result;
+    mapErr: (fn: (errValue) => any) => Result;
+    array: () => Array<any>;
+    and: (other: Result) => Result;
+    andThen: (fn: (okValue) => Result) => Result;
+    or: (other: Result) => Result;
+    orElse: (fn: (errValue) => Result) => Result;
+    unwrapOr: (def: any) => any;
+    unwrapOrElse: (fn: (errValue) => any) => any;
+    /**
+     * @throws the value from Err(value)
+     */
+    unwrap: () => any;
+    /**
+     * @throws the value from Ok(value)
+     */
+    unwrapErr: () => any;
+}
+declare var resultProto: {
+    isOk(): boolean;
+    isErr(): boolean;
+    ok(): any;
+    err(): any;
+    map(fn: any): any;
+    mapErr(fn: any): any;
+    array(): any[];
+    and(other: any): any;
+    andThen(fn: any): any;
+    or(other: any): any;
+    orElse(fn: any): any;
+    unwrapOr(def: any): any;
+    unwrapOrElse(fn: any): any;
+    unwrap(): any;
+    unwrapErr(): any;
+};
+declare var Result: {
+    [x: number]: undefined;
+    Ok: (...args: any[]) => any;
+    Err: (...args: any[]) => any;
+};

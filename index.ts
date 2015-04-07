@@ -5,37 +5,51 @@
  * @author uniphil
  */
 
-declare var require;
-declare var assign;
-declare var module;
+/// <reference path="./node.d.ts" />
+
+/**
+ * Object.assign ponyfill
+ */
+var assign: (...objs: Object[]) => Object = require('object-assign');
 
 
-var assign = require('object-assign');
-
-function covers(options, paths) {
+function covers(options: string[], paths: Object) {
   return paths.hasOwnProperty('_') ? true :
     options.every((opt) => paths.hasOwnProperty(opt)) &&
     options.length === Object.keys(paths).length;
 }
 
-function match(paths) {
+/**
+ * @throws EnumError.NonExhaustiveMatch
+ */
+function match(paths: Object) {
   if (!covers(this.options, paths)) { throw EnumErr.NonExhaustiveMatch(); }
   return paths.hasOwnProperty(this.option) ?
     paths[this.option].apply(null, this.args) :
     paths['_'](this);
 };
 
-function Enum(options, proto={}) {
+
+
+interface EnumOption {
+  match: (paths: Object) => any;
+}
+
+
+function Enum<T>(options: T | string[], proto={}): T {
   if (!options) { throw EnumErr.MissingOptions(); }
+  var arrOptions: string[];
   if (!(options instanceof Array)) {
     if (options instanceof Object) {
-      options = Object.keys(options);
+      arrOptions = Object.keys(options);
     } else {
       throw EnumErr.BadOptionType();
     }
+  } else {
+    arrOptions = <string[]>options;  // sketchhhhhhhh
   }
   function EnumOption(options, option, args) {
-    this.options = options;
+    this.options = arrOptions;
     this.option = option;
     this.args = args;
   }
@@ -47,25 +61,58 @@ function Enum(options, proto={}) {
     return new EnumOption(options, option, args);
   }
   EnumOption.prototype = assign({match}, proto);
-  return options.reduce((obj, opt) => {
+  return <T>arrOptions.reduce((obj, opt) => {
     obj[opt] = mkEnumOption.bind(null, options, opt);
     return obj;
   }, {});
 }
 
+
+var $: (...args) => any;
 var EnumErr = Enum({
-  MissingOptions:     null,
-  BadOptionType:      null,
-  NonExhaustiveMatch: null,
+  MissingOptions:     $,
+  BadOptionType:      $,
+  NonExhaustiveMatch: $,
 });
 
 
 var MaybeError = Enum({
-  UnwrapNone: null,
+  UnwrapNone: $,
 });
 
 
-var Maybe = Enum(['Some', 'None'], {
+interface Maybe {
+  Some: (someValue) => EnumOption;
+  None: () => EnumOption;
+}
+
+interface MaybeOption {
+  isSome: () => boolean;
+  isNone: () => boolean;
+  /**
+   * @throws whatever is passed as the arg
+   */
+  expect: (err) => any;
+  /**
+   * @throws MaybeError.UnwrapNone
+   */
+  unwrap: () => any;
+  unwrapOr: (def) => any;
+  unwrapOrElse: (fn: () => any) => any;
+  map: (fn: (someValue) => any) => Maybe;
+  mapOr: (def, fn: (someValue) => any) => any;
+  mapOrElse: (defFn: () => any, fn: (someValue) => any) => any;
+  okOr: (err) => Result;
+  okOrElse: (errFn: () => any) => Result;
+  array: () => Array<any>;
+  and: (other: Maybe) => Maybe;
+  andThen: (fn: (someValue) => Maybe) => Maybe;
+  or: (other: Maybe) => Maybe;
+  orElse: (fn: () => Maybe) => Maybe;
+  take: () => Maybe;
+}
+
+var maybeProto: MaybeOption = {
   isSome() {
     return this.option === 'Some';
   },
@@ -101,7 +148,7 @@ var Maybe = Enum(['Some', 'None'], {
   mapOrElse(defFn, fn) {
     return (this.option === 'Some') ? fn(this.args[0]) : defFn();
   },
-  okOr(err) {
+  okOr(err): Result {
     return (this.option === 'Some') ? Result.Ok(this.args[0]) : Result.Err(err);
   },
   okOrElse(errFn) {
@@ -132,7 +179,12 @@ var Maybe = Enum(['Some', 'None'], {
       return Maybe.None();
     }
   },
-});
+};
+
+var Maybe = Enum({
+  Some: $,
+  None: $,
+}, maybeProto);
 
 
 var ResultError = Enum({
@@ -140,7 +192,37 @@ var ResultError = Enum({
   UnwrapErr: null,
 });
 
-var Result = Enum(['Ok', 'Err'], {
+
+interface Result {
+  Ok: (okValue) => EnumOption;
+  Err: (errValue) => EnumOption;
+}
+
+interface ResultOption {
+  isOk: boolean;
+  isErr: boolean;
+  ok: Maybe;
+  err: Maybe;
+  map: (fn: (okValue) => any) => Result;
+  mapErr: (fn: (errValue) => any) => Result;
+  array: () => Array<any>;
+  and: (other: Result) => Result;
+  andThen: (fn: (okValue) => Result) => Result;
+  or: (other: Result) => Result;
+  orElse: (fn: (errValue) => Result) => Result;
+  unwrapOr: (def: any) => any;
+  unwrapOrElse: (fn: (errValue) => any) => any;
+  /**
+   * @throws the value from Err(value)
+   */
+  unwrap: () => any;
+  /**
+   * @throws the value from Ok(value)
+   */
+  unwrapErr: () => any;
+}
+
+var resultProto = {
   isOk() {
     return this.option === 'Ok';
   },
@@ -194,13 +276,18 @@ var Result = Enum(['Ok', 'Err'], {
       return this.args[0];
     }
   },
-});
+};
+
+var Result = Enum({
+  Ok:  $,
+  Err: $,
+}, resultProto);
 
 
 module.exports = {
   Enum,
 
-  Maybe: Maybe,
+  Maybe,
   Some: Maybe.Some,
   None: Maybe.None,
 
