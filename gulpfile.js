@@ -4,6 +4,7 @@ var merge = require('merge2');
 var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
 var rename = require('gulp-rename');
+var plumber = require('gulp-plumber');
 var typedoc = require('gulp-typedoc');
 var ghPages = require('gulp-gh-pages');
 var vinylPaths = require('vinyl-paths');
@@ -41,18 +42,29 @@ gulp.task('watch', ['typescript'], function() {
 });
 
 
-gulp.task('watchtest', ['test'], function() {
-  gulp.watch(['index.ts', 'test.js'], ['test']);
+gulp.task('watchtest', ['test-noexit'], function() {
+  gulp.watch(['index.ts', 'test.js'], ['test-noexit']);
 });
 
 
-gulp.task('test', ['typescript'], function() {
-  return gulp.src('test.js')
+function test(noexit) {
+  var path = gulp.src('test.js')
     .pipe(babel())
     .pipe(rename('test.es5.js'))
-    .pipe(gulp.dest('.'))
-    .pipe(mocha())
+    .pipe(gulp.dest('.'));
+  if (noexit) { path = path.pipe(plumber()); }
+  path = path.pipe(mocha());
+  return path
     .pipe(vinylPaths(del));
+}
+
+gulp.task('test', ['typescript'], function() {
+  return test(false);
+});
+
+
+gulp.task('test-noexit', ['typescript'], function() {
+  return test(true);
 });
 
 
