@@ -18,7 +18,7 @@ interface EnumOption {
     match: (paths: Object) => any;
 }
 declare function _factory(options: string[], option: string, EnumOptionClass: any): () => any;
-declare function Enum<T>(options: T | string[], proto?: {}, factory?: typeof _factory): T;
+declare function Enum<T>(options: T | string[], proto?: {}, factory?: any): T;
 declare var $: any;
 declare var EnumErr: {
     [x: number]: undefined;
@@ -98,6 +98,7 @@ interface ResultOption {
     unwrapErr: () => any;
 }
 declare var resultProto: {
+    match(paths: any): any;
     isOk(): boolean;
     isErr(): boolean;
     ok(): any;

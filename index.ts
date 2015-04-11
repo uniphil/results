@@ -47,7 +47,7 @@ function _factory(options: string[], option: string, EnumOptionClass) {
 }
 
 
-function Enum<T>(options: T | string[], proto={}, factory=_factory): T {
+function Enum<T>(options: T | string[], proto={}, factory:any=_factory): T {
   if (!options) { throw EnumErr.MissingOptions(); }
   var arrOptions: string[];
   if (!(options instanceof Array)) {
@@ -59,7 +59,7 @@ function Enum<T>(options: T | string[], proto={}, factory=_factory): T {
   } else {
     arrOptions = <string[]>options;
   }
-  function EnumOption(options: string[], option: string, args: Array<any>) {
+  function EnumOption(options: string[], option: string, args) {
     this.options = options;
     this.option = option;
     this.args = args;
@@ -117,6 +117,9 @@ interface MaybeOption {
 }
 
 var maybeProto: MaybeOption = {
+  match(paths) {
+    return match.call(assign({}, this, {args: [this.args]}), paths);
+  },
   isSome() {
     return this.option === 'Some';
   },
@@ -125,47 +128,47 @@ var maybeProto: MaybeOption = {
   },
   expect(err) {
     if (this.option === 'Some') {
-      return this.args[0];
+      return this.args;
     } else {
       throw err;
     }
   },
   unwrap() {
     if (this.option === 'Some') {
-      return this.args[0];
+      return this.args;
     } else {
       throw MaybeError.UnwrapNone('Tried to unwrap None');
     }
   },
   unwrapOr(def) {
-    return (this.option === 'Some') ? this.args[0] : def;
+    return (this.option === 'Some') ? this.args : def;
   },
   unwrapOrElse(fn) {
-    return (this.option === 'Some') ? this.args[0] : fn();
+    return (this.option === 'Some') ? this.args : fn();
   },
   map(fn) {
-    return (this.option === 'Some') ? Maybe.Some(fn(this.args[0])) : this;
+    return (this.option === 'Some') ? Maybe.Some(fn(this.args)) : this;
   },
   mapOr(def, fn) {
-    return (this.option === 'Some') ? fn(this.args[0]) : def;
+    return (this.option === 'Some') ? fn(this.args) : def;
   },
   mapOrElse(defFn, fn) {
-    return (this.option === 'Some') ? fn(this.args[0]) : defFn();
+    return (this.option === 'Some') ? fn(this.args) : defFn();
   },
   okOr(err): Result {
-    return (this.option === 'Some') ? Result.Ok(this.args[0]) : Result.Err(err);
+    return (this.option === 'Some') ? Result.Ok(this.args) : Result.Err(err);
   },
   okOrElse(errFn) {
-    return (this.option === 'Some') ? Result.Ok(this.args[0]) : Result.Err(errFn());
+    return (this.option === 'Some') ? Result.Ok(this.args) : Result.Err(errFn());
   },
   array() {
-    return (this.option === 'Some') ? [this.args[0]] : [];  // .iter; .into_item
+    return (this.option === 'Some') ? [this.args] : [];  // .iter; .into_item
   },
   and(other) {
     return (this.option === 'Some') ? other : this;
   },
   andThen(fn) {
-    return (this.option === 'Some') ? fn(this.args[0]) : this;
+    return (this.option === 'Some') ? fn(this.args) : this;
   },
   or(other) {
     return (this.option === 'Some') ? this : other;
@@ -175,7 +178,7 @@ var maybeProto: MaybeOption = {
   },
   take() {
     if (this.option === 'Some') {
-      var taken = Maybe.Some(this.args[0]);
+      var taken = Maybe.Some(this.args);
       this.args[0] = undefined;
       this.option = 'None';
       return taken;
@@ -188,7 +191,10 @@ var maybeProto: MaybeOption = {
 var Maybe = Enum({
   Some: $,
   None: $,
-}, maybeProto);
+}, maybeProto, (options, option, EnumOptionClass) =>
+  option === 'Some' ?
+    (value) => new EnumOptionClass(options, option, value) :
+    () => new EnumOptionClass(options, option, null));
 
 
 var ResultError = Enum({
@@ -227,6 +233,9 @@ interface ResultOption {
 }
 
 var resultProto = {
+  match(paths) {
+    return match.call(assign({}, this, {args: [this.args]}), paths);
+  },
   isOk() {
     return this.option === 'Ok';
   },
@@ -234,50 +243,50 @@ var resultProto = {
     return this.option === 'Err';
   },
   ok() {
-    return (this.option === 'Ok') ? Maybe.Some(this.args[0]) : Maybe.None();
+    return (this.option === 'Ok') ? Maybe.Some(this.args) : Maybe.None();
   },
   err() {
-    return (this.option === 'Ok') ? Maybe.None() : Maybe.Some(this.args[0]);
+    return (this.option === 'Ok') ? Maybe.None() : Maybe.Some(this.args);
   },
   map(fn) {
-    return (this.option === 'Ok') ? Result.Ok(fn(this.args[0])) : this;
+    return (this.option === 'Ok') ? Result.Ok(fn(this.args)) : this;
   },
   mapErr(fn) {
-    return (this.option === 'Ok') ? this : Result.Err(fn(this.args[0]));
+    return (this.option === 'Ok') ? this : Result.Err(fn(this.args));
   },
   array() {
-    return (this.option === 'Ok') ? [this.args[0]] : [];  // .iter; .into_item
+    return (this.option === 'Ok') ? [this.args] : [];  // .iter; .into_item
   },
   and(other) {
     return (this.option === 'Ok') ? other : this;
   },
   andThen(fn) {
-    return (this.option === 'Ok') ? fn(this.args[0]) : this;
+    return (this.option === 'Ok') ? fn(this.args) : this;
   },
   or(other) {
     return (this.option === 'Ok') ? this : other;
   },
   orElse(fn) {
-    return (this.option === 'Ok') ? this : fn(this.args[0]);
+    return (this.option === 'Ok') ? this : fn(this.args);
   },
   unwrapOr(def) {
-    return (this.option === 'Ok') ? this.args[0] : def;
+    return (this.option === 'Ok') ? this.args : def;
   },
   unwrapOrElse(fn) {
-    return (this.option === 'Ok') ? this.args[0] : fn(this.args[0]);
+    return (this.option === 'Ok') ? this.args : fn(this.args);
   },
   unwrap() {
     if (this.option === 'Ok') {
-      return this.args[0];
+      return this.args;
     } else {
-      throw ResultError.UnwrapErr(this.args[0]);
+      throw ResultError.UnwrapErr(this.args);
     }
   },
   unwrapErr() {
     if (this.option === 'Ok') {
-      throw ResultError.UnwrapErrAsOk(this.args[0]);
+      throw ResultError.UnwrapErrAsOk(this.args);
     } else {
-      return this.args[0];
+      return this.args;
     }
   },
 };
@@ -285,7 +294,8 @@ var resultProto = {
 var Result = Enum({
   Ok:  $,
   Err: $,
-}, resultProto);
+}, resultProto, (options, option, EnumOptionClass) =>
+  (value) => new EnumOptionClass(options, option, value));
 
 
 module.exports = {
