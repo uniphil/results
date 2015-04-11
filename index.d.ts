@@ -17,17 +17,18 @@ declare function match(paths: Object): any;
 interface EnumOption {
     match: (paths: Object) => any;
 }
-declare function Enum<T>(options: T | string[], proto?: {}): T;
-declare var $: (...args) => any;
+declare function _factory(options: string[], option: string, EnumOptionClass: any): () => any;
+declare function Enum<T>(options: T | string[], proto?: {}, factory?: typeof _factory): T;
+declare var $: any;
 declare var EnumErr: {
     [x: number]: undefined;
-    MissingOptions: (...args: any[]) => any;
-    BadOptionType: (...args: any[]) => any;
-    NonExhaustiveMatch: (...args: any[]) => any;
+    MissingOptions: any;
+    BadOptionType: any;
+    NonExhaustiveMatch: any;
 };
 declare var MaybeError: {
     [x: number]: undefined;
-    UnwrapNone: (...args: any[]) => any;
+    UnwrapNone: any;
 };
 interface Maybe {
     Some: (someValue) => EnumOption;
@@ -61,8 +62,8 @@ interface MaybeOption {
 declare var maybeProto: MaybeOption;
 declare var Maybe: {
     [x: number]: undefined;
-    Some: (...args: any[]) => any;
-    None: (...args: any[]) => any;
+    Some: any;
+    None: any;
 };
 declare var ResultError: {
     [x: number]: any;
@@ -115,6 +116,6 @@ declare var resultProto: {
 };
 declare var Result: {
     [x: number]: undefined;
-    Ok: (...args: any[]) => any;
-    Err: (...args: any[]) => any;
+    Ok: any;
+    Err: any;
 };

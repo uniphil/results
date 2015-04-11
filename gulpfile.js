@@ -41,6 +41,11 @@ gulp.task('watch', ['typescript'], function() {
 });
 
 
+gulp.task('watchtest', ['test'], function() {
+  gulp.watch(['index.ts', 'test.js'], ['test']);
+});
+
+
 gulp.task('test', ['typescript'], function() {
   return gulp.src('test.js')
     .pipe(babel())

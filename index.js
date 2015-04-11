@@ -22,8 +22,18 @@ function match(paths) {
     return paths.hasOwnProperty(this.option) ? paths[this.option].apply(null, this.args) : paths['_'](this);
 }
 ;
-function Enum(options, proto) {
+function _factory(options, option, EnumOptionClass) {
+    return function () {
+        var args = [];
+        for (var i = 0; i < arguments.length; i++) {
+            args[i] = arguments[i];
+        }
+        return new EnumOptionClass(options, option, args);
+    };
+}
+function Enum(options, proto, factory) {
     if (proto === void 0) { proto = {}; }
+    if (factory === void 0) { factory = _factory; }
     if (!options) {
         throw EnumErr.MissingOptions();
     }
@@ -37,23 +47,16 @@ function Enum(options, proto) {
         }
     }
     else {
-        arrOptions = options; // sketchhhhhhhh
+        arrOptions = options;
     }
     function EnumOption(options, option, args) {
-        this.options = arrOptions;
+        this.options = options;
         this.option = option;
         this.args = args;
     }
-    function mkEnumOption(options, option) {
-        var args = [];
-        for (var i = 2, l = arguments.length; i < l; i++) {
-            args.push(arguments[i]);
-        }
-        return new EnumOption(options, option, args);
-    }
     EnumOption.prototype = assign({ match: match }, proto);
-    return arrOptions.reduce(function (obj, opt) {
-        obj[opt] = mkEnumOption.bind(null, options, opt);
+    return arrOptions.reduce(function (obj, option) {
+        obj[option] = factory(arrOptions, option, EnumOption);
         return obj;
     }, {});
 }

@@ -36,7 +36,18 @@ interface EnumOption {
 }
 
 
-function Enum<T>(options: T | string[], proto={}): T {
+function _factory(options: string[], option: string, EnumOptionClass) {
+  return function() {
+    var args = [];
+    for (var i=0; i<arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+    return new EnumOptionClass(options, option, args);
+  };
+}
+
+
+function Enum<T>(options: T | string[], proto={}, factory=_factory): T {
   if (!options) { throw EnumErr.MissingOptions(); }
   var arrOptions: string[];
   if (!(options instanceof Array)) {
@@ -46,29 +57,22 @@ function Enum<T>(options: T | string[], proto={}): T {
       throw EnumErr.BadOptionType();
     }
   } else {
-    arrOptions = <string[]>options;  // sketchhhhhhhh
+    arrOptions = <string[]>options;
   }
-  function EnumOption(options, option, args) {
-    this.options = arrOptions;
+  function EnumOption(options: string[], option: string, args: Array<any>) {
+    this.options = options;
     this.option = option;
     this.args = args;
   }
-  function mkEnumOption(options, option) {
-    var args = [];
-    for (var i=2, l=arguments.length; i<l; i++) {
-      args.push(arguments[i]);
-    }
-    return new EnumOption(options, option, args);
-  }
   EnumOption.prototype = assign({match}, proto);
-  return <T>arrOptions.reduce((obj, opt) => {
-    obj[opt] = mkEnumOption.bind(null, options, opt);
+  return <T>arrOptions.reduce((obj, option) => {
+    obj[option] = factory(arrOptions, option, EnumOption);
     return obj;
   }, {});
 }
 
 
-var $: (...args) => any;
+var $;
 var EnumErr = Enum({
   MissingOptions:     $,
   BadOptionType:      $,
