@@ -56,7 +56,7 @@ describe('Enum', () => {
   });
   it('should pass itself to catch-all `match` callbacks', () => {
     assert.equal(Enum(['A']).A(42).match({_: (en) => en.name}), 'A');
-    assert.equal(Enum(['A']).A(42).match({_: (en) => en.args[0]}), 42);
+    assert.equal(Enum(['A']).A(42).match({_: (en) => en.data[0]}), 42);
   });
 });
 

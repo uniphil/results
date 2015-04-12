@@ -15,7 +15,7 @@ var assign = require('object-assign');
 function match(to) {
     if (typeof to._ === 'function') {
         if (typeof to[this.name] === 'function') {
-            return to[this.name].apply(null, this.args);
+            return to[this.name].apply(null, this.data);
         }
         else {
             return to._(this);
@@ -27,17 +27,17 @@ function match(to) {
                 throw EnumErr.NonExhaustiveMatch();
             }
         }
-        return to[this.name].apply(null, this.args);
+        return to[this.name].apply(null, this.data);
     }
 }
 ;
 function _factory(options, name, EnumOptionClass) {
     return function () {
-        var args = [];
+        var data = [];
         for (var i = 0; i < arguments.length; i++) {
-            args[i] = arguments[i];
+            data[i] = arguments[i];
         }
-        return new EnumOptionClass(options, name, args);
+        return new EnumOptionClass(options, name, data);
     };
 }
 function Enum(options, proto, factory) {
@@ -58,10 +58,10 @@ function Enum(options, proto, factory) {
     else {
         arrOptions = options;
     }
-    function EnumOption(options, name, args) {
+    function EnumOption(options, name, data) {
         this.options = options;
         this.name = name;
-        this.args = args;
+        this.data = data;
     }
     EnumOption.prototype = assign({ match: match }, proto);
     return arrOptions.reduce(function (obj, name) {
@@ -80,7 +80,7 @@ var MaybeError = Enum({
 });
 var maybeProto = {
     match: function (paths) {
-        return match.call(assign({}, this, { args: [this.args] }), paths);
+        return match.call(assign({}, this, { data: [this.data] }), paths);
     },
     isSome: function () {
         return this.name === 'Some';
@@ -90,7 +90,7 @@ var maybeProto = {
     },
     expect: function (err) {
         if (this.name === 'Some') {
-            return this.args;
+            return this.data;
         }
         else {
             throw err;
@@ -98,41 +98,41 @@ var maybeProto = {
     },
     unwrap: function () {
         if (this.name === 'Some') {
-            return this.args;
+            return this.data;
         }
         else {
             throw MaybeError.UnwrapNone('Tried to unwrap None');
         }
     },
     unwrapOr: function (def) {
-        return (this.name === 'Some') ? this.args : def;
+        return (this.name === 'Some') ? this.data : def;
     },
     unwrapOrElse: function (fn) {
-        return (this.name === 'Some') ? this.args : fn();
+        return (this.name === 'Some') ? this.data : fn();
     },
     map: function (fn) {
-        return (this.name === 'Some') ? Maybe.Some(fn(this.args)) : this;
+        return (this.name === 'Some') ? Maybe.Some(fn(this.data)) : this;
     },
     mapOr: function (def, fn) {
-        return (this.name === 'Some') ? fn(this.args) : def;
+        return (this.name === 'Some') ? fn(this.data) : def;
     },
     mapOrElse: function (defFn, fn) {
-        return (this.name === 'Some') ? fn(this.args) : defFn();
+        return (this.name === 'Some') ? fn(this.data) : defFn();
     },
     okOr: function (err) {
-        return (this.name === 'Some') ? Result.Ok(this.args) : Result.Err(err);
+        return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(err);
     },
     okOrElse: function (errFn) {
-        return (this.name === 'Some') ? Result.Ok(this.args) : Result.Err(errFn());
+        return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(errFn());
     },
     array: function () {
-        return (this.name === 'Some') ? [this.args] : []; // .iter; .into_item
+        return (this.name === 'Some') ? [this.data] : []; // .iter; .into_item
     },
     and: function (other) {
         return (this.name === 'Some') ? other : this;
     },
     andThen: function (fn) {
-        return (this.name === 'Some') ? fn(this.args) : this;
+        return (this.name === 'Some') ? fn(this.data) : this;
     },
     or: function (other) {
         return (this.name === 'Some') ? this : other;
@@ -142,8 +142,8 @@ var maybeProto = {
     },
     take: function () {
         if (this.name === 'Some') {
-            var taken = Maybe.Some(this.args);
-            this.args[0] = undefined;
+            var taken = Maybe.Some(this.data);
+            this.data = undefined;
             this.name = 'None';
             return taken;
         }
@@ -162,7 +162,7 @@ var ResultError = Enum({
 });
 var resultProto = {
     match: function (paths) {
-        return match.call(assign({}, this, { args: [this.args] }), paths);
+        return match.call(assign({}, this, { data: [this.data] }), paths);
     },
     isOk: function () {
         return this.name === 'Ok';
@@ -171,52 +171,52 @@ var resultProto = {
         return this.name === 'Err';
     },
     ok: function () {
-        return (this.name === 'Ok') ? Maybe.Some(this.args) : Maybe.None();
+        return (this.name === 'Ok') ? Maybe.Some(this.data) : Maybe.None();
     },
     err: function () {
-        return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.args);
+        return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.data);
     },
     map: function (fn) {
-        return (this.name === 'Ok') ? Result.Ok(fn(this.args)) : this;
+        return (this.name === 'Ok') ? Result.Ok(fn(this.data)) : this;
     },
     mapErr: function (fn) {
-        return (this.name === 'Ok') ? this : Result.Err(fn(this.args));
+        return (this.name === 'Ok') ? this : Result.Err(fn(this.data));
     },
     array: function () {
-        return (this.name === 'Ok') ? [this.args] : []; // .iter; .into_item
+        return (this.name === 'Ok') ? [this.data] : []; // .iter; .into_item
     },
     and: function (other) {
         return (this.name === 'Ok') ? other : this;
     },
     andThen: function (fn) {
-        return (this.name === 'Ok') ? fn(this.args) : this;
+        return (this.name === 'Ok') ? fn(this.data) : this;
     },
     or: function (other) {
         return (this.name === 'Ok') ? this : other;
     },
     orElse: function (fn) {
-        return (this.name === 'Ok') ? this : fn(this.args);
+        return (this.name === 'Ok') ? this : fn(this.data);
     },
     unwrapOr: function (def) {
-        return (this.name === 'Ok') ? this.args : def;
+        return (this.name === 'Ok') ? this.data : def;
     },
     unwrapOrElse: function (fn) {
-        return (this.name === 'Ok') ? this.args : fn(this.args);
+        return (this.name === 'Ok') ? this.data : fn(this.data);
     },
     unwrap: function () {
         if (this.name === 'Ok') {
-            return this.args;
+            return this.data;
         }
         else {
-            throw ResultError.UnwrapErr(this.args);
+            throw ResultError.UnwrapErr(this.data);
         }
     },
     unwrapErr: function () {
         if (this.name === 'Ok') {
-            throw ResultError.UnwrapErrAsOk(this.args);
+            throw ResultError.UnwrapErrAsOk(this.data);
         }
         else {
-            return this.args;
+            return this.data;
         }
     },
 };
