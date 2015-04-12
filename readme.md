@@ -202,6 +202,12 @@ Todo for v1.0.0:
      * [ ] Get better examples
      * [ ] Add API docs
 
+### master
+
+  * Use typescript. Mostly for docs at this point.
+  * Performance optimizations and stuff. Still not back to v0.3.0, but pretty lightweight and fast.
+  * Breaking change -- `Option` is now called `Maybe`, since `Option` is a thing already.
+
 
 ### v0.4.0
 
