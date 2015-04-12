@@ -9,17 +9,26 @@
  * Object.assign ponyfill
  */
 var assign = require('object-assign');
-function covers(options, paths) {
-    return paths.hasOwnProperty('_') ? true : options.every(function (opt) { return paths.hasOwnProperty(opt); }) && options.length === Object.keys(paths).length;
-}
 /**
  * @throws EnumError.NonExhaustiveMatch
  */
-function match(paths) {
-    if (!covers(this.options, paths)) {
-        throw EnumErr.NonExhaustiveMatch();
+function match(to) {
+    if (typeof to._ === 'function') {
+        if (typeof to[this.option] === 'function') {
+            return to[this.option].apply(null, this.args);
+        }
+        else {
+            return to._(this);
+        }
     }
-    return paths.hasOwnProperty(this.option) ? paths[this.option].apply(null, this.args) : paths['_'](this);
+    else {
+        for (var i = 0; i < this.options.length; i++) {
+            if (typeof to[this.options[i]] !== 'function') {
+                throw EnumErr.NonExhaustiveMatch();
+            }
+        }
+        return to[this.option].apply(null, this.args);
+    }
 }
 ;
 function _factory(options, option, EnumOptionClass) {

@@ -13,20 +13,24 @@
 var assign: (...objs: Object[]) => Object = require('object-assign');
 
 
-function covers(options: string[], paths: Object) {
-  return paths.hasOwnProperty('_') ? true :
-    options.every((opt) => paths.hasOwnProperty(opt)) &&
-    options.length === Object.keys(paths).length;
-}
-
 /**
  * @throws EnumError.NonExhaustiveMatch
  */
-function match(paths: Object) {
-  if (!covers(this.options, paths)) { throw EnumErr.NonExhaustiveMatch(); }
-  return paths.hasOwnProperty(this.option) ?
-    paths[this.option].apply(null, this.args) :
-    paths['_'](this);
+function match(to) {
+  if (typeof to._ === 'function') {
+    if (typeof to[this.option] === 'function') {
+      return to[this.option].apply(null, this.args);
+    } else {
+      return to._(this);
+    }
+  } else {
+    for (var i=0; i<this.options.length; i++) {
+      if (typeof to[this.options[i]] !== 'function') {
+        throw EnumErr.NonExhaustiveMatch();
+      }
+    }
+    return to[this.option].apply(null, this.args);
+  }
 };
 
 

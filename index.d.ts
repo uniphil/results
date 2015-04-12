@@ -9,11 +9,10 @@
  * Object.assign ponyfill
  */
 declare var assign: (...objs: Object[]) => Object;
-declare function covers(options: string[], paths: Object): boolean;
 /**
  * @throws EnumError.NonExhaustiveMatch
  */
-declare function match(paths: Object): any;
+declare function match(to: any): any;
 interface EnumOption {
     match: (paths: Object) => any;
 }
