@@ -202,13 +202,16 @@ Todo for v1.0.0:
      * [ ] Get better examples
      * [ ] Add API docs
 
-### master
+
+### v0.5.0
 
 #### Breaking
 
   * `Option` is now called `Maybe`, since `Option` is a thing already.
   * `EnumOption.option` is now called `EnumOption.name`. thanks @mystor.
   * `EnumOption.args` is now called `EnumOption.data`. thanks @mystor.
+
+#### Other Changes
 
   * Use typescript. Mostly for docs at this point.
   * Performance optimizations and stuff. Still not back to v0.3.0, but pretty lightweight and fast.
