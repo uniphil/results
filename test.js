@@ -61,7 +61,7 @@ describe('Enum', () => {
 });
 
 
-describe('Option', () => {
+describe('Maybe', () => {
   it('should map to Some or None callbacks', () => {
     assert.equal(Some(1).match({Some: (v) => v, None: () => null}), 1);
     assert.equal(None().match({Some: () => null, None: () => 1}), 1);
