@@ -204,9 +204,13 @@ Todo for v1.0.0:
 
 ### master
 
+#### Breaking
+
+  * `Option` is now called `Maybe`, since `Option` is a thing already.
+  * `EnumOption.option` is now called `EnumOption.name`.
+
   * Use typescript. Mostly for docs at this point.
   * Performance optimizations and stuff. Still not back to v0.3.0, but pretty lightweight and fast.
-  * Breaking change -- `Option` is now called `Maybe`, since `Option` is a thing already.
   * Faster `EnumOption.match` function, thanks @mystor!
 
 

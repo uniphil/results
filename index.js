@@ -14,8 +14,8 @@ var assign = require('object-assign');
  */
 function match(to) {
     if (typeof to._ === 'function') {
-        if (typeof to[this.option] === 'function') {
-            return to[this.option].apply(null, this.args);
+        if (typeof to[this.name] === 'function') {
+            return to[this.name].apply(null, this.args);
         }
         else {
             return to._(this);
@@ -27,17 +27,17 @@ function match(to) {
                 throw EnumErr.NonExhaustiveMatch();
             }
         }
-        return to[this.option].apply(null, this.args);
+        return to[this.name].apply(null, this.args);
     }
 }
 ;
-function _factory(options, option, EnumOptionClass) {
+function _factory(options, name, EnumOptionClass) {
     return function () {
         var args = [];
         for (var i = 0; i < arguments.length; i++) {
             args[i] = arguments[i];
         }
-        return new EnumOptionClass(options, option, args);
+        return new EnumOptionClass(options, name, args);
     };
 }
 function Enum(options, proto, factory) {
@@ -58,14 +58,14 @@ function Enum(options, proto, factory) {
     else {
         arrOptions = options;
     }
-    function EnumOption(options, option, args) {
+    function EnumOption(options, name, args) {
         this.options = options;
-        this.option = option;
+        this.name = name;
         this.args = args;
     }
     EnumOption.prototype = assign({ match: match }, proto);
-    return arrOptions.reduce(function (obj, option) {
-        obj[option] = factory(arrOptions, option, EnumOption);
+    return arrOptions.reduce(function (obj, name) {
+        obj[name] = factory(arrOptions, name, EnumOption);
         return obj;
     }, {});
 }
@@ -83,13 +83,13 @@ var maybeProto = {
         return match.call(assign({}, this, { args: [this.args] }), paths);
     },
     isSome: function () {
-        return this.option === 'Some';
+        return this.name === 'Some';
     },
     isNone: function () {
-        return this.option === 'None';
+        return this.name === 'None';
     },
     expect: function (err) {
-        if (this.option === 'Some') {
+        if (this.name === 'Some') {
             return this.args;
         }
         else {
@@ -97,7 +97,7 @@ var maybeProto = {
         }
     },
     unwrap: function () {
-        if (this.option === 'Some') {
+        if (this.name === 'Some') {
             return this.args;
         }
         else {
@@ -105,46 +105,46 @@ var maybeProto = {
         }
     },
     unwrapOr: function (def) {
-        return (this.option === 'Some') ? this.args : def;
+        return (this.name === 'Some') ? this.args : def;
     },
     unwrapOrElse: function (fn) {
-        return (this.option === 'Some') ? this.args : fn();
+        return (this.name === 'Some') ? this.args : fn();
     },
     map: function (fn) {
-        return (this.option === 'Some') ? Maybe.Some(fn(this.args)) : this;
+        return (this.name === 'Some') ? Maybe.Some(fn(this.args)) : this;
     },
     mapOr: function (def, fn) {
-        return (this.option === 'Some') ? fn(this.args) : def;
+        return (this.name === 'Some') ? fn(this.args) : def;
     },
     mapOrElse: function (defFn, fn) {
-        return (this.option === 'Some') ? fn(this.args) : defFn();
+        return (this.name === 'Some') ? fn(this.args) : defFn();
     },
     okOr: function (err) {
-        return (this.option === 'Some') ? Result.Ok(this.args) : Result.Err(err);
+        return (this.name === 'Some') ? Result.Ok(this.args) : Result.Err(err);
     },
     okOrElse: function (errFn) {
-        return (this.option === 'Some') ? Result.Ok(this.args) : Result.Err(errFn());
+        return (this.name === 'Some') ? Result.Ok(this.args) : Result.Err(errFn());
     },
     array: function () {
-        return (this.option === 'Some') ? [this.args] : []; // .iter; .into_item
+        return (this.name === 'Some') ? [this.args] : []; // .iter; .into_item
     },
     and: function (other) {
-        return (this.option === 'Some') ? other : this;
+        return (this.name === 'Some') ? other : this;
     },
     andThen: function (fn) {
-        return (this.option === 'Some') ? fn(this.args) : this;
+        return (this.name === 'Some') ? fn(this.args) : this;
     },
     or: function (other) {
-        return (this.option === 'Some') ? this : other;
+        return (this.name === 'Some') ? this : other;
     },
     orElse: function (fn) {
-        return (this.option === 'Some') ? this : fn();
+        return (this.name === 'Some') ? this : fn();
     },
     take: function () {
-        if (this.option === 'Some') {
+        if (this.name === 'Some') {
             var taken = Maybe.Some(this.args);
             this.args[0] = undefined;
-            this.option = 'None';
+            this.name = 'None';
             return taken;
         }
         else {
@@ -155,7 +155,7 @@ var maybeProto = {
 var Maybe = Enum({
     Some: $,
     None: $,
-}, maybeProto, function (options, option, EnumOptionClass) { return option === 'Some' ? function (value) { return new EnumOptionClass(options, option, value); } : function () { return new EnumOptionClass(options, option, null); }; });
+}, maybeProto, function (options, name, EnumOptionClass) { return name === 'Some' ? function (value) { return new EnumOptionClass(options, name, value); } : function () { return new EnumOptionClass(options, name, null); }; });
 var ResultError = Enum({
     UnwrapErrAsOk: null,
     UnwrapErr: null,
@@ -165,46 +165,46 @@ var resultProto = {
         return match.call(assign({}, this, { args: [this.args] }), paths);
     },
     isOk: function () {
-        return this.option === 'Ok';
+        return this.name === 'Ok';
     },
     isErr: function () {
-        return this.option === 'Err';
+        return this.name === 'Err';
     },
     ok: function () {
-        return (this.option === 'Ok') ? Maybe.Some(this.args) : Maybe.None();
+        return (this.name === 'Ok') ? Maybe.Some(this.args) : Maybe.None();
     },
     err: function () {
-        return (this.option === 'Ok') ? Maybe.None() : Maybe.Some(this.args);
+        return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.args);
     },
     map: function (fn) {
-        return (this.option === 'Ok') ? Result.Ok(fn(this.args)) : this;
+        return (this.name === 'Ok') ? Result.Ok(fn(this.args)) : this;
     },
     mapErr: function (fn) {
-        return (this.option === 'Ok') ? this : Result.Err(fn(this.args));
+        return (this.name === 'Ok') ? this : Result.Err(fn(this.args));
     },
     array: function () {
-        return (this.option === 'Ok') ? [this.args] : []; // .iter; .into_item
+        return (this.name === 'Ok') ? [this.args] : []; // .iter; .into_item
     },
     and: function (other) {
-        return (this.option === 'Ok') ? other : this;
+        return (this.name === 'Ok') ? other : this;
     },
     andThen: function (fn) {
-        return (this.option === 'Ok') ? fn(this.args) : this;
+        return (this.name === 'Ok') ? fn(this.args) : this;
     },
     or: function (other) {
-        return (this.option === 'Ok') ? this : other;
+        return (this.name === 'Ok') ? this : other;
     },
     orElse: function (fn) {
-        return (this.option === 'Ok') ? this : fn(this.args);
+        return (this.name === 'Ok') ? this : fn(this.args);
     },
     unwrapOr: function (def) {
-        return (this.option === 'Ok') ? this.args : def;
+        return (this.name === 'Ok') ? this.args : def;
     },
     unwrapOrElse: function (fn) {
-        return (this.option === 'Ok') ? this.args : fn(this.args);
+        return (this.name === 'Ok') ? this.args : fn(this.args);
     },
     unwrap: function () {
-        if (this.option === 'Ok') {
+        if (this.name === 'Ok') {
             return this.args;
         }
         else {
@@ -212,7 +212,7 @@ var resultProto = {
         }
     },
     unwrapErr: function () {
-        if (this.option === 'Ok') {
+        if (this.name === 'Ok') {
             throw ResultError.UnwrapErrAsOk(this.args);
         }
         else {
@@ -223,7 +223,7 @@ var resultProto = {
 var Result = Enum({
     Ok: $,
     Err: $,
-}, resultProto, function (options, option, EnumOptionClass) { return function (value) { return new EnumOptionClass(options, option, value); }; });
+}, resultProto, function (options, name, EnumOptionClass) { return function (value) { return new EnumOptionClass(options, name, value); }; });
 module.exports = {
     Enum: Enum,
     Maybe: Maybe,
