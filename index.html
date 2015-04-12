@@ -1325,26 +1325,25 @@ isIdempotent(HTTPVerbs.POST());
 
 <span class="hljs-comment">// or, since we are a method on the EnumOption, we can even use `match` in the method:</span>
 
-<span class="hljs-string">``</span><span class="hljs-string">`javascript
-var HTTPVerbs = Enum([
-  'OPTIONS',
-  'HEAD',
-  'GET',
-  'POST',
-  'PUT',
-  'DELETE',
+<span class="hljs-keyword">var</span> HTTPVerbs = Enum([
+  <span class="hljs-string">'OPTIONS'</span>,
+  <span class="hljs-string">'HEAD'</span>,
+  <span class="hljs-string">'GET'</span>,
+  <span class="hljs-string">'POST'</span>,
+  <span class="hljs-string">'PUT'</span>,
+  <span class="hljs-string">'DELETE'</span>,
 ], {
-  isIdempotent: function() {
-    return this.match({
-      POST: () =&gt; false,
-      _: () =&gt; true,
+  isIdempotent: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.match({
+      POST: () =&gt; <span class="hljs-literal">false</span>,
+      _: () =&gt; <span class="hljs-literal">true</span>,
     });
   }
 });
 
 
 HTTPVerbs.PUT().isIdempotent();
-// =&gt; true</span>
+<span class="hljs-comment">// =&gt; true</span>
 </code></pre>
 			<h2 id="changes">Changes</h2>
 			<p>Todo for v1.0.0:</p>
