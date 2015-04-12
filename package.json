@@ -18,7 +18,8 @@
     "None",
     "Ok",
     "Err",
-    "Type"
+    "Enum",
+    "Match"
   ],
   "contributors": [
     "mystor",
