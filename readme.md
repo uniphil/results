@@ -161,7 +161,6 @@ var HTTPVerbs = Enum([
 
 // or, since we are a method on the EnumOption, we can even use `match` in the method:
 
-```javascript
 var HTTPVerbs = Enum([
   'OPTIONS',
   'HEAD',
