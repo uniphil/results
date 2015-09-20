@@ -20,13 +20,13 @@ declare function _factory(options: string[], name: string, EnumOptionClass: any)
 declare function Enum<T>(options: T | string[], proto?: {}, factory?: any): T;
 declare var $: any;
 declare var EnumErr: {
-    [x: number]: undefined;
+    [x: number]: any;
     MissingOptions: any;
     BadOptionType: any;
     NonExhaustiveMatch: any;
 };
 declare var MaybeError: {
-    [x: number]: undefined;
+    [x: number]: any;
     UnwrapNone: any;
 };
 interface Maybe {
@@ -34,8 +34,12 @@ interface Maybe {
     None: () => EnumOption;
 }
 interface MaybeOption {
-    isSome: () => boolean;
-    isNone: () => boolean;
+    /**
+     * @throws EnumError.NonExhaustiveMatch
+     */
+    match: (opts: Object) => any;
+    isSome: () => Boolean;
+    isNone: () => Boolean;
     /**
      * @throws whatever is passed as the arg
      */
@@ -60,7 +64,7 @@ interface MaybeOption {
 }
 declare var maybeProto: MaybeOption;
 declare var Maybe: {
-    [x: number]: undefined;
+    [x: number]: any;
     Some: any;
     None: any;
 };
@@ -74,10 +78,14 @@ interface Result {
     Err: (errValue) => EnumOption;
 }
 interface ResultOption {
-    isOk: boolean;
-    isErr: boolean;
-    ok: Maybe;
-    err: Maybe;
+    /**
+     * @throws EnumError.NonExhaustiveMatch
+     */
+    match: (opts: Object) => any;
+    isOk: () => Boolean;
+    isErr: () => Boolean;
+    ok: () => Maybe;
+    err: () => Maybe;
     map: (fn: (okValue) => any) => Result;
     mapErr: (fn: (errValue) => any) => Result;
     array: () => Array<any>;
@@ -96,26 +104,9 @@ interface ResultOption {
      */
     unwrapErr: () => any;
 }
-declare var resultProto: {
-    match(paths: any): any;
-    isOk(): boolean;
-    isErr(): boolean;
-    ok(): any;
-    err(): any;
-    map(fn: any): any;
-    mapErr(fn: any): any;
-    array(): any[];
-    and(other: any): any;
-    andThen(fn: any): any;
-    or(other: any): any;
-    orElse(fn: any): any;
-    unwrapOr(def: any): any;
-    unwrapOrElse(fn: any): any;
-    unwrap(): any;
-    unwrapErr(): any;
-};
+declare var resultProto: ResultOption;
 declare var Result: {
-    [x: number]: undefined;
+    [x: number]: any;
     Ok: any;
     Err: any;
 };

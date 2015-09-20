@@ -155,7 +155,11 @@ var maybeProto = {
 var Maybe = Enum({
     Some: $,
     None: $,
-}, maybeProto, function (options, name, EnumOptionClass) { return name === 'Some' ? function (value) { return new EnumOptionClass(options, name, value); } : function () { return new EnumOptionClass(options, name, null); }; });
+}, maybeProto, function (options, name, EnumOptionClass) {
+    return name === 'Some' ?
+        function (value) { return new EnumOptionClass(options, name, value); } :
+        function () { return new EnumOptionClass(options, name, null); };
+});
 var ResultError = Enum({
     UnwrapErrAsOk: null,
     UnwrapErr: null,
@@ -223,7 +227,9 @@ var resultProto = {
 var Result = Enum({
     Ok: $,
     Err: $,
-}, resultProto, function (options, name, EnumOptionClass) { return function (value) { return new EnumOptionClass(options, name, value); }; });
+}, resultProto, function (options, name, EnumOptionClass) {
+    return function (value) { return new EnumOptionClass(options, name, value); };
+});
 module.exports = {
     Enum: Enum,
     Maybe: Maybe,

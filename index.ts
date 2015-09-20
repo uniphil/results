@@ -95,8 +95,12 @@ interface Maybe {
 }
 
 interface MaybeOption {
-  isSome: () => boolean;
-  isNone: () => boolean;
+  /**
+   * @throws EnumError.NonExhaustiveMatch
+   */
+  match: (opts: Object) => any;
+  isSome: () => Boolean;
+  isNone: () => Boolean;
   /**
    * @throws whatever is passed as the arg
    */
@@ -213,10 +217,14 @@ interface Result {
 }
 
 interface ResultOption {
-  isOk: boolean;
-  isErr: boolean;
-  ok: Maybe;
-  err: Maybe;
+  /**
+   * @throws EnumError.NonExhaustiveMatch
+   */
+  match: (opts: Object) => any;
+  isOk: () => Boolean;
+  isErr: () => Boolean;
+  ok: () => Maybe;
+  err: () => Maybe;
   map: (fn: (okValue) => any) => Result;
   mapErr: (fn: (errValue) => any) => Result;
   array: () => Array<any>;
@@ -236,7 +244,7 @@ interface ResultOption {
   unwrapErr: () => any;
 }
 
-var resultProto = {
+var resultProto: ResultOption = {
   match(paths) {
     return match.call(assign({}, this, {data: [this.data]}), paths);
   },
