@@ -9,7 +9,7 @@ describe('Enum', () => {
       Enum();
     } catch(err) {
       answer = err.match({
-        MissingOptions: () => 'the right answer',
+        BadOptionType: () => 'the right answer',
         _: (what) => 'the wrong answer: ' + what,
       });
     }
@@ -27,16 +27,13 @@ describe('Enum', () => {
     }
     assert.equal(answer, 'the right answer');
   });
-  it('should accept an object or an array', () => {
-    assert.equal(Enum(['A']).A().match({A: () => 42}), 42);
-  });
-  it('should accept an object or an object', () => {
+  it('should accept an object', () => {
     assert.equal(Enum({A: null}).A().match({A: () => 42}), 42);
   });
   it('should ensure that the match paths are exhaustive', () => {
     var answer;
     try {
-      Enum(['A', 'B']).A().match({A: () => 'whatever'});
+      Enum({A: 0, B: 0}).A().match({A: () => 'whatever'});
     } catch(err) {
       answer = err.match({
         NonExhaustiveMatch: () => 'the right answer',
@@ -46,17 +43,18 @@ describe('Enum', () => {
     assert.equal(answer, 'the right answer');
   });
   it('should always be exhaustive with a wildcard match', () => {
-    assert.equal(Enum(['A', 'B']).A().match({_: () => 42}), 42);
+    assert.equal(Enum({A: 0, B: 0}).A().match({_: () => 42}), 42);
+    assert.equal(Enum({A: 0, B: 0}).B().match({_: () => 42}), 42);
   });
   it('should pass a value to `match` callbacks', () => {
-    assert.equal(Enum(['A']).A(42).match({A: (v) => v}), 42);
+    assert.equal(Enum({A: 1}).A(42).match({A: (v) => v}), 42);
   });
   it('should pass all values to `match` callbacks', () => {
-    assert.equal(Enum(['A']).A(42, 41).match({A: (v, z) => z}), 41);
+    assert.equal(Enum({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
   });
   it('should pass itself to catch-all `match` callbacks', () => {
-    assert.equal(Enum(['A']).A(42).match({_: (en) => en.name}), 'A');
-    assert.equal(Enum(['A']).A(42).match({_: (en) => en.data[0]}), 42);
+    assert.equal(Enum({A: 1}).A(42).match({_: (en) => en.name}), 'A');
+    assert.equal(Enum({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
   });
 });
 

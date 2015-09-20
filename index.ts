@@ -16,17 +16,18 @@ var assign: (...objs: Object[]) => Object = require('object-assign');
 /**
  * @throws EnumError.NonExhaustiveMatch
  */
-function match(to) {
-  if (typeof to._ === 'function') {
+function match(to: any): any {
+  if (typeof to._ === 'function') {  // match is de-facto exhaustive w/ `_`
     if (typeof to[this.name] === 'function') {
       return to[this.name].apply(null, this.data);
     } else {
       return to._(this);
     }
   } else {
-    for (var i=0; i<this.options.length; i++) {
-      if (typeof to[this.options[i]] !== 'function') {
-        throw EnumErr.NonExhaustiveMatch();
+    // ensure match is exhaustive
+    for (let k in this.options) {
+      if (typeof to[k] !== 'function') {
+        throw EnumErr.NonExhaustiveMatch(k);
       }
     }
     return to[this.name].apply(null, this.data);
@@ -36,11 +37,16 @@ function match(to) {
 
 
 interface EnumOption {
+  options: any;
+  name: String;
+  data: any[];
   match: (paths: Object) => any;
+  new (options: any, name: String, data: Array<any>);
 }
 
 
-function _factory(options: string[], name: string, EnumOptionClass) {
+function _factory(options: Object, name: string, EnumOptionClass: EnumOption):
+(...args: any[]) => EnumOption {
   return function() {
     var data = [];
     for (var i=0; i<arguments.length; i++) {
@@ -51,26 +57,16 @@ function _factory(options: string[], name: string, EnumOptionClass) {
 }
 
 
-function Enum<T>(options: T | string[], proto={}, factory:any=_factory): T {
-  if (!options) { throw EnumErr.MissingOptions(); }
-  var arrOptions: string[];
-  if (!(options instanceof Array)) {
-    if (options instanceof Object) {
-      arrOptions = Object.keys(options);
-    } else {
-      throw EnumErr.BadOptionType();
-    }
-  } else {
-    arrOptions = <string[]>options;
-  }
-  function EnumOption(options: string[], name: string, data) {
+function Enum<T>(options: T, proto={}, factory:any=_factory): T {
+  if (typeof options !== 'object') { throw EnumErr.BadOptionType(); }
+  function EnumOption(options: T, name: string, data: any[]) {
     this.options = options;
     this.name = name;
     this.data = data;
   }
   EnumOption.prototype = assign({match}, proto);
-  return <T>arrOptions.reduce((obj, name) => {
-    obj[name] = factory(arrOptions, name, EnumOption);
+  return <T>Object.keys(options).reduce((obj, name) => {
+    obj[name] = factory(options, name, EnumOption);
     return obj;
   }, {});
 }
@@ -78,7 +74,6 @@ function Enum<T>(options: T | string[], proto={}, factory:any=_factory): T {
 
 var $;
 var EnumErr = Enum({
-  MissingOptions:     $,
   BadOptionType:      $,
   NonExhaustiveMatch: $,
 });

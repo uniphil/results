@@ -14,19 +14,21 @@ declare var assign: (...objs: Object[]) => Object;
  */
 declare function match(to: any): any;
 interface EnumOption {
+    options: any;
+    name: String;
+    data: any[];
     match: (paths: Object) => any;
+    new (options: any, name: String, data: Array<any>): any;
 }
-declare function _factory(options: string[], name: string, EnumOptionClass: any): () => any;
-declare function Enum<T>(options: T | string[], proto?: {}, factory?: any): T;
+declare function _factory(options: Object, name: string, EnumOptionClass: EnumOption): (...args: any[]) => EnumOption;
+declare function Enum<T>(options: T, proto?: {}, factory?: any): T;
 declare var $: any;
 declare var EnumErr: {
-    [x: number]: any;
-    MissingOptions: any;
     BadOptionType: any;
+    BadOptionTypeSpec: any;
     NonExhaustiveMatch: any;
 };
 declare var MaybeError: {
-    [x: number]: any;
     UnwrapNone: any;
 };
 interface Maybe {
@@ -64,12 +66,10 @@ interface MaybeOption {
 }
 declare var maybeProto: MaybeOption;
 declare var Maybe: {
-    [x: number]: any;
     Some: any;
     None: any;
 };
 declare var ResultError: {
-    [x: number]: any;
     UnwrapErrAsOk: any;
     UnwrapErr: any;
 };
@@ -106,7 +106,6 @@ interface ResultOption {
 }
 declare var resultProto: ResultOption;
 declare var Result: {
-    [x: number]: any;
     Ok: any;
     Err: any;
 };

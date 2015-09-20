@@ -202,6 +202,22 @@ Todo for v1.0.0:
      * [ ] Add API docs
 
 
+### v0.6.0
+
+#### Breaking
+
+  * Only allow object Enum definition (`Enum({ONE, TWO, THREE})` only; no more
+    `Enum(['ONE', 'TWO', 'THREE'])`). This allows for better editor code
+    completion, and also enables some opt-in construction optimizations and
+    typechecking.
+  * Enum option instance property `options` is now an Object instead of Array.
+
+#### Other Changes
+
+  * Fix typescript interfaces for ResultOption (props => methods)
+  * Annotate `match` param and return
+
+
 ### v0.5.0
 
 #### Breaking

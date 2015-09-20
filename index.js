@@ -22,9 +22,10 @@ function match(to) {
         }
     }
     else {
-        for (var i = 0; i < this.options.length; i++) {
-            if (typeof to[this.options[i]] !== 'function') {
-                throw EnumErr.NonExhaustiveMatch();
+        // ensure match is exhaustive
+        for (var k in this.options) {
+            if (typeof to[k] !== 'function') {
+                throw EnumErr.NonExhaustiveMatch(k);
             }
         }
         return to[this.name].apply(null, this.data);
@@ -43,20 +44,8 @@ function _factory(options, name, EnumOptionClass) {
 function Enum(options, proto, factory) {
     if (proto === void 0) { proto = {}; }
     if (factory === void 0) { factory = _factory; }
-    if (!options) {
-        throw EnumErr.MissingOptions();
-    }
-    var arrOptions;
-    if (!(options instanceof Array)) {
-        if (options instanceof Object) {
-            arrOptions = Object.keys(options);
-        }
-        else {
-            throw EnumErr.BadOptionType();
-        }
-    }
-    else {
-        arrOptions = options;
+    if (typeof options !== 'object') {
+        throw EnumErr.BadOptionType();
     }
     function EnumOption(options, name, data) {
         this.options = options;
@@ -64,15 +53,15 @@ function Enum(options, proto, factory) {
         this.data = data;
     }
     EnumOption.prototype = assign({ match: match }, proto);
-    return arrOptions.reduce(function (obj, name) {
-        obj[name] = factory(arrOptions, name, EnumOption);
+    return Object.keys(options).reduce(function (obj, name) {
+        obj[name] = factory(options, name, EnumOption);
         return obj;
     }, {});
 }
 var $;
 var EnumErr = Enum({
-    MissingOptions: $,
     BadOptionType: $,
+    BadOptionTypeSpec: $,
     NonExhaustiveMatch: $,
 });
 var MaybeError = Enum({
