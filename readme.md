@@ -117,15 +117,15 @@ messageSent.match({
 `Option` and `Result` are generalized as `Enum` (which is a sort of Sum Type or Discriminated Union-ish tool). `Enum` comes with the `match` expression for nice control flow everywhere:
 
 ```javascript
-
-var HTTPVerbs = Enum([
-  'OPTIONS',
-  'HEAD',
-  'GET',
-  'POST',
-  'PUT',
-  'DELETE',
-]);
+var _;  // just a placeholder to make the Enum object declaration valid
+var HTTPVerbs = Enum({
+  OPTIONS: _,
+  HEAD: _,
+  GET: _,
+  POST: _,
+  PUT: _,
+  DELETE: _,
+});
 
 
 function isIdempotent(verb) {
@@ -146,29 +146,30 @@ isIdempotent(HTTPVerbs.POST());
 Methods, like the ones on `Result`s and `Option`s, can be attached when creating the `Enum`:
 
 ```javascript
-var HTTPVerbs = Enum([
-  'OPTIONS',
-  'HEAD',
-  'GET',
-  'POST',
-  'PUT',
-  'DELETE',
-], {
+var _;
+var HTTPVerbs = Enum({
+  OPTIONS: _,
+  HEAD: _,
+  GET: _,
+  POST: _,
+  PUT: _,
+  DELETE: _,
+}, {
   isIdempotent: function() {
-    return this.option === 'POST' ? false : true;
+    return this.name === 'POST' ? false : true;
   }
 });
 
 // or, since we are a method on the EnumOption, we can even use `match` in the method:
-
-var HTTPVerbs = Enum([
-  'OPTIONS',
-  'HEAD',
-  'GET',
-  'POST',
-  'PUT',
-  'DELETE',
-], {
+var _;
+var HTTPVerbs = Enum({
+  OPTIONS: _,
+  HEAD: _,
+  GET: _,
+  POST: _,
+  PUT: _,
+  DELETE: _,
+}, {
   isIdempotent: function() {
     return this.match({
       POST: () => false,
