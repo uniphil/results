@@ -6,10 +6,6 @@
  */
 /// <reference path="./node.d.ts" />
 /**
- * Object.assign ponyfill
- */
-var assign = require('object-assign');
-/**
  * @throws EnumError.NonExhaustiveMatch
  */
 function match(to) {
@@ -52,7 +48,10 @@ function Enum(options, proto, factory) {
         this.name = name;
         this.data = data;
     }
-    EnumOption.prototype = assign({ match: match }, proto);
+    EnumOption.prototype = proto;
+    if (typeof proto.match === 'undefined') {
+        proto.match = match;
+    }
     return Object.keys(options).reduce(function (obj, name) {
         obj[name] = factory(options, name, EnumOption);
         return obj;
@@ -61,7 +60,6 @@ function Enum(options, proto, factory) {
 var $;
 var EnumErr = Enum({
     BadOptionType: $,
-    BadOptionTypeSpec: $,
     NonExhaustiveMatch: $,
 });
 var MaybeError = Enum({
@@ -69,7 +67,11 @@ var MaybeError = Enum({
 });
 var maybeProto = {
     match: function (paths) {
-        return match.call(assign({}, this, { data: [this.data] }), paths);
+        return match.call({
+            options: this.options,
+            name: this.name,
+            data: [this.data]
+        }, paths);
     },
     isSome: function () {
         return this.name === 'Some';
@@ -155,7 +157,11 @@ var ResultError = Enum({
 });
 var resultProto = {
     match: function (paths) {
-        return match.call(assign({}, this, { data: [this.data] }), paths);
+        return match.call({
+            options: this.options,
+            name: this.name,
+            data: [this.data]
+        }, paths);
     },
     isOk: function () {
         return this.name === 'Ok';

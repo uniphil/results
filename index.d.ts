@@ -6,10 +6,6 @@
  * @author uniphil
  */
 /**
- * Object.assign ponyfill
- */
-declare var assign: (...objs: Object[]) => Object;
-/**
  * @throws EnumError.NonExhaustiveMatch
  */
 declare function match(to: any): any;
@@ -21,11 +17,10 @@ interface EnumOption {
     new (options: any, name: String, data: Array<any>): any;
 }
 declare function _factory(options: Object, name: string, EnumOptionClass: EnumOption): (...args: any[]) => EnumOption;
-declare function Enum<T>(options: T, proto?: {}, factory?: any): T;
+declare function Enum<T>(options: T, proto?: any, factory?: any): T;
 declare var $: any;
 declare var EnumErr: {
     BadOptionType: any;
-    BadOptionTypeSpec: any;
     NonExhaustiveMatch: any;
 };
 declare var MaybeError: {
