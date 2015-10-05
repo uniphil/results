@@ -19,10 +19,10 @@ var tsProject = typescript.createProject({
 
 
 gulp.task('clean', function(cb) {
-  del([
+  return del([
     './index.js',
     './docs/',
-  ], cb);
+  ]);
 });
 
 
