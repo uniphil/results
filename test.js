@@ -4,43 +4,14 @@ var {Enum, Ok, Err, Some, None} = require('./index');
 
 describe('Enum', () => {
   it('should fail if options are missing', () => {
-    var answer;
-    try {
-      Enum();
-    } catch(err) {
-      answer = err.match({
-        BadOptionType: () => 'the right answer',
-        _: (what) => 'the wrong answer: ' + what,
-      });
-    }
-    assert.equal(answer, 'the right answer');
-  });
-  it('should fail for bad option type', () => {
-    var answer;
-    try {
-      Enum('abc');
-    } catch(err) {
-      answer = err.match({
-        BadOptionType: () => 'the right answer',
-        _: (what) => 'the wrong answer: ' + what,
-      });
-    }
-    assert.equal(answer, 'the right answer');
+    assert.throws(() => Enum(), Error);
   });
   it('should accept an object', () => {
     assert.equal(Enum({A: null}).A().match({A: () => 42}), 42);
   });
   it('should ensure that the match paths are exhaustive', () => {
-    var answer;
-    try {
-      Enum({A: 0, B: 0}).A().match({A: () => 'whatever'});
-    } catch(err) {
-      answer = err.match({
-        NonExhaustiveMatch: () => 'the right answer',
-        _: () => 'the wrong answer',
-      });
-    }
-    assert.equal(answer, 'the right answer');
+    var myEnum = Enum({A: 0, B: 0}).A();
+    assert.throws(() => myEnum.match({a: () => 'whatever'}), Error);
   });
   it('should always be exhaustive with a wildcard match', () => {
     assert.equal(Enum({A: 0, B: 0}).A().match({_: () => 42}), 42);
@@ -78,17 +49,7 @@ describe('Maybe', () => {
   });
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
-    assert.throws(() => {None().unwrap()});
-    var answer;
-    try {
-      None().unwrap();
-    } catch (err) {
-      answer = err.match({
-        UnwrapNone: () => 'the right answer',
-        _: (what) => 'the wrong answer: ' + what,
-      });
-      assert.equal(answer, 'the right answer');
-    }
+    assert.throws(() => None().unwrap(), Error);
   });
   it('should unwrap its value or a default for unwrapOr', () => {
     assert.equal(Some(1).unwrapOr(2), 1);

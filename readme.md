@@ -212,6 +212,8 @@ Todo for v1.0.0:
     completion, and also enables some opt-in construction optimizations and
     typechecking.
   * Enum option instance property `options` is now an Object instead of Array.
+  * Throw `Error` instances instead of special internal error enums. It was a silly idea.
+  * Remove sketchy faulty object typecheck for the Enum constructor. It's just not checked now. Whee.
 
 #### Other Changes
 

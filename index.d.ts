@@ -1,13 +1,5 @@
 /// <reference path="node.d.ts" />
-/**
- * Rust-inspired Result<T, E> and Option<T> (called Maybe) wrappers for Javascript.
- *
- * @author mystor
- * @author uniphil
- */
-/**
- * @throws EnumError.NonExhaustiveMatch
- */
+declare var $: any;
 declare function match(to: any): any;
 interface EnumOption {
     options: any;
@@ -18,32 +10,15 @@ interface EnumOption {
 }
 declare function _factory(options: Object, name: string, EnumOptionClass: EnumOption): (...args: any[]) => EnumOption;
 declare function Enum<T>(options: T, proto?: any, factory?: any): T;
-declare var $: any;
-declare var EnumErr: {
-    BadOptionType: any;
-    NonExhaustiveMatch: any;
-};
-declare var MaybeError: {
-    UnwrapNone: any;
-};
 interface Maybe {
     Some: (someValue) => EnumOption;
     None: () => EnumOption;
 }
 interface MaybeOption {
-    /**
-     * @throws EnumError.NonExhaustiveMatch
-     */
     match: (opts: Object) => any;
     isSome: () => Boolean;
     isNone: () => Boolean;
-    /**
-     * @throws whatever is passed as the arg
-     */
     expect: (err) => any;
-    /**
-     * @throws MaybeError.UnwrapNone
-     */
     unwrap: () => any;
     unwrapOr: (def) => any;
     unwrapOrElse: (fn: () => any) => any;
@@ -73,9 +48,6 @@ interface Result {
     Err: (errValue) => EnumOption;
 }
 interface ResultOption {
-    /**
-     * @throws EnumError.NonExhaustiveMatch
-     */
     match: (opts: Object) => any;
     isOk: () => Boolean;
     isErr: () => Boolean;
@@ -90,13 +62,7 @@ interface ResultOption {
     orElse: (fn: (errValue) => Result) => Result;
     unwrapOr: (def: any) => any;
     unwrapOrElse: (fn: (errValue) => any) => any;
-    /**
-     * @throws the value from Err(value)
-     */
     unwrap: () => any;
-    /**
-     * @throws the value from Ok(value)
-     */
     unwrapErr: () => any;
 }
 declare var resultProto: ResultOption;

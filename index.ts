@@ -7,8 +7,12 @@
 
 /// <reference path="./node.d.ts" />
 
+
+var $;  // just a  placeholder for RHS of objects whose keys we want
+
+
 /**
- * @throws EnumError.NonExhaustiveMatch
+ * @throws Error if the match is not exhaustive
  */
 function match(to: any): any {
   if (typeof to._ === 'function') {  // match is de-facto exhaustive w/ `_`
@@ -21,7 +25,7 @@ function match(to: any): any {
     // ensure match is exhaustive
     for (let k in this.options) {
       if (typeof to[k] !== 'function') {
-        throw EnumErr.NonExhaustiveMatch(k);
+        throw new Error(`Enum match: Non-exhaustive match is missing '${k}'`);
       }
     }
     return to[this.name].apply(null, this.data);
@@ -52,7 +56,6 @@ function _factory(options: Object, name: string, EnumOptionClass: EnumOption):
 
 
 function Enum<T>(options: T, proto:any={}, factory:any=_factory): T {
-  if (typeof options !== 'object') { throw EnumErr.BadOptionType(); }
   function EnumOption(options: T, name: string, data: any[]) {
     this.options = options;
     this.name = name;
@@ -69,18 +72,6 @@ function Enum<T>(options: T, proto:any={}, factory:any=_factory): T {
 }
 
 
-var $;
-var EnumErr = Enum({
-  BadOptionType:      $,
-  NonExhaustiveMatch: $,
-});
-
-
-var MaybeError = Enum({
-  UnwrapNone: $,
-});
-
-
 interface Maybe {
   Some: (someValue) => EnumOption;
   None: () => EnumOption;
@@ -88,7 +79,7 @@ interface Maybe {
 
 interface MaybeOption {
   /**
-   * @throws EnumError.NonExhaustiveMatch
+   * @throws Error if the match is not exhaustive
    */
   match: (opts: Object) => any;
   isSome: () => Boolean;
@@ -98,7 +89,7 @@ interface MaybeOption {
    */
   expect: (err) => any;
   /**
-   * @throws MaybeError.UnwrapNone
+   * @throws Error if it is None
    */
   unwrap: () => any;
   unwrapOr: (def) => any;
@@ -141,7 +132,7 @@ var maybeProto: MaybeOption = {
     if (this.name === 'Some') {
       return this.data;
     } else {
-      throw MaybeError.UnwrapNone('Tried to unwrap None');
+      throw new Error('Maybe Enum: Tried to .unwrap() None as Some');
     }
   },
   unwrapOr(def) {
@@ -214,7 +205,7 @@ interface Result {
 
 interface ResultOption {
   /**
-   * @throws EnumError.NonExhaustiveMatch
+   * @throws Error if the match is not exhaustive
    */
   match: (opts: Object) => any;
   isOk: () => Boolean;
