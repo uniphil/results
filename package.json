@@ -41,7 +41,7 @@
     "gulp-typedoc": "^1.1.0",
     "gulp-typescript": "^2.6.0",
     "merge2": "^0.3.2",
-    "vinyl-paths": "^1.0.0"
+    "vinyl-paths": "^2.0.0"
   },
   "dependencies": {
   }
