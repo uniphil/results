@@ -711,10 +711,14 @@ footer .tsd-legend { display: inline-block; width: 25%; padding: 0; font-size: 1
 @media (max-width: 900px) { .tsd-index-panel ul.tsd-index-list { -webkit-column-count: 1; -moz-column-count: 1; -ms-column-count: 1; column-count: 1; } }
 @media (min-width: 901px) and (max-width: 1024px) { .tsd-index-panel ul.tsd-index-list { -webkit-column-count: 2; -moz-column-count: 2; -ms-column-count: 2; column-count: 2; } }
 .tsd-index-panel ul.tsd-index-list li { -webkit-column-break-inside: avoid; -moz-column-break-inside: avoid; -ms-column-break-inside: avoid; -o-column-break-inside: avoid; column-break-inside: avoid; -webkit-page-break-inside: avoid; -moz-page-break-inside: avoid; -ms-page-break-inside: avoid; -o-page-break-inside: avoid; page-break-inside: avoid; }
-.tsd-index-panel a { color: #9600ff; }
-.tsd-index-panel .tsd-kind-interface a, .tsd-index-panel .tsd-parent-kind-interface a { color: #7da01f; }
-.tsd-index-panel .tsd-kind-enum a, .tsd-index-panel .tsd-parent-kind-enum a { color: #cc9900; }
-.tsd-index-panel .tsd-kind-class a, .tsd-index-panel .tsd-parent-kind-class a { color: #4da6ff; }
+.tsd-index-panel a, .tsd-index-panel .tsd-parent-kind-module a { color: #9600ff; }
+.tsd-index-panel .tsd-parent-kind-interface a { color: #7da01f; }
+.tsd-index-panel .tsd-parent-kind-enum a { color: #cc9900; }
+.tsd-index-panel .tsd-parent-kind-class a { color: #4da6ff; }
+.tsd-index-panel .tsd-kind-module a { color: #9600ff; }
+.tsd-index-panel .tsd-kind-interface a { color: #7da01f; }
+.tsd-index-panel .tsd-kind-enum a { color: #cc9900; }
+.tsd-index-panel .tsd-kind-class a { color: #4da6ff; }
 .tsd-index-panel .tsd-is-private a { color: #808080; }
 
 .tsd-flag { display: inline-block; padding: 1px 5px; border-radius: 4px; color: #fff; background-color: #808080; text-indent: 0; font-size: 14px; font-weight: normal; }
@@ -915,14 +919,6 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 			<a href="index.html#_index_" class="tsd-kind-icon">"index"</a>
 			<ul>
 				<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-					<a href="index.html#_index_.enumoption" class="tsd-kind-icon">Enum<wbr>Option</a>
-					<ul>
-						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-							<a href="index.html#_index_.enumoption.match" class="tsd-kind-icon">match</a>
-						</li>
-					</ul>
-				</li>
-				<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 					<a href="index.html#_index_.maybe" class="tsd-kind-icon">Maybe</a>
 					<ul>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -930,6 +926,9 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 							<a href="index.html#_index_.maybe.some" class="tsd-kind-icon">Some</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.maybe.all" class="tsd-kind-icon">all</a>
 						</li>
 					</ul>
 				</li>
@@ -964,6 +963,9 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 							<a href="index.html#_index_.maybeoption.maporelse" class="tsd-kind-icon">map<wbr>OrElse</a>
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.maybeoption.match" class="tsd-kind-icon">match</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 							<a href="index.html#_index_.maybeoption.okor" class="tsd-kind-icon">ok<wbr>Or</a>
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -974,9 +976,6 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 							<a href="index.html#_index_.maybeoption.orelse" class="tsd-kind-icon">or<wbr>Else</a>
-						</li>
-						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-							<a href="index.html#_index_.maybeoption.take" class="tsd-kind-icon">take</a>
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 							<a href="index.html#_index_.maybeoption.unwrap" class="tsd-kind-icon">unwrap</a>
@@ -990,6 +989,14 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 					</ul>
 				</li>
 				<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+					<a href="index.html#_index_.maybestatic" class="tsd-kind-icon">Maybe<wbr>Static</a>
+					<ul>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.maybestatic.all-1" class="tsd-kind-icon">all</a>
+						</li>
+					</ul>
+				</li>
+				<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 					<a href="index.html#_index_.result" class="tsd-kind-icon">Result</a>
 					<ul>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -997,6 +1004,9 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 							<a href="index.html#_index_.result.ok" class="tsd-kind-icon">Ok</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.result.all-2" class="tsd-kind-icon">all</a>
 						</li>
 					</ul>
 				</li>
@@ -1028,6 +1038,9 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 							<a href="index.html#_index_.resultoption.maperr" class="tsd-kind-icon">map<wbr>Err</a>
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.resultoption.match-1" class="tsd-kind-icon">match</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 							<a href="index.html#_index_.resultoption.ok-1" class="tsd-kind-icon">ok</a>
 						</li>
 						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -1050,29 +1063,48 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 						</li>
 					</ul>
 				</li>
+				<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+					<a href="index.html#_index_.resultstatic" class="tsd-kind-icon">Result<wbr>Static</a>
+					<ul>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.resultstatic.all-3" class="tsd-kind-icon">all</a>
+						</li>
+					</ul>
+				</li>
+				<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+					<a href="index.html#_index_.unionoption" class="tsd-kind-icon">Union<wbr>Option</a>
+					<ul>
+						<li class=" tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.unionoption.constructor" class="tsd-kind-icon">constructor</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.unionoption.data" class="tsd-kind-icon">data</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.unionoption.match-2" class="tsd-kind-icon">match</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.unionoption.name" class="tsd-kind-icon">name</a>
+						</li>
+						<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+							<a href="index.html#_index_.unionoption.options" class="tsd-kind-icon">options</a>
+						</li>
+					</ul>
+				</li>
 				<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a href="index.html#_index_._" class="tsd-kind-icon">$</a>
 				</li>
 				<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a href="index.html#_index_.enumerr" class="tsd-kind-icon">Enum<wbr>Err</a>
-				</li>
-				<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a href="index.html#_index_.maybeerror" class="tsd-kind-icon">Maybe<wbr>Error</a>
-				</li>
-				<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a href="index.html#_index_.resulterror" class="tsd-kind-icon">Result<wbr>Error</a>
 				</li>
-				<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a href="index.html#_index_.assign" class="tsd-kind-icon">assign</a>
-				</li>
 				<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
-					<a href="index.html#_index_.enum" class="tsd-kind-icon">Enum</a>
+					<a href="index.html#_index_.union" class="tsd-kind-icon">Union</a>
 				</li>
 				<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 					<a href="index.html#_index_._factory" class="tsd-kind-icon">_factory</a>
 				</li>
 				<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-					<a href="index.html#_index_.match-1" class="tsd-kind-icon">match</a>
+					<a href="index.html#_index_.match-3" class="tsd-kind-icon">match</a>
 				</li>
 				<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
 					<a href="index.html#_index_.maybeproto" class="tsd-kind-icon">maybe<wbr>Proto</a>
@@ -1105,7 +1137,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 							<a href="index.html#_index_.maybeproto.maporelse-1" class="tsd-kind-icon">map<wbr>OrElse</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<a href="index.html#_index_.maybeproto.match-2" class="tsd-kind-icon">match</a>
+							<a href="index.html#_index_.maybeproto.match-4" class="tsd-kind-icon">match</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 							<a href="index.html#_index_.maybeproto.okor-1" class="tsd-kind-icon">ok<wbr>Or</a>
@@ -1120,9 +1152,6 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 							<a href="index.html#_index_.maybeproto.orelse-2" class="tsd-kind-icon">or<wbr>Else</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<a href="index.html#_index_.maybeproto.take-1" class="tsd-kind-icon">take</a>
-						</li>
-						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 							<a href="index.html#_index_.maybeproto.unwrap-2" class="tsd-kind-icon">unwrap</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
@@ -1130,6 +1159,14 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 							<a href="index.html#_index_.maybeproto.unwraporelse-2" class="tsd-kind-icon">unwrap<wbr>OrElse</a>
+						</li>
+					</ul>
+				</li>
+				<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+					<a href="index.html#_index_.maybestatic-1" class="tsd-kind-icon">maybe<wbr>Static</a>
+					<ul>
+						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
+							<a href="index.html#_index_.maybestatic-1.all-4" class="tsd-kind-icon">all</a>
 						</li>
 					</ul>
 				</li>
@@ -1161,7 +1198,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 							<a href="index.html#_index_.resultproto.maperr-1" class="tsd-kind-icon">map<wbr>Err</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<a href="index.html#_index_.resultproto.match-3" class="tsd-kind-icon">match</a>
+							<a href="index.html#_index_.resultproto.match-5" class="tsd-kind-icon">match</a>
 						</li>
 						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 							<a href="index.html#_index_.resultproto.ok-2" class="tsd-kind-icon">ok</a>
@@ -1186,6 +1223,14 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 						</li>
 					</ul>
 				</li>
+				<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+					<a href="index.html#_index_.resultstatic-1" class="tsd-kind-icon">result<wbr>Static</a>
+					<ul>
+						<li class=" tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
+							<a href="index.html#_index_.resultstatic-1.all-5" class="tsd-kind-icon">all</a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</li>
 	</ul>
@@ -1195,25 +1240,25 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 		<div class="tsd-panel tsd-typography">
 			<h1 id="results">Results</h1>
 			<p><a href="https://travis-ci.org/uniphil/results"><img src="https://travis-ci.org/uniphil/results.svg" alt="Build Status"></a></p>
-			<p>Lightweight rust-inspired <code>Option</code>, <code>Result</code>, and <code>Enum</code> program flow control for JavaScript.</p>
+			<p>Lightweight rust-inspired <code>Maybe</code>, <code>Result</code>, and <code>Union</code> program flow control for JavaScript -- with <code>match</code>!.</p>
 			<h2 id="install">Install</h2>
 			<pre><code class="lang-bash">$ npm install results
 </code></pre>
 			<h2 id="docs">Docs</h2>
 			<p><a href="http://uniphil.github.io/results/">API Docs</a></p>
 			<h2 id="features">Features</h2>
-			<p>Rust-like <code>Option</code> and <code>Result</code> for nice data processing flows:</p>
+			<p>Rust-like <code>Maybe</code> and <code>Result</code> for nice data processing flows:</p>
 			<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> {Some, None, Ok, Err} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'results'</span>);
 
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLatest</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLatest</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-comment">// this function might fetch data from a server or something, but we'll just</span>
   <span class="hljs-comment">// hard-code it for illustration</span>
   <span class="hljs-keyword">return</span> Some(<span class="hljs-string">'{ "nums": [1, 7, 3, 3] }'</span>);
 }
 
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseJSON</span><span class="hljs-params">(raw)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseJSON</span>(<span class="hljs-params">raw</span>) </span>{
   <span class="hljs-keyword">try</span> {
     <span class="hljs-keyword">return</span> Ok(<span class="hljs-built_in">JSON</span>.parse(raw));
   } <span class="hljs-keyword">catch</span> (parseErr) {
@@ -1221,7 +1266,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
   }
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">validate</span><span class="hljs-params">(data)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">validate</span>(<span class="hljs-params">data</span>) </span>{
   <span class="hljs-keyword">if</span> (!(data.nums <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>)) {
     <span class="hljs-keyword">return</span> Err(<span class="hljs-string">'nums property was not an Array'</span>);
   }
@@ -1234,7 +1279,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
   <span class="hljs-keyword">return</span> Ok(data);
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">summarize</span><span class="hljs-params">(data)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">summarize</span>(<span class="hljs-params">data</span>) </span>{
   <span class="hljs-keyword">var</span> total = data.nums.reduce((sum, val) =&gt; sum + val, <span class="hljs-number">0</span>),
       min = <span class="hljs-built_in">Math</span>.min.apply(<span class="hljs-literal">null</span>, data.nums),
       max = <span class="hljs-built_in">Math</span>.max.apply(<span class="hljs-literal">null</span>, data.nums),
@@ -1248,7 +1293,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
   <span class="hljs-keyword">return</span> Ok({total, min, max, avg});
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prettyPrint</span><span class="hljs-params">(data)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prettyPrint</span>(<span class="hljs-params">data</span>) </span>{
   <span class="hljs-keyword">var</span> pretty = <span class="hljs-built_in">JSON</span>.stringify(data, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>);
   <span class="hljs-keyword">if</span> (pretty === <span class="hljs-literal">undefined</span>) {
     <span class="hljs-keyword">return</span> Err(<span class="hljs-string">'prettyPrint failed :('</span>);
@@ -1258,7 +1303,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
 }
 
 <span class="hljs-comment">// We can now compose these functions with their nice methods:</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logLatestReport</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logLatestReport</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">var</span> latestReport = getLatest().okOr(<span class="hljs-string">'Nothing new'</span>)
     .andThen(parseJSON)
     .andThen(validate)
@@ -1271,7 +1316,7 @@ input[type=checkbox]:checked + .tsd-widget:before { background-position: -160px 
   });
 }
 </code></pre>
-			<p>All of the methods for <code>Result</code> and <code>Option</code> that make sense in JavaScript should be there.</p>
+			<p>All of the methods for <code>Result</code> and <code>Option</code> (called <code>Maybe</code> in results) that make sense in JavaScript should be there.</p>
 			<p>Match expressions are almost like Rust with es6 arrow functions:</p>
 			<pre><code class="lang-javascript">
 <span class="hljs-keyword">var</span> messageSent = Ok(<span class="hljs-string">'sent!'</span>);  <span class="hljs-comment">// or Err(why) as the case may be...</span>
@@ -1284,19 +1329,19 @@ messageSent.match({
   },
 });
 </code></pre>
-			<p><code>Option</code> and <code>Result</code> are generalized as <code>Enum</code> (which is a sort of Sum Type or Discriminated Union-ish tool). <code>Enum</code> comes with the <code>match</code> expression for nice control flow everywhere:</p>
-			<pre><code class="lang-javascript">
-<span class="hljs-keyword">var</span> HTTPVerbs = Enum([
-  <span class="hljs-string">'OPTIONS'</span>,
-  <span class="hljs-string">'HEAD'</span>,
-  <span class="hljs-string">'GET'</span>,
-  <span class="hljs-string">'POST'</span>,
-  <span class="hljs-string">'PUT'</span>,
-  <span class="hljs-string">'DELETE'</span>,
-]);
+			<p><code>Maybe</code> and <code>Result</code> are generalized as <code>Union</code> (which is a sort of Sum Type or Discriminated Union-ish tool). <code>Union</code> comes with the <code>match</code> expression for nice control flow everywhere:</p>
+			<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> _;  <span class="hljs-comment">// just a placeholder to make the Union object declaration valid</span>
+<span class="hljs-keyword">var</span> HTTPVerbs = Union({
+  OPTIONS: _,
+  HEAD: _,
+  GET: _,
+  POST: _,
+  PUT: _,
+  DELETE: _,
+});
 
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isIdempotent</span><span class="hljs-params">(verb)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isIdempotent</span>(<span class="hljs-params">verb</span>) </span>{
   <span class="hljs-keyword">return</span> verb.match({
     POST: () =&gt; <span class="hljs-literal">false</span>,
     _: () =&gt; <span class="hljs-literal">true</span>,      <span class="hljs-comment">// `_` is catch-all, just like in rust!</span>
@@ -1309,31 +1354,32 @@ isIdempotent(HTTPVerbs.OPTIONS());
 isIdempotent(HTTPVerbs.POST());
 <span class="hljs-comment">// =&gt; false</span>
 </code></pre>
-			<p>Methods, like the ones on <code>Result</code>s and <code>Option</code>s, can be attached when creating the <code>Enum</code>:</p>
-			<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> HTTPVerbs = Enum([
-  <span class="hljs-string">'OPTIONS'</span>,
-  <span class="hljs-string">'HEAD'</span>,
-  <span class="hljs-string">'GET'</span>,
-  <span class="hljs-string">'POST'</span>,
-  <span class="hljs-string">'PUT'</span>,
-  <span class="hljs-string">'DELETE'</span>,
-], {
-  isIdempotent: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.option === <span class="hljs-string">'POST'</span> ? <span class="hljs-literal">false</span> : <span class="hljs-literal">true</span>;
+			<p>Methods, like the ones on <code>Result</code>s and <code>Maybe</code>s, can be attached when creating the <code>Union</code>:</p>
+			<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> _;
+<span class="hljs-keyword">var</span> HTTPVerbs = Union({
+  OPTIONS: _,
+  HEAD: _,
+  GET: _,
+  POST: _,
+  PUT: _,
+  DELETE: _,
+}, {
+  isIdempotent: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.name === <span class="hljs-string">'POST'</span> ? <span class="hljs-literal">false</span> : <span class="hljs-literal">true</span>;
   }
 });
 
-<span class="hljs-comment">// or, since we are a method on the EnumOption, we can even use `match` in the method:</span>
-
-<span class="hljs-keyword">var</span> HTTPVerbs = Enum([
-  <span class="hljs-string">'OPTIONS'</span>,
-  <span class="hljs-string">'HEAD'</span>,
-  <span class="hljs-string">'GET'</span>,
-  <span class="hljs-string">'POST'</span>,
-  <span class="hljs-string">'PUT'</span>,
-  <span class="hljs-string">'DELETE'</span>,
-], {
-  isIdempotent: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-comment">// or, since we are a method on the UnionOption, we can even use `match` in the method:</span>
+<span class="hljs-keyword">var</span> _;
+<span class="hljs-keyword">var</span> HTTPVerbs = Union({
+  OPTIONS: _,
+  HEAD: _,
+  GET: _,
+  POST: _,
+  PUT: _,
+  DELETE: _,
+}, {
+  isIdempotent: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.match({
       POST: () =&gt; <span class="hljs-literal">false</span>,
       _: () =&gt; <span class="hljs-literal">true</span>,
@@ -1348,15 +1394,14 @@ HTTPVerbs.PUT().isIdempotent();
 			<h2 id="changes">Changes</h2>
 			<p>Todo for v1.0.0:</p>
 			<ul>
-				<li><p>[ ] Make errors nice.</p>
+				<li><p>[x] Make errors nice.</p>
 					<ul>
-						<li>[ ] Can we do nice things with the stack trace?</li>
-						<li>[x] What&#39;s the nicest thing we could be throwing? <em>EnumOptions!</em></li>
+						<li>just throw regular Error instances.</li>
 					</ul>
 				</li>
 				<li><p>[ ] Maaaaaaybe add some methods like <code>.equals</code> and <code>.toString</code></p>
 				</li>
-				<li><p>[ ] Fix up jsdoc API docs</p>
+				<li><p>[ ] Fix up typescript API docs</p>
 				</li>
 				<li><p>[ ] Improve the readme</p>
 					<ul>
@@ -1364,6 +1409,36 @@ HTTPVerbs.PUT().isIdempotent();
 						<li>[ ] Add API docs</li>
 					</ul>
 				</li>
+			</ul>
+			<h3 id="v0-7-0">v0.7.0</h3>
+			<p><em>in progress</em></p>
+			<h3 id="breaking">Breaking</h3>
+			<h3 id="other-changes">Other Changes</h3>
+			<h3 id="v0-6-0">v0.6.0</h3>
+			<p>2015-10-17</p>
+			<h4 id="breaking">Breaking</h4>
+			<ul>
+				<li>Only allow object Enum definition (<code>Enum({ONE, TWO, THREE})</code> only; no more
+					<code>Enum([&#39;ONE&#39;, &#39;TWO&#39;, &#39;THREE&#39;])</code>). This allows for better editor code
+					completion, and also enables some opt-in construction optimizations and
+				typechecking.</li>
+				<li>Enum option instance property <code>options</code> is now an Object instead of Array.</li>
+				<li>Throw <code>Error</code> instances instead of special internal error enums. It was a silly idea.</li>
+				<li>Remove sketchy faulty object typecheck for the Enum constructor. It&#39;s just not checked now. Whee.</li>
+				<li>Add a <code>static</code> param to the <code>Enum</code> function (after <code>proto</code>) for adding
+				stuff to the Enum.</li>
+				<li>Use the new <code>static</code> param to add a <code>.all</code> method to <code>Maybe</code> and <code>Result</code>,
+				whose behaviour is close to that of <code>Promise.all</code>.</li>
+				<li><strong><code>Enum</code> renamed to <code>Union</code>!</strong> <code>enum</code> is another thing in JavaScript, so
+				this is less confusing.</li>
+				<li>Remove the <code>take</code> method from <code>Some/None</code>.</li>
+				<li><strong><code>.match</code> now throws</strong> for unrecognized keys in a provided options object.</li>
+			</ul>
+			<h4 id="other-changes">Other Changes</h4>
+			<ul>
+				<li>Fix typescript interfaces for ResultOption (props =&gt; methods)</li>
+				<li>Annotate <code>match</code> param and return</li>
+				<li>Upgrade typescript version</li>
 			</ul>
 			<h3 id="v0-5-0">v0.5.0</h3>
 			<h4 id="breaking">Breaking</h4>
@@ -1433,68 +1508,14 @@ HTTPVerbs.PUT().isIdempotent();
 						<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L1">index.ts:1</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Rust-inspired Result<T, E> and Option<T> (called Maybe) wrappers for Javascript.</p>
-					</div>
-					<dl class="tsd-comment-tags">
-						<dt>author</dt>
-						<dd><p>mystor</p>
-						</dd>
-						<dt>author</dt>
-						<dd><p>uniphil</p>
-						</dd>
-					</dl>
-				</div>
-				<section class="tsd-panel tsd-member tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="_index_.enumoption" class="tsd-anchor"></a>
-					<h3>Enum<wbr>Option</h3>
-					<div class="tsd-signature tsd-kind-icon">Enum<wbr>Option<span class="tsd-signature-symbol">:</span> </div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L38">index.ts:38</a></li>
-						</ul>
-					</aside>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-						<a name="_index_.enumoption.match" class="tsd-anchor"></a>
-						<h3>match</h3>
-						<div class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L39">index.ts:39</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-								<li class="tsd-parameter-siganture">
-									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>paths: <span class="tsd-signature-type">Object</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</section>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="_index_.maybe" class="tsd-anchor"></a>
 					<h3>Maybe</h3>
 					<div class="tsd-signature tsd-kind-icon">Maybe<span class="tsd-signature-symbol">:</span> </div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L92">index.ts:92</a></li>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L195">index.ts:195</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L88">index.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L201">index.ts:201</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -1503,7 +1524,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">None<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L94">index.ts:94</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L90">index.ts:90</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1511,11 +1532,11 @@ HTTPVerbs.PUT().isIdempotent();
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter-siganture">
 									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></li>
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a></li>
 									</ul>
 									<ul class="tsd-descriptions">
 										<li class="tsd-description">
-											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></h4>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a></h4>
 										</li>
 									</ul>
 								</li>
@@ -1528,7 +1549,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">Some<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L93">index.ts:93</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L89">index.ts:89</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1536,7 +1557,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter-siganture">
 									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>someValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></li>
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>someValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a></li>
 									</ul>
 									<ul class="tsd-descriptions">
 										<li class="tsd-description">
@@ -1546,7 +1567,38 @@ HTTPVerbs.PUT().isIdempotent();
 													<h5>someValue: <span class="tsd-signature-type">any</span></h5>
 												</li>
 											</ul>
-											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></h4>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.maybe.all" class="tsd-anchor"></a>
+						<h3>all</h3>
+						<div class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L91">index.ts:91</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>values: <a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybeoption" class="tsd-signature-type">MaybeOption</a></h4>
 										</li>
 									</ul>
 								</li>
@@ -1560,7 +1612,7 @@ HTTPVerbs.PUT().isIdempotent();
 					<div class="tsd-signature tsd-kind-icon">Maybe<wbr>Option<span class="tsd-signature-symbol">:</span> </div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L97">index.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L94">index.ts:94</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -1569,7 +1621,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">and<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L116">index.ts:116</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L117">index.ts:117</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1600,7 +1652,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">and<wbr>Then<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L117">index.ts:117</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L118">index.ts:118</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1649,7 +1701,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">array<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L115">index.ts:115</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L116">index.ts:116</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1674,7 +1726,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">expect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L103">index.ts:103</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L104">index.ts:104</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1712,7 +1764,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">is<wbr>None<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L99">index.ts:99</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L100">index.ts:100</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1720,11 +1772,11 @@ HTTPVerbs.PUT().isIdempotent();
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter-siganture">
 									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></li>
 									</ul>
 									<ul class="tsd-descriptions">
 										<li class="tsd-description">
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Boolean</span></h4>
 										</li>
 									</ul>
 								</li>
@@ -1737,7 +1789,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">is<wbr>Some<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L98">index.ts:98</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L99">index.ts:99</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1745,11 +1797,11 @@ HTTPVerbs.PUT().isIdempotent();
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter-siganture">
 									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></li>
 									</ul>
 									<ul class="tsd-descriptions">
 										<li class="tsd-description">
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Boolean</span></h4>
 										</li>
 									</ul>
 								</li>
@@ -1762,7 +1814,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L110">index.ts:110</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L111">index.ts:111</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1811,7 +1863,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">map<wbr>Or<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L111">index.ts:111</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L112">index.ts:112</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1863,7 +1915,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">map<wbr>OrElse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L112">index.ts:112</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L113">index.ts:113</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1922,12 +1974,50 @@ HTTPVerbs.PUT().isIdempotent();
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.maybeoption.match" class="tsd-anchor"></a>
+						<h3>match</h3>
+						<div class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L98">index.ts:98</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<dl class="tsd-comment-tags">
+								<dt>throws</dt>
+								<dd><p>Error if the match is not exhaustive</p>
+								</dd>
+							</dl>
+						</div>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>opts: <span class="tsd-signature-type">Object</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.maybeoption.okor" class="tsd-anchor"></a>
 						<h3>ok<wbr>Or</h3>
 						<div class="tsd-signature tsd-kind-icon">ok<wbr>Or<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L113">index.ts:113</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L114">index.ts:114</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1958,7 +2048,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">ok<wbr>OrElse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L114">index.ts:114</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L115">index.ts:115</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2001,7 +2091,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">or<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L118">index.ts:118</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L119">index.ts:119</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2032,7 +2122,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">or<wbr>Else<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L119">index.ts:119</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L120">index.ts:120</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2070,43 +2160,18 @@ HTTPVerbs.PUT().isIdempotent();
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-						<a name="_index_.maybeoption.take" class="tsd-anchor"></a>
-						<h3>take</h3>
-						<div class="tsd-signature tsd-kind-icon">take<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L120">index.ts:120</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-								<li class="tsd-parameter-siganture">
-									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h4>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.maybeoption.unwrap" class="tsd-anchor"></a>
 						<h3>unwrap</h3>
 						<div class="tsd-signature tsd-kind-icon">unwrap<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L107">index.ts:107</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L108">index.ts:108</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<dl class="tsd-comment-tags">
 								<dt>throws</dt>
-								<dd><p>MaybeError.UnwrapNone</p>
+								<dd><p>Error if it is None</p>
 								</dd>
 							</dl>
 						</div>
@@ -2132,7 +2197,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">unwrap<wbr>Or<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L108">index.ts:108</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L109">index.ts:109</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2163,7 +2228,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">unwrap<wbr>OrElse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L109">index.ts:109</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L110">index.ts:110</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2202,13 +2267,54 @@ HTTPVerbs.PUT().isIdempotent();
 					</section>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="_index_.maybestatic" class="tsd-anchor"></a>
+					<h3>Maybe<wbr>Static</h3>
+					<div class="tsd-signature tsd-kind-icon">Maybe<wbr>Static<span class="tsd-signature-symbol">:</span> </div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L190">index.ts:190</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.maybestatic.all-1" class="tsd-anchor"></a>
+						<h3>all</h3>
+						<div class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L191">index.ts:191</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>values: <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="_index_.result" class="tsd-anchor"></a>
 					<h3>Result</h3>
 					<div class="tsd-signature tsd-kind-icon">Result<span class="tsd-signature-symbol">:</span> </div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L210">index.ts:210</a></li>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L298">index.ts:298</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L216">index.ts:216</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L323">index.ts:323</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -2217,7 +2323,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">Err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L212">index.ts:212</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L218">index.ts:218</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2225,7 +2331,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter-siganture">
 									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>errValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></li>
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>errValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></li>
 									</ul>
 									<ul class="tsd-descriptions">
 										<li class="tsd-description">
@@ -2235,7 +2341,7 @@ HTTPVerbs.PUT().isIdempotent();
 													<h5>errValue: <span class="tsd-signature-type">any</span></h5>
 												</li>
 											</ul>
-											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></h4>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></h4>
 										</li>
 									</ul>
 								</li>
@@ -2248,7 +2354,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">Ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L211">index.ts:211</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L217">index.ts:217</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2256,7 +2362,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<ul class="tsd-parameters">
 								<li class="tsd-parameter-siganture">
 									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>okValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></li>
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>okValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></li>
 									</ul>
 									<ul class="tsd-descriptions">
 										<li class="tsd-description">
@@ -2266,7 +2372,38 @@ HTTPVerbs.PUT().isIdempotent();
 													<h5>okValue: <span class="tsd-signature-type">any</span></h5>
 												</li>
 											</ul>
-											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.enumoption" class="tsd-signature-type">EnumOption</a></h4>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.result.all-2" class="tsd-anchor"></a>
+						<h3>all</h3>
+						<div class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L219">index.ts:219</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>values: <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></h4>
 										</li>
 									</ul>
 								</li>
@@ -2280,7 +2417,7 @@ HTTPVerbs.PUT().isIdempotent();
 					<div class="tsd-signature tsd-kind-icon">Result<wbr>Option<span class="tsd-signature-symbol">:</span> </div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L215">index.ts:215</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L222">index.ts:222</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
@@ -2289,7 +2426,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">and<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L223">index.ts:223</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L234">index.ts:234</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2320,7 +2457,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">and<wbr>Then<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L224">index.ts:224</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L235">index.ts:235</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2369,7 +2506,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">array<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L222">index.ts:222</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L233">index.ts:233</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2391,32 +2528,77 @@ HTTPVerbs.PUT().isIdempotent();
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.resultoption.err-1" class="tsd-anchor"></a>
 						<h3>err</h3>
-						<div class="tsd-signature tsd-kind-icon">err<span class="tsd-signature-symbol">:</span> <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></div>
+						<div class="tsd-signature tsd-kind-icon">err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L219">index.ts:219</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L230">index.ts:230</a></li>
 							</ul>
 						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.resultoption.iserr" class="tsd-anchor"></a>
 						<h3>is<wbr>Err</h3>
-						<div class="tsd-signature tsd-kind-icon">is<wbr>Err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<div class="tsd-signature tsd-kind-icon">is<wbr>Err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L217">index.ts:217</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L228">index.ts:228</a></li>
 							</ul>
 						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Boolean</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.resultoption.isok" class="tsd-anchor"></a>
 						<h3>is<wbr>Ok</h3>
-						<div class="tsd-signature tsd-kind-icon">is<wbr>Ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+						<div class="tsd-signature tsd-kind-icon">is<wbr>Ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L216">index.ts:216</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L227">index.ts:227</a></li>
 							</ul>
 						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Boolean</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Boolean</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.resultoption.map-1" class="tsd-anchor"></a>
@@ -2424,7 +2606,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L220">index.ts:220</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L231">index.ts:231</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2473,7 +2655,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">map<wbr>Err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L221">index.ts:221</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L232">index.ts:232</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2517,14 +2699,67 @@ HTTPVerbs.PUT().isIdempotent();
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-						<a name="_index_.resultoption.ok-1" class="tsd-anchor"></a>
-						<h3>ok</h3>
-						<div class="tsd-signature tsd-kind-icon">ok<span class="tsd-signature-symbol">:</span> <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></div>
+						<a name="_index_.resultoption.match-1" class="tsd-anchor"></a>
+						<h3>match</h3>
+						<div class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L218">index.ts:218</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L226">index.ts:226</a></li>
 							</ul>
 						</aside>
+						<div class="tsd-comment tsd-typography">
+							<dl class="tsd-comment-tags">
+								<dt>throws</dt>
+								<dd><p>Error if the match is not exhaustive</p>
+								</dd>
+							</dl>
+						</div>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>opts: <span class="tsd-signature-type">Object</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.resultoption.ok-1" class="tsd-anchor"></a>
+						<h3>ok</h3>
+						<div class="tsd-signature tsd-kind-icon">ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L229">index.ts:229</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 						<a name="_index_.resultoption.or-1" class="tsd-anchor"></a>
@@ -2532,7 +2767,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">or<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L225">index.ts:225</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L236">index.ts:236</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2563,7 +2798,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">or<wbr>Else<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L226">index.ts:226</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L237">index.ts:237</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2612,7 +2847,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">unwrap<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L232">index.ts:232</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L243">index.ts:243</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2644,7 +2879,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">unwrap<wbr>Err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L236">index.ts:236</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L247">index.ts:247</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2676,7 +2911,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">unwrap<wbr>Or<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L227">index.ts:227</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L238">index.ts:238</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2707,7 +2942,7 @@ HTTPVerbs.PUT().isIdempotent();
 						<div class="tsd-signature tsd-kind-icon">unwrap<wbr>OrElse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L228">index.ts:228</a></li>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L239">index.ts:239</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2751,56 +2986,168 @@ HTTPVerbs.PUT().isIdempotent();
 						</div>
 					</section>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="_index_.resultstatic" class="tsd-anchor"></a>
+					<h3>Result<wbr>Static</h3>
+					<div class="tsd-signature tsd-kind-icon">Result<wbr>Static<span class="tsd-signature-symbol">:</span> </div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L313">index.ts:313</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.resultstatic.all-3" class="tsd-anchor"></a>
+						<h3>all</h3>
+						<div class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L314">index.ts:314</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>values: <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="_index_.unionoption" class="tsd-anchor"></a>
+					<h3>Union<wbr>Option</h3>
+					<div class="tsd-signature tsd-kind-icon">Union<wbr>Option<span class="tsd-signature-symbol">:</span> </div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L44">index.ts:44</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.unionoption.constructor" class="tsd-anchor"></a>
+						<h3>constructor</h3>
+						<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported">
+							<li class="tsd-signature tsd-kind-icon">new <wbr>Union<wbr>Option<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.unionoption" class="tsd-signature-type">UnionOption</a></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L48">index.ts:48</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>options: <span class="tsd-signature-type">any</span></h5>
+									</li>
+									<li>
+										<h5>name: <span class="tsd-signature-type">String</span></h5>
+									</li>
+									<li>
+										<h5>data: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.unionoption" class="tsd-signature-type">UnionOption</a></h4>
+							</li>
+						</ul>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.unionoption.data" class="tsd-anchor"></a>
+						<h3>data</h3>
+						<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L47">index.ts:47</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.unionoption.match-2" class="tsd-anchor"></a>
+						<h3>match</h3>
+						<div class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L48">index.ts:48</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>paths: <span class="tsd-signature-type">Object</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.unionoption.name" class="tsd-anchor"></a>
+						<h3>name</h3>
+						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">String</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L46">index.ts:46</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+						<a name="_index_.unionoption.options" class="tsd-anchor"></a>
+						<h3>options</h3>
+						<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L45">index.ts:45</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="_index_._" class="tsd-anchor"></a>
 					<h3>$</h3>
 					<div class="tsd-signature tsd-kind-icon">$<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L79">index.ts:79</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L11">index.ts:11</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="_index_.enumerr" class="tsd-anchor"></a>
-					<h3>Enum<wbr>Err</h3>
-					<div class="tsd-signature tsd-kind-icon">Enum<wbr>Err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L80">index.ts:80</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>Bad<wbr>Option<wbr>Type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>Missing<wbr>Options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>Non<wbr>Exhaustive<wbr>Match<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="_index_.maybeerror" class="tsd-anchor"></a>
-					<h3>Maybe<wbr>Error</h3>
-					<div class="tsd-signature tsd-kind-icon">Maybe<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L87">index.ts:87</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>Unwrap<wbr>None<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
-							</li>
-						</ul>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Rust-inspired Result<T, E> and Option<T> (called Maybe) wrappers for Javascript.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>author</dt>
+							<dd><p>mystor</p>
+							</dd>
+							<dt>author</dt>
+							<dd><p>uniphil</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
@@ -2809,7 +3156,7 @@ HTTPVerbs.PUT().isIdempotent();
 					<div class="tsd-signature tsd-kind-icon">Result<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L204">index.ts:204</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L210">index.ts:210</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -2824,53 +3171,17 @@ HTTPVerbs.PUT().isIdempotent();
 						</ul>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="_index_.assign" class="tsd-anchor"></a>
-					<h3>assign</h3>
-					<div class="tsd-signature tsd-kind-icon">assign<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L13">index.ts:13</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Object.assign ponyfill</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-siganture">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>objs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>objs: <span class="tsd-signature-type">Object[]</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Object</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
-					<a name="_index_.enum" class="tsd-anchor"></a>
-					<h3>Enum</h3>
+					<a name="_index_.union" class="tsd-anchor"></a>
+					<h3>Union</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">Enum&lt;T&gt;<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string[]</span>, proto<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, factory<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+						<li class="tsd-signature tsd-kind-icon">Union&lt;T&gt;<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, proto<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, static<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, factory<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L54">index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L65">index.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -2882,12 +3193,13 @@ HTTPVerbs.PUT().isIdempotent();
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>options: <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string[]</span></h5>
+									<h5>options: <span class="tsd-signature-type">T</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> proto: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
-									<ul class="tsd-parameters">
-									</ul>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> proto: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> static: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> factory: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;_factory</span></h5>
@@ -2901,33 +3213,51 @@ HTTPVerbs.PUT().isIdempotent();
 					<a name="_index_._factory" class="tsd-anchor"></a>
 					<h3>_factory</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">_factory<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string[]</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, EnumOptionClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__function</span></li>
+						<li class="tsd-signature tsd-kind-icon">_factory<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, UnionOptionClass<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.unionoption" class="tsd-signature-type">UnionOption</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L43">index.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L53">index.ts:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>options: <span class="tsd-signature-type">string[]</span></h5>
+									<h5>options: <span class="tsd-signature-type">Object</span></h5>
 								</li>
 								<li>
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>EnumOptionClass: <span class="tsd-signature-type">any</span></h5>
+									<h5>UnionOptionClass: <a href="index.html#_index_.unionoption" class="tsd-signature-type">UnionOption</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">__function</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.unionoption" class="tsd-signature-type">UnionOption</a></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.unionoption" class="tsd-signature-type">UnionOption</a></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="_index_.match-1" class="tsd-anchor"></a>
+					<a name="_index_.match-3" class="tsd-anchor"></a>
 					<h3>match</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<li class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">(</span>to<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
@@ -2936,13 +3266,13 @@ HTTPVerbs.PUT().isIdempotent();
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L19">index.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L17">index.ts:17</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<dl class="tsd-comment-tags">
 									<dt>throws</dt>
-									<dd><p>EnumError.NonExhaustiveMatch</p>
+									<dd><p>Error if the match is not exhaustive, or if there are weird keys</p>
 									</dd>
 								</dl>
 							</div>
@@ -2969,19 +3299,19 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.and-2" class="tsd-anchor"></a>
 						<h3>and</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">and<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">and<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L171">index.ts:171</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L175">index.ts:175</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>other: <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h5>
+										<h5>other: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -2992,37 +3322,19 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.andthen-2" class="tsd-anchor"></a>
 						<h3>and<wbr>Then</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">and<wbr>Then<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">and<wbr>Then<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L174">index.ts:174</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L178">index.ts:178</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>fn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>someValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-parameters-title">Parameters</h4>
-														<ul class="tsd-parameters">
-															<li>
-																<h5>someValue: <span class="tsd-signature-type">any</span></h5>
-															</li>
-														</ul>
-														<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>fn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3039,7 +3351,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L168">index.ts:168</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L172">index.ts:172</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -3056,7 +3368,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L133">index.ts:133</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L137">index.ts:137</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3079,7 +3391,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L130">index.ts:130</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L134">index.ts:134</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -3096,7 +3408,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L127">index.ts:127</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L131">index.ts:131</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -3107,37 +3419,19 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.map-2" class="tsd-anchor"></a>
 						<h3>map</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L153">index.ts:153</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L157">index.ts:157</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>fn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>someValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-parameters-title">Parameters</h4>
-														<ul class="tsd-parameters">
-															<li>
-																<h5>someValue: <span class="tsd-signature-type">any</span></h5>
-															</li>
-														</ul>
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>fn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3148,13 +3442,13 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.mapor-1" class="tsd-anchor"></a>
 						<h3>map<wbr>Or</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">map<wbr>Or<span class="tsd-signature-symbol">(</span>def<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">map<wbr>Or<span class="tsd-signature-symbol">(</span>def<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L156">index.ts:156</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L160">index.ts:160</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3163,25 +3457,7 @@ HTTPVerbs.PUT().isIdempotent();
 										<h5>def: <span class="tsd-signature-type">any</span></h5>
 									</li>
 									<li>
-										<h5>fn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>someValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-parameters-title">Parameters</h4>
-														<ul class="tsd-parameters">
-															<li>
-																<h5>someValue: <span class="tsd-signature-type">any</span></h5>
-															</li>
-														</ul>
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>fn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3192,52 +3468,22 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.maporelse-1" class="tsd-anchor"></a>
 						<h3>map<wbr>OrElse</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">map<wbr>OrElse<span class="tsd-signature-symbol">(</span>defFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">map<wbr>OrElse<span class="tsd-signature-symbol">(</span>defFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L159">index.ts:159</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L163">index.ts:163</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>defFn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>defFn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 									<li>
-										<h5>fn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>someValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-parameters-title">Parameters</h4>
-														<ul class="tsd-parameters">
-															<li>
-																<h5>someValue: <span class="tsd-signature-type">any</span></h5>
-															</li>
-														</ul>
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>fn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3245,7 +3491,7 @@ HTTPVerbs.PUT().isIdempotent();
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-						<a name="_index_.maybeproto.match-2" class="tsd-anchor"></a>
+						<a name="_index_.maybeproto.match-4" class="tsd-anchor"></a>
 						<h3>match</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 							<li class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">(</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
@@ -3277,7 +3523,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L162">index.ts:162</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L166">index.ts:166</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3294,31 +3540,19 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.okorelse-1" class="tsd-anchor"></a>
 						<h3>ok<wbr>OrElse</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">ok<wbr>OrElse<span class="tsd-signature-symbol">(</span>errFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">ok<wbr>OrElse<span class="tsd-signature-symbol">(</span>errFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L165">index.ts:165</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L169">index.ts:169</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>errFn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>errFn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3329,19 +3563,19 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.or-2" class="tsd-anchor"></a>
 						<h3>or</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">or<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">or<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L177">index.ts:177</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L181">index.ts:181</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>other: <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h5>
+										<h5>other: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3352,50 +3586,21 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.orelse-2" class="tsd-anchor"></a>
 						<h3>or<wbr>Else</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">or<wbr>Else<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">or<wbr>Else<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L180">index.ts:180</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L184">index.ts:184</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>fn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-returns-title">Returns <a href="index.html#_index_.maybe" class="tsd-signature-type">Maybe</a></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>fn: <span class="tsd-signature-type">any</span></h5>
 									</li>
 								</ul>
-								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-							</li>
-						</ul>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-						<a name="_index_.maybeproto.take-1" class="tsd-anchor"></a>
-						<h3>take</h3>
-						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">take<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-						</ul>
-						<ul class="tsd-descriptions">
-							<li class="tsd-description">
-								<aside class="tsd-sources">
-									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L183">index.ts:183</a></li>
-									</ul>
-								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 							</li>
 						</ul>
@@ -3410,7 +3615,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L140">index.ts:140</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L144">index.ts:144</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3427,7 +3632,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L147">index.ts:147</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L151">index.ts:151</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3444,31 +3649,52 @@ HTTPVerbs.PUT().isIdempotent();
 						<a name="_index_.maybeproto.unwraporelse-2" class="tsd-anchor"></a>
 						<h3>unwrap<wbr>OrElse</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-							<li class="tsd-signature tsd-kind-icon">unwrap<wbr>OrElse<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+							<li class="tsd-signature tsd-kind-icon">unwrap<wbr>OrElse<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 						</ul>
 						<ul class="tsd-descriptions">
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L150">index.ts:150</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L154">index.ts:154</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
-										<h5>fn: <span class="tsd-signature-type">function</span></h5>
-										<ul class="tsd-parameters">
-											<li class="tsd-parameter-siganture">
-												<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-													<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-												</ul>
-												<ul class="tsd-descriptions">
-													<li class="tsd-description">
-														<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-													</li>
-												</ul>
-											</li>
-										</ul>
+										<h5>fn: <span class="tsd-signature-type">any</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="_index_.maybestatic-1" class="tsd-anchor"></a>
+					<h3>maybe<wbr>Static</h3>
+					<div class="tsd-signature tsd-kind-icon">maybe<wbr>Static<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L194">index.ts:194</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="_index_.maybestatic-1.all-4" class="tsd-anchor"></a>
+						<h3>all</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
+							<li class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L195">index.ts:195</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>values: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3482,7 +3708,7 @@ HTTPVerbs.PUT().isIdempotent();
 					<div class="tsd-signature tsd-kind-icon">result<wbr>Proto<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L239">index.ts:239</a></li>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L250">index.ts:250</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
@@ -3495,7 +3721,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L264">index.ts:264</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L279">index.ts:279</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3518,7 +3744,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L267">index.ts:267</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L282">index.ts:282</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3541,7 +3767,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L261">index.ts:261</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L276">index.ts:276</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -3558,7 +3784,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L252">index.ts:252</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L267">index.ts:267</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3575,7 +3801,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L246">index.ts:246</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L261">index.ts:261</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -3592,7 +3818,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L243">index.ts:243</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L258">index.ts:258</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -3609,7 +3835,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L255">index.ts:255</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L270">index.ts:270</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3632,7 +3858,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L258">index.ts:258</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L273">index.ts:273</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3646,7 +3872,7 @@ HTTPVerbs.PUT().isIdempotent();
 						</ul>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
-						<a name="_index_.resultproto.match-3" class="tsd-anchor"></a>
+						<a name="_index_.resultproto.match-5" class="tsd-anchor"></a>
 						<h3>match</h3>
 						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
 							<li class="tsd-signature tsd-kind-icon">match<span class="tsd-signature-symbol">(</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
@@ -3655,7 +3881,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L240">index.ts:240</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L251">index.ts:251</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3678,7 +3904,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L249">index.ts:249</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L264">index.ts:264</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3695,7 +3921,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L270">index.ts:270</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L285">index.ts:285</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3718,7 +3944,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L273">index.ts:273</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L288">index.ts:288</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3741,7 +3967,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L282">index.ts:282</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L297">index.ts:297</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3758,7 +3984,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L289">index.ts:289</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L304">index.ts:304</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -3775,7 +4001,7 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L276">index.ts:276</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L291">index.ts:291</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3798,13 +4024,46 @@ HTTPVerbs.PUT().isIdempotent();
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L279">index.ts:279</a></li>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L294">index.ts:294</a></li>
 									</ul>
 								</aside>
 								<h4 class="tsd-parameters-title">Parameters</h4>
 								<ul class="tsd-parameters">
 									<li>
 										<h5>fn: <span class="tsd-signature-type">any</span></h5>
+									</li>
+								</ul>
+								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="_index_.resultstatic-1" class="tsd-anchor"></a>
+					<h3>result<wbr>Static</h3>
+					<div class="tsd-signature tsd-kind-icon">result<wbr>Static<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L317">index.ts:317</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="_index_.resultstatic-1.all-5" class="tsd-anchor"></a>
+						<h3>all</h3>
+						<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-object-literal tsd-is-not-exported">
+							<li class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						</ul>
+						<ul class="tsd-descriptions">
+							<li class="tsd-description">
+								<aside class="tsd-sources">
+									<ul>
+										<li>Defined in <a href="https://github.com/uniphil/results/blob/master/index.ts#L318">index.ts:318</a></li>
+									</ul>
+								</aside>
+								<h4 class="tsd-parameters-title">Parameters</h4>
+								<ul class="tsd-parameters">
+									<li>
+										<h5>values: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#_index_.resultoption" class="tsd-signature-type">ResultOption</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									</li>
 								</ul>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
