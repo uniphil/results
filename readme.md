@@ -220,11 +220,13 @@ Todo for v1.0.0:
   * **`Enum` renamed to `Union`!** `enum` is another thing in JavaScript, so
     this is less confusing.
   * Remove the `take` method from `Some/None`.
+  * **`.match` now throws** for unrecognized keys in a provided options object.
 
 #### Other Changes
 
   * Fix typescript interfaces for ResultOption (props => methods)
   * Annotate `match` param and return
+  * Upgrade typescript version
 
 
 ### v0.5.0
