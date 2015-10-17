@@ -9,6 +9,9 @@ describe('Union', () => {
   it('should accept an object', () => {
     assert.equal(Union({A: null}).A().match({A: () => 42}), 42);
   });
+  it('should.. work for empty object... I guess', () => {
+    assert.ok(Union({}));
+  });
   describe('.match', () => {
     it('should ensure that the match paths are exhaustive', () => {
       var myUnion = Union({A: 0, B: 0}).A();
@@ -27,6 +30,11 @@ describe('Union', () => {
     it('should pass itself to catch-all `match` callbacks', () => {
       assert.equal(Union({A: 1}).A(42).match({_: (en) => en.name}), 'A');
       assert.equal(Union({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
+    });
+    it('should throw for unrecognized keys', () => {
+      var a = Union({A: 0, B: 1}).A();
+      var f = () => null;
+      assert.throws(() => a.match({A: f, B: f, C: f}), Error);
     });
   });
 });
