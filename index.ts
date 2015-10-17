@@ -55,7 +55,7 @@ function _factory(options: Object, name: string, EnumOptionClass: EnumOption):
 }
 
 
-function Enum<T>(options: T, proto:any={}, factory:any=_factory): T {
+function Enum<T>(options: T, proto:any={}, static:any={}, factory:any=_factory): T {
   function EnumOption(options: T, name: string, data: any[]) {
     this.options = options;
     this.name = name;
@@ -65,16 +65,23 @@ function Enum<T>(options: T, proto:any={}, factory:any=_factory): T {
   if (typeof proto.match === 'undefined') {
     proto.match = match;
   }
-  return <T>Object.keys(options).reduce((obj, name) => {
+  var enum_ = Object.keys(options).reduce((obj, name) => {
     obj[name] = factory(options, name, EnumOption);
     return obj;
   }, {});
+  for (var k in static) {
+    if (static.hasOwnProperty(k)) {
+      enum_[k] = static[k];
+    }
+  }
+  return <T>enum_;
 }
 
 
 interface Maybe {
-  Some: (someValue) => EnumOption;
-  None: () => EnumOption;
+  Some: (someValue: any) => MaybeOption;
+  None: () => MaybeOption;
+  all: (values: MaybeOption[]) => MaybeOption;
 }
 
 interface MaybeOption {
@@ -183,10 +190,22 @@ var maybeProto: MaybeOption = {
   },
 };
 
+
+interface MaybeStatic {
+  all: (values: ResultOption[]) => ResultOption;
+}
+
+var maybeStatic: MaybeStatic = {
+  all: (values) => values.reduce((res, next) =>
+    res.andThen(resArr => next.map(v => resArr.concat(v)))
+  , Maybe.Some([])),
+};
+
+
 var Maybe = Enum({
   Some: $,
   None: $,
-}, maybeProto, (options, name, EnumOptionClass) =>
+}, maybeProto, maybeStatic, (options, name, EnumOptionClass) =>
   name === 'Some' ?
     (value) => new EnumOptionClass(options, name, value) :
     () => new EnumOptionClass(options, name, null));
@@ -199,8 +218,9 @@ var ResultError = Enum({
 
 
 interface Result {
-  Ok: (okValue) => EnumOption;
-  Err: (errValue) => EnumOption;
+  Ok: (okValue: any) => ResultOption;
+  Err: (errValue: any) => ResultOption;
+  all: (values: ResultOption[]) => ResultOption;
 }
 
 interface ResultOption {
@@ -294,10 +314,20 @@ var resultProto: ResultOption = {
   },
 };
 
+interface ResultStatic {
+  all: (values: ResultOption[]) => ResultOption;
+}
+
+var resultStatic: ResultStatic = {
+  all: (values) => values.reduce((res, next) =>
+    res.andThen(resArr => next.map(v => resArr.concat(v)))
+  , Result.Ok([])),
+};
+
 var Result = Enum({
   Ok:  $,
   Err: $,
-}, resultProto, (options, name, EnumOptionClass) =>
+}, resultProto, resultStatic, (options, name, EnumOptionClass) =>
   (value) => new EnumOptionClass(options, name, value));
 
 

@@ -214,6 +214,10 @@ Todo for v1.0.0:
   * Enum option instance property `options` is now an Object instead of Array.
   * Throw `Error` instances instead of special internal error enums. It was a silly idea.
   * Remove sketchy faulty object typecheck for the Enum constructor. It's just not checked now. Whee.
+  * Add a `static` param to the `Enum` function (after `proto`) for adding
+    stuff to the Enum.
+  * Use the new `static` param to add a `.all` method to `Maybe` and `Result`,
+    whose behaviour is close to that of `Promise.all`.
 
 #### Other Changes
 
