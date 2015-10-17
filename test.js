@@ -9,23 +9,33 @@ describe('Union', () => {
   it('should accept an object', () => {
     assert.equal(Union({A: null}).A().match({A: () => 42}), 42);
   });
-  it('should ensure that the match paths are exhaustive', () => {
-    var myUnion = Union({A: 0, B: 0}).A();
-    assert.throws(() => myUnion.match({a: () => 'whatever'}), Error);
+  it('should.. work for empty object... I guess', () => {
+    assert.ok(Union({}));
   });
-  it('should always be exhaustive with a wildcard match', () => {
-    assert.equal(Union({A: 0, B: 0}).A().match({_: () => 42}), 42);
-    assert.equal(Union({A: 0, B: 0}).B().match({_: () => 42}), 42);
-  });
-  it('should pass a value to `match` callbacks', () => {
-    assert.equal(Union({A: 1}).A(42).match({A: (v) => v}), 42);
-  });
-  it('should pass all values to `match` callbacks', () => {
-    assert.equal(Union({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
-  });
-  it('should pass itself to catch-all `match` callbacks', () => {
-    assert.equal(Union({A: 1}).A(42).match({_: (en) => en.name}), 'A');
-    assert.equal(Union({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
+  describe('.match', () => {
+    it('should ensure that the match paths are exhaustive', () => {
+      var myUnion = Union({A: 0, B: 0}).A();
+      assert.throws(() => myUnion.match({a: () => 'whatever'}), Error);
+    });
+    it('should always be exhaustive with a wildcard match', () => {
+      assert.equal(Union({A: 0, B: 0}).A().match({_: () => 42}), 42);
+      assert.equal(Union({A: 0, B: 0}).B().match({_: () => 42}), 42);
+    });
+    it('should pass a value to `match` callbacks', () => {
+      assert.equal(Union({A: 1}).A(42).match({A: (v) => v}), 42);
+    });
+    it('should pass all values to `match` callbacks', () => {
+      assert.equal(Union({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
+    });
+    it('should pass itself to catch-all `match` callbacks', () => {
+      assert.equal(Union({A: 1}).A(42).match({_: (en) => en.name}), 'A');
+      assert.equal(Union({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
+    });
+    it('should throw for unrecognized keys', () => {
+      var a = Union({A: 0, B: 1}).A();
+      var f = () => null;
+      assert.throws(() => a.match({A: f, B: f, C: f}), Error);
+    });
   });
 });
 
