@@ -217,10 +217,8 @@ _in progress_
 
 #### Breaking
 
-  * Only allow object Enum definition (`Enum({ONE, TWO, THREE})` only; no more
-    `Enum(['ONE', 'TWO', 'THREE'])`). This allows for better editor code
-    completion, and also enables some opt-in construction optimizations and
-    typechecking.
+  * Only allow object Enum definition (`Enum({ONE: {}, TWO: {}, THREE: {}})` only; no more
+    `Enum(['ONE', 'TWO', 'THREE'])`).
   * Enum option instance property `options` is now an Object instead of Array.
   * Throw `Error` instances instead of special internal error enums. It was a silly idea.
   * Remove sketchy faulty object typecheck for the Enum constructor. It's just not checked now. Whee.
