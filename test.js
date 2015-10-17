@@ -1,31 +1,31 @@
 var assert = require('assert');
-var { Enum, Result, Ok, Err, Maybe, Some, None } = require('./index');
+var { Union, Result, Ok, Err, Maybe, Some, None } = require('./index');
 
 
-describe('Enum', () => {
+describe('Union', () => {
   it('should fail if options are missing', () => {
-    assert.throws(() => Enum(), Error);
+    assert.throws(() => Union(), Error);
   });
   it('should accept an object', () => {
-    assert.equal(Enum({A: null}).A().match({A: () => 42}), 42);
+    assert.equal(Union({A: null}).A().match({A: () => 42}), 42);
   });
   it('should ensure that the match paths are exhaustive', () => {
-    var myEnum = Enum({A: 0, B: 0}).A();
-    assert.throws(() => myEnum.match({a: () => 'whatever'}), Error);
+    var myUnion = Union({A: 0, B: 0}).A();
+    assert.throws(() => myUnion.match({a: () => 'whatever'}), Error);
   });
   it('should always be exhaustive with a wildcard match', () => {
-    assert.equal(Enum({A: 0, B: 0}).A().match({_: () => 42}), 42);
-    assert.equal(Enum({A: 0, B: 0}).B().match({_: () => 42}), 42);
+    assert.equal(Union({A: 0, B: 0}).A().match({_: () => 42}), 42);
+    assert.equal(Union({A: 0, B: 0}).B().match({_: () => 42}), 42);
   });
   it('should pass a value to `match` callbacks', () => {
-    assert.equal(Enum({A: 1}).A(42).match({A: (v) => v}), 42);
+    assert.equal(Union({A: 1}).A(42).match({A: (v) => v}), 42);
   });
   it('should pass all values to `match` callbacks', () => {
-    assert.equal(Enum({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
+    assert.equal(Union({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
   });
   it('should pass itself to catch-all `match` callbacks', () => {
-    assert.equal(Enum({A: 1}).A(42).match({_: (en) => en.name}), 'A');
-    assert.equal(Enum({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
+    assert.equal(Union({A: 1}).A(42).match({_: (en) => en.name}), 'A');
+    assert.equal(Union({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
   });
 });
 
