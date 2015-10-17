@@ -5,10 +5,15 @@
  * @author uniphil
  */
 /// <reference path="./node.d.ts" />
-/**
- * @throws EnumError.NonExhaustiveMatch
- */
+var $;
 function match(to) {
+    for (var k in to) {
+        if (to.hasOwnProperty(k)) {
+            if (!this.options.hasOwnProperty(k) && k !== '_') {
+                throw new Error("Union match: unrecognized match option: '" + k + "'");
+            }
+        }
+    }
     if (typeof to._ === 'function') {
         if (typeof to[this.name] === 'function') {
             return to[this.name].apply(null, this.data);
@@ -18,53 +23,48 @@ function match(to) {
         }
     }
     else {
-        // ensure match is exhaustive
         for (var k in this.options) {
             if (typeof to[k] !== 'function') {
-                throw EnumErr.NonExhaustiveMatch(k);
+                throw new Error("Union match: Non-exhaustive match is missing '" + k + "'");
             }
         }
         return to[this.name].apply(null, this.data);
     }
 }
 ;
-function _factory(options, name, EnumOptionClass) {
+function _factory(options, name, UnionOptionClass) {
     return function () {
         var data = [];
         for (var i = 0; i < arguments.length; i++) {
             data[i] = arguments[i];
         }
-        return new EnumOptionClass(options, name, data);
+        return new UnionOptionClass(options, name, data);
     };
 }
-function Enum(options, proto, factory) {
+function Union(options, proto, static, factory) {
     if (proto === void 0) { proto = {}; }
+    if (static === void 0) { static = {}; }
     if (factory === void 0) { factory = _factory; }
-    if (typeof options !== 'object') {
-        throw EnumErr.BadOptionType();
-    }
-    function EnumOption(options, name, data) {
+    function UnionOption(options, name, data) {
         this.options = options;
         this.name = name;
         this.data = data;
     }
-    EnumOption.prototype = proto;
+    UnionOption.prototype = proto;
     if (typeof proto.match === 'undefined') {
         proto.match = match;
     }
-    return Object.keys(options).reduce(function (obj, name) {
-        obj[name] = factory(options, name, EnumOption);
+    var union_ = Object.keys(options).reduce(function (obj, name) {
+        obj[name] = factory(options, name, UnionOption);
         return obj;
     }, {});
+    for (var k in static) {
+        if (static.hasOwnProperty(k)) {
+            union_[k] = static[k];
+        }
+    }
+    return union_;
 }
-var $;
-var EnumErr = Enum({
-    BadOptionType: $,
-    NonExhaustiveMatch: $,
-});
-var MaybeError = Enum({
-    UnwrapNone: $,
-});
 var maybeProto = {
     match: function (paths) {
         return match.call({
@@ -92,7 +92,7 @@ var maybeProto = {
             return this.data;
         }
         else {
-            throw MaybeError.UnwrapNone('Tried to unwrap None');
+            throw new Error('Maybe Union: Tried to .unwrap() None as Some');
         }
     },
     unwrapOr: function (def) {
@@ -117,7 +117,7 @@ var maybeProto = {
         return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(errFn());
     },
     array: function () {
-        return (this.name === 'Some') ? [this.data] : []; // .iter; .into_item
+        return (this.name === 'Some') ? [this.data] : [];
     },
     and: function (other) {
         return (this.name === 'Some') ? other : this;
@@ -131,27 +131,21 @@ var maybeProto = {
     orElse: function (fn) {
         return (this.name === 'Some') ? this : fn();
     },
-    take: function () {
-        if (this.name === 'Some') {
-            var taken = Maybe.Some(this.data);
-            this.data = undefined;
-            this.name = 'None';
-            return taken;
-        }
-        else {
-            return Maybe.None();
-        }
-    },
 };
-var Maybe = Enum({
+var maybeStatic = {
+    all: function (values) { return values.reduce(function (res, next) {
+        return res.andThen(function (resArr) { return next.map(function (v) { return resArr.concat(v); }); });
+    }, Maybe.Some([])); },
+};
+var Maybe = Union({
     Some: $,
     None: $,
-}, maybeProto, function (options, name, EnumOptionClass) {
+}, maybeProto, maybeStatic, function (options, name, UnionOptionClass) {
     return name === 'Some' ?
-        function (value) { return new EnumOptionClass(options, name, value); } :
-        function () { return new EnumOptionClass(options, name, null); };
+        function (value) { return new UnionOptionClass(options, name, value); } :
+        function () { return new UnionOptionClass(options, name, null); };
 });
-var ResultError = Enum({
+var ResultError = Union({
     UnwrapErrAsOk: null,
     UnwrapErr: null,
 });
@@ -182,7 +176,7 @@ var resultProto = {
         return (this.name === 'Ok') ? this : Result.Err(fn(this.data));
     },
     array: function () {
-        return (this.name === 'Ok') ? [this.data] : []; // .iter; .into_item
+        return (this.name === 'Ok') ? [this.data] : [];
     },
     and: function (other) {
         return (this.name === 'Ok') ? other : this;
@@ -219,14 +213,19 @@ var resultProto = {
         }
     },
 };
-var Result = Enum({
+var resultStatic = {
+    all: function (values) { return values.reduce(function (res, next) {
+        return res.andThen(function (resArr) { return next.map(function (v) { return resArr.concat(v); }); });
+    }, Result.Ok([])); },
+};
+var Result = Union({
     Ok: $,
     Err: $,
-}, resultProto, function (options, name, EnumOptionClass) {
-    return function (value) { return new EnumOptionClass(options, name, value); };
+}, resultProto, resultStatic, function (options, name, UnionOptionClass) {
+    return function (value) { return new UnionOptionClass(options, name, value); };
 });
 module.exports = {
-    Enum: Enum,
+    Union: Union,
     Maybe: Maybe,
     Some: Maybe.Some,
     None: Maybe.None,

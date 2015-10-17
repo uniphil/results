@@ -1,18 +1,19 @@
 /// <reference path="node.d.ts" />
 declare var $: any;
 declare function match(to: any): any;
-interface EnumOption {
+interface UnionOption {
     options: any;
     name: String;
     data: any[];
     match: (paths: Object) => any;
     new (options: any, name: String, data: Array<any>): any;
 }
-declare function _factory(options: Object, name: string, EnumOptionClass: EnumOption): (...args: any[]) => EnumOption;
-declare function Enum<T>(options: T, proto?: any, factory?: any): T;
+declare function _factory(options: Object, name: string, UnionOptionClass: UnionOption): (...args: any[]) => UnionOption;
+declare function Union<T>(options: T, proto?: any, static?: any, factory?: any): T;
 interface Maybe {
-    Some: (someValue) => EnumOption;
-    None: () => EnumOption;
+    Some: (someValue: any) => MaybeOption;
+    None: () => MaybeOption;
+    all: (values: MaybeOption[]) => MaybeOption;
 }
 interface MaybeOption {
     match: (opts: Object) => any;
@@ -32,9 +33,12 @@ interface MaybeOption {
     andThen: (fn: (someValue) => Maybe) => Maybe;
     or: (other: Maybe) => Maybe;
     orElse: (fn: () => Maybe) => Maybe;
-    take: () => Maybe;
 }
 declare var maybeProto: MaybeOption;
+interface MaybeStatic {
+    all: (values: ResultOption[]) => ResultOption;
+}
+declare var maybeStatic: MaybeStatic;
 declare var Maybe: {
     Some: any;
     None: any;
@@ -44,8 +48,9 @@ declare var ResultError: {
     UnwrapErr: any;
 };
 interface Result {
-    Ok: (okValue) => EnumOption;
-    Err: (errValue) => EnumOption;
+    Ok: (okValue: any) => ResultOption;
+    Err: (errValue: any) => ResultOption;
+    all: (values: ResultOption[]) => ResultOption;
 }
 interface ResultOption {
     match: (opts: Object) => any;
@@ -66,6 +71,10 @@ interface ResultOption {
     unwrapErr: () => any;
 }
 declare var resultProto: ResultOption;
+interface ResultStatic {
+    all: (values: ResultOption[]) => ResultOption;
+}
+declare var resultStatic: ResultStatic;
 declare var Result: {
     Ok: any;
     Err: any;

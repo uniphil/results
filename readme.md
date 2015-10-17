@@ -202,7 +202,18 @@ Todo for v1.0.0:
      * [ ] Add API docs
 
 
+ ### v0.7.0
+
+_in progress_
+
+### Breaking
+
+### Other Changes
+
+
 ### v0.6.0
+
+2015-10-17
 
 #### Breaking
 
