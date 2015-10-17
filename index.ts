@@ -12,9 +12,16 @@ var $;  // just a  placeholder for RHS of objects whose keys we want
 
 
 /**
- * @throws Error if the match is not exhaustive
+ * @throws Error if the match is not exhaustive, or if there are weird keys
  */
 function match(to: any): any {
+  for (let k in to) {
+    if (to.hasOwnProperty(k)) {
+      if (!this.options.hasOwnProperty(k) && k !== '_') {
+        throw new Error(`Union match: unrecognized match option: '${k}'`);
+      }
+    }
+  }
   if (typeof to._ === 'function') {  // match is de-facto exhaustive w/ `_`
     if (typeof to[this.name] === 'function') {
       return to[this.name].apply(null, this.data);
