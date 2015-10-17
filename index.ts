@@ -25,7 +25,7 @@ function match(to: any): any {
     // ensure match is exhaustive
     for (let k in this.options) {
       if (typeof to[k] !== 'function') {
-        throw new Error(`Enum match: Non-exhaustive match is missing '${k}'`);
+        throw new Error(`Union match: Non-exhaustive match is missing '${k}'`);
       }
     }
     return to[this.name].apply(null, this.data);
@@ -34,7 +34,7 @@ function match(to: any): any {
 
 
 
-interface EnumOption {
+interface UnionOption {
   options: any;
   name: String;
   data: any[];
@@ -43,38 +43,38 @@ interface EnumOption {
 }
 
 
-function _factory(options: Object, name: string, EnumOptionClass: EnumOption):
-(...args: any[]) => EnumOption {
+function _factory(options: Object, name: string, UnionOptionClass: UnionOption):
+(...args: any[]) => UnionOption {
   return function() {
     var data = [];
     for (var i=0; i<arguments.length; i++) {
       data[i] = arguments[i];
     }
-    return new EnumOptionClass(options, name, data);
+    return new UnionOptionClass(options, name, data);
   };
 }
 
 
-function Enum<T>(options: T, proto:any={}, static:any={}, factory:any=_factory): T {
-  function EnumOption(options: T, name: string, data: any[]) {
+function Union<T>(options: T, proto:any={}, static:any={}, factory:any=_factory): T {
+  function UnionOption(options: T, name: string, data: any[]) {
     this.options = options;
     this.name = name;
     this.data = data;
   }
-  EnumOption.prototype = proto;
+  UnionOption.prototype = proto;
   if (typeof proto.match === 'undefined') {
     proto.match = match;
   }
-  var enum_ = Object.keys(options).reduce((obj, name) => {
-    obj[name] = factory(options, name, EnumOption);
+  var union_ = Object.keys(options).reduce((obj, name) => {
+    obj[name] = factory(options, name, UnionOption);
     return obj;
   }, {});
   for (var k in static) {
     if (static.hasOwnProperty(k)) {
-      enum_[k] = static[k];
+      union_[k] = static[k];
     }
   }
-  return <T>enum_;
+  return <T>union_;
 }
 
 
@@ -139,7 +139,7 @@ var maybeProto: MaybeOption = {
     if (this.name === 'Some') {
       return this.data;
     } else {
-      throw new Error('Maybe Enum: Tried to .unwrap() None as Some');
+      throw new Error('Maybe Union: Tried to .unwrap() None as Some');
     }
   },
   unwrapOr(def) {
@@ -202,16 +202,16 @@ var maybeStatic: MaybeStatic = {
 };
 
 
-var Maybe = Enum({
+var Maybe = Union({
   Some: $,
   None: $,
-}, maybeProto, maybeStatic, (options, name, EnumOptionClass) =>
+}, maybeProto, maybeStatic, (options, name, UnionOptionClass) =>
   name === 'Some' ?
-    (value) => new EnumOptionClass(options, name, value) :
-    () => new EnumOptionClass(options, name, null));
+    (value) => new UnionOptionClass(options, name, value) :
+    () => new UnionOptionClass(options, name, null));
 
 
-var ResultError = Enum({
+var ResultError = Union({
   UnwrapErrAsOk: null,
   UnwrapErr: null,
 });
@@ -324,15 +324,15 @@ var resultStatic: ResultStatic = {
   , Result.Ok([])),
 };
 
-var Result = Enum({
+var Result = Union({
   Ok:  $,
   Err: $,
-}, resultProto, resultStatic, (options, name, EnumOptionClass) =>
-  (value) => new EnumOptionClass(options, name, value));
+}, resultProto, resultStatic, (options, name, UnionOptionClass) =>
+  (value) => new UnionOptionClass(options, name, value));
 
 
 module.exports = {
-  Enum,
+  Union,
 
   Maybe,
   Some: Maybe.Some,
