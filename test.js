@@ -1,5 +1,5 @@
 var assert = require('assert');
-var {Enum, Ok, Err, Some, None} = require('./index');
+var { Enum, Result, Ok, Err, Maybe, Some, None } = require('./index');
 
 
 describe('Enum', () => {
@@ -121,6 +121,30 @@ describe('Maybe', () => {
     assert.ok(n.isNone());
     assert.ok(o.isNone());
   });
+  describe('Maybe.all', () => {
+    it('should make an empty Some for an empty array', () => {
+      var a = [];
+      assert.ok(Maybe.all(a).isSome());
+      assert.equal(Maybe.all(a).unwrap(), []);
+    });
+    it('should pass through 1 Some in an array', () => {
+      var ma = Maybe.all([Some(1)]);
+      assert.ok(ma.isSome());
+      assert.equal(ma.unwrap(), [1]);
+    });
+    it('should pass through n Somes in an array and preserve order', () => {
+      var ma2 = Maybe.all([Some(1), Some(2)]);
+      assert.ok(ma2.isSome());
+      assert.equal(ma2.unwrap(), [1, 2]);
+      assert.equal(Maybe.all([Some(1), Some(2), Some(3)]).unwrap(), [1, 2, 3]);
+    });
+    it('should be None if any inputs are None', () => {
+      assert(Maybe.all([None()]).isNone());
+      assert(Maybe.all([None(), None()]).isNone());
+      assert(Maybe.all([Some(1), None()]).isNone());
+      assert(Maybe.all([None(), Some(1)]).isNone());
+    });
+  });
 });
 
 
@@ -226,5 +250,32 @@ describe('Result', () => {
       assert.equal(answer, 'the right answer');
     }
     assert.equal(Err(2).unwrapErr(), 2);
+  });
+
+  describe('Result.all', () => {
+    it('should make an empty Ok for an empty array', () => {
+      var a = [];
+      assert.ok(Result.all(a).isOk());
+      assert.equal(Result.all(a).unwrap(), []);
+    });
+    it('should pass through 1 Ok in an array', () => {
+      var oa = Result.all([Ok(1)]);
+      assert.ok(oa.isOk());
+      assert.equal(oa.unwrap(), [1]);
+    });
+    it('should pass through n Oks in an array and preserve order', () => {
+      var oa2 = Result.all([Ok(1), Ok(2)]);
+      assert.ok(oa2.isOk());
+      assert.equal(ma.unwrap(), [1, 2]);
+      assert.equal(Result.all([Ok(1), Ok(2), Ok(3)]).unwrap(), [1, 2, 3]);
+    });
+    it('should be the first Err if any inputs are Err', () => {
+      assert(Result.all([Err()]).isErr());
+      assert(Result.all([Err(9), Err(8)]).isErr());
+      assert(Result.all([Ok(1), Err(9)]).isErr());
+      assert(Result.all([Err(9), Ok(1)]).isErr());
+
+      assert.equal(Result.all([Err(9), Err(8)]).unwrapErr(), 9);
+    });
   });
 });
