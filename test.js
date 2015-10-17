@@ -125,18 +125,18 @@ describe('Maybe', () => {
     it('should make an empty Some for an empty array', () => {
       var a = [];
       assert.ok(Maybe.all(a).isSome());
-      assert.equal(Maybe.all(a).unwrap(), []);
+      assert.deepEqual(Maybe.all(a).unwrap(), []);
     });
     it('should pass through 1 Some in an array', () => {
       var ma = Maybe.all([Some(1)]);
       assert.ok(ma.isSome());
-      assert.equal(ma.unwrap(), [1]);
+      assert.deepEqual(ma.unwrap(), [1]);
     });
     it('should pass through n Somes in an array and preserve order', () => {
       var ma2 = Maybe.all([Some(1), Some(2)]);
       assert.ok(ma2.isSome());
-      assert.equal(ma2.unwrap(), [1, 2]);
-      assert.equal(Maybe.all([Some(1), Some(2), Some(3)]).unwrap(), [1, 2, 3]);
+      assert.deepEqual(ma2.unwrap(), [1, 2]);
+      assert.deepEqual(Maybe.all([Some(1), Some(2), Some(3)]).unwrap(), [1, 2, 3]);
     });
     it('should be None if any inputs are None', () => {
       assert(Maybe.all([None()]).isNone());
@@ -256,18 +256,18 @@ describe('Result', () => {
     it('should make an empty Ok for an empty array', () => {
       var a = [];
       assert.ok(Result.all(a).isOk());
-      assert.equal(Result.all(a).unwrap(), []);
+      assert.deepEqual(Result.all(a).unwrap(), []);
     });
     it('should pass through 1 Ok in an array', () => {
       var oa = Result.all([Ok(1)]);
       assert.ok(oa.isOk());
-      assert.equal(oa.unwrap(), [1]);
+      assert.deepEqual(oa.unwrap(), [1]);
     });
     it('should pass through n Oks in an array and preserve order', () => {
       var oa2 = Result.all([Ok(1), Ok(2)]);
       assert.ok(oa2.isOk());
-      assert.equal(ma.unwrap(), [1, 2]);
-      assert.equal(Result.all([Ok(1), Ok(2), Ok(3)]).unwrap(), [1, 2, 3]);
+      assert.deepEqual(oa2.unwrap(), [1, 2]);
+      assert.deepEqual(Result.all([Ok(1), Ok(2), Ok(3)]).unwrap(), [1, 2, 3]);
     });
     it('should be the first Err if any inputs are Err', () => {
       assert(Result.all([Err()]).isErr());
