@@ -111,7 +111,6 @@ interface MaybeOption {
   andThen: (fn: (someValue) => Maybe) => Maybe;
   or: (other: Maybe) => Maybe;
   orElse: (fn: () => Maybe) => Maybe;
-  take: () => Maybe;
 }
 
 var maybeProto: MaybeOption = {
@@ -177,16 +176,6 @@ var maybeProto: MaybeOption = {
   },
   orElse(fn) {
     return (this.name === 'Some') ? this : fn();
-  },
-  take() {
-    if (this.name === 'Some') {
-      var taken = Maybe.Some(this.data);
-      this.data = undefined;
-      this.name = 'None';
-      return taken;
-    } else {
-      return Maybe.None();
-    }
   },
 };
 
