@@ -110,17 +110,6 @@ describe('Maybe', () => {
     assert.equal(Some(1).orElse(() => None()).unwrap(), 1);
     assert.ok(None().orElse(() => None()).isNone());
   });
-  it('should mutate after returning a copy of itself on .take', () => {
-    var s = Some(1);
-    var t = s.take();
-    assert.ok(s.isNone());
-    assert.equal(t.unwrap(), 1);
-
-    var n = None();
-    var o = n.take();
-    assert.ok(n.isNone());
-    assert.ok(o.isNone());
-  });
   describe('Maybe.all', () => {
     it('should make an empty Some for an empty array', () => {
       var a = [];

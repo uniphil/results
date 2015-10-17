@@ -219,6 +219,7 @@ Todo for v1.0.0:
     whose behaviour is close to that of `Promise.all`.
   * **`Enum` renamed to `Union`!** `enum` is another thing in JavaScript, so
     this is less confusing.
+  * Remove the `take` method from `Some/None`.
 
 #### Other Changes
 
