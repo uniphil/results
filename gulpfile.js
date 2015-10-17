@@ -11,11 +11,7 @@ var vinylPaths = require('vinyl-paths');
 var typescript = require('gulp-typescript');
 
 
-var tsProject = typescript.createProject({
-  declarationFiles: true,
-  module: 'commonjs',
-  target: 'es5',
-});
+var tsProject = typescript.createProject('tsconfig.json');
 
 
 gulp.task('clean', function(cb) {
