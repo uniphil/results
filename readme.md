@@ -4,7 +4,7 @@ Results
 [![Build Status](https://travis-ci.org/uniphil/results.svg)](https://travis-ci.org/uniphil/results)
 
 
-Lightweight rust-inspired `Option`, `Result`, and `Enum` program flow control for JavaScript.
+Lightweight rust-inspired `Maybe`, `Result`, and `Union` program flow control for JavaScript -- with `match`!.
 
 
 Install
@@ -24,7 +24,7 @@ Docs
 Features
 --------
 
-Rust-like `Option` and `Result` for nice data processing flows:
+Rust-like `Maybe` and `Result` for nice data processing flows:
 
 ```javascript
 var {Some, None, Ok, Err} = require('results');
@@ -96,7 +96,7 @@ function logLatestReport() {
 }
 
 ```
-All of the methods for `Result` and `Option` that make sense in JavaScript should be there.
+All of the methods for `Result` and `Option` (called `Maybe` in results) that make sense in JavaScript should be there.
 
 Match expressions are almost like Rust with es6 arrow functions:
 
@@ -114,11 +114,11 @@ messageSent.match({
 
 ```
 
-`Option` and `Result` are generalized as `Enum` (which is a sort of Sum Type or Discriminated Union-ish tool). `Enum` comes with the `match` expression for nice control flow everywhere:
+`Maybe` and `Result` are generalized as `Union` (which is a sort of Sum Type or Discriminated Union-ish tool). `Union` comes with the `match` expression for nice control flow everywhere:
 
 ```javascript
-var _;  // just a placeholder to make the Enum object declaration valid
-var HTTPVerbs = Enum({
+var _;  // just a placeholder to make the Union object declaration valid
+var HTTPVerbs = Union({
   OPTIONS: _,
   HEAD: _,
   GET: _,
@@ -143,11 +143,11 @@ isIdempotent(HTTPVerbs.POST());
 
 ```
 
-Methods, like the ones on `Result`s and `Option`s, can be attached when creating the `Enum`:
+Methods, like the ones on `Result`s and `Maybe`s, can be attached when creating the `Union`:
 
 ```javascript
 var _;
-var HTTPVerbs = Enum({
+var HTTPVerbs = Union({
   OPTIONS: _,
   HEAD: _,
   GET: _,
@@ -160,9 +160,9 @@ var HTTPVerbs = Enum({
   }
 });
 
-// or, since we are a method on the EnumOption, we can even use `match` in the method:
+// or, since we are a method on the UnionOption, we can even use `match` in the method:
 var _;
-var HTTPVerbs = Enum({
+var HTTPVerbs = Union({
   OPTIONS: _,
   HEAD: _,
   GET: _,
@@ -190,13 +190,12 @@ Changes
 
 Todo for v1.0.0:
 
- * [ ] Make errors nice.
-     * [ ] Can we do nice things with the stack trace?
-     * [x] What's the nicest thing we could be throwing? _EnumOptions!_
+ * [x] Make errors nice.
+     * just throw regular Error instances.
 
  * [ ] Maaaaaaybe add some methods like `.equals` and `.toString`
 
- * [ ] Fix up jsdoc API docs
+ * [ ] Fix up typescript API docs
 
  * [ ] Improve the readme
      * [ ] Get better examples
@@ -218,6 +217,8 @@ Todo for v1.0.0:
     stuff to the Enum.
   * Use the new `static` param to add a `.all` method to `Maybe` and `Result`,
     whose behaviour is close to that of `Promise.all`.
+  * **`Enum` renamed to `Union`!** `enum` is another thing in JavaScript, so
+    this is less confusing.
 
 #### Other Changes
 
