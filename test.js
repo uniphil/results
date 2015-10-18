@@ -69,18 +69,6 @@ describe('Maybe', () => {
     assert.equal(Some(1).unwrapOrElse(() => 2), 1);
     assert.equal(None().unwrapOrElse(() => 2), 2);
   });
-  it('.map', () => {
-    assert.equal(Some(2).map((v) => v/2).unwrap(), 1);
-    assert.ok(None().map((v) => v/2).isNone());
-  });
-  it('.mapOr', () => {
-    assert.equal(Some(2).mapOr(0, (v) => v/2), 1);
-    assert.equal(None().mapOr(0, (v) => v/2), 0);
-  });
-  it('.mapOrElse', () => {
-    assert.equal(Some(2).mapOrElse(() => 0, (v) => v/2), 1);
-    assert.equal(None().mapOrElse(() => 0, (v) => v/2), 0);
-  });
   it('should convert to Ok/Err', () => {
     assert.ok(Some(1).okOr('sad').isOk());
     assert.ok(None().okOr('sad').isErr());
@@ -169,14 +157,6 @@ describe('Result', () => {
     assert.ok(Ok(1).err().isNone());
     assert.ok(Err(2).err().isSome());
     assert.equal(Err(2).err().unwrap(), 2);
-  });
-  it('.map', () => {
-    assert.equal(Ok(1).map((v) => v + 5).unwrapOr(0), 6);
-    assert.equal(Err(2).map((v) => v + 1).unwrapOr(0), 0);
-  });
-  it('.mapErr', () => {
-    assert.equal(Ok(1).mapErr((v) => v + 5).unwrapOr(0), 1);
-    assert.equal(Err(2).mapErr((v) => v + 5).unwrapErr(), 7);
   });
   it('.array', () => {
     assert.equal(Ok(1).array().length, 1);
