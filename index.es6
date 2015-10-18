@@ -35,6 +35,12 @@ function match(to) {
 };
 
 
+function unionOptionToString() {
+  return `[UnionOption ${this.name}(${this.data.join(', ')}) ` +
+    `from Union { ${Object.keys(this.options).join(', ')} }]`;
+}
+
+
 function _factory(options, name, UnionOptionClass) {
   return function(...data) {
     return new UnionOptionClass(options, name, data);
@@ -43,38 +49,36 @@ function _factory(options, name, UnionOptionClass) {
 
 
 function Union(options, proto={}, static_={}, factory=_factory) {
+  if (options.hasOwnProperty('toString')) {
+    throw new Error('Union: cannot use reserved name `toString` as part of a Union');
+  }
+  if (options.hasOwnProperty('OptionClass')) {
+    throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
+  }
+  for (let k of Object.keys(static_)) {
+    if (options.hasOwnProperty(k)) {
+      throw new Error(`Union: cannot add static method '${k}' to Union which ` +
+        `has the same name as a member (members: ${options.join(', ')}).`);
+    }
+  }
   function UnionOption(options, name, data) {
     this.options = options;
     this.name = name;
     this.data = data;
   }
-  UnionOption.prototype = proto;
-  if (typeof proto.match === 'undefined') {
-    proto.match = match;
+  UnionOption.prototype = {
+    match: match,
+    toString: unionOptionToString,
+    ...proto
+  };
+  const union = {
+    OptionClass: UnionOption,
+    toString: () => `[Union { ${Object.keys(options).join(', ')} }]`,
+    ...static_
+  };
+  for (let name of Object.keys(options)) {
+    union[name] = factory(options, name, UnionOption);
   }
-  if (!proto.hasOwnProperty('toString')) {
-    proto.toString = function() {
-      return `[UnionOption ${this.name}(${this.data.join(', ')}) ` +
-        `from Union { ${Object.keys(this.options).join(', ')} }]`;
-    };
-  }
-  const union = Object.keys(options).reduce((obj, name) => {
-    obj[name] = factory(options, name, UnionOption);
-    return obj;
-  }, {});
-  if (options.hasOwnProperty('toString')) {
-    throw new Error('Union: cannot use reserved name `toString` as part of a Union');
-  }
-  union.toString = () => `[Union { ${Object.keys(options).join(', ')} }]`;
-  for (const k in static_) {
-    if (static_.hasOwnProperty(k)) {
-      union[k] = static_[k];
-    }
-  }
-  if (union.hasOwnProperty('OptionClass')) {
-    throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
-  }
-  union.OptionClass = UnionOption;
   return union;
 }
 
