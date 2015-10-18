@@ -5,17 +5,11 @@
  * @author uniphil
  */
 
-/// <reference path="./node.d.ts" />
-/// <reference path="./promise.d.ts" />
-
-
-var $;  // just a  placeholder for RHS of objects whose keys we want
-
 
 /**
  * @throws Error if the match is not exhaustive, or if there are weird keys
  */
-function match(to: any): any {
+function match(to) {
   for (let k in to) {
     if (to.hasOwnProperty(k)) {
       if (!this.options.hasOwnProperty(k) && k !== '_') {
@@ -41,17 +35,7 @@ function match(to: any): any {
 };
 
 
-interface UnionOption {
-  options: any;
-  name: String;
-  data: any[];
-  match: (paths: Object) => any;
-  new (options: any, name: String, data: Array<any>);
-}
-
-
-function _factory(options: Object, name: string, UnionOptionClass: UnionOption):
-(...args: any[]) => UnionOption {
+function _factory(options, name, UnionOptionClass) {
   return function() {
     var data = [];
     for (var i=0; i<arguments.length; i++) {
@@ -62,8 +46,8 @@ function _factory(options: Object, name: string, UnionOptionClass: UnionOption):
 }
 
 
-function Union<T>(options: T, proto:any={}, static:any={}, factory:any=_factory): T {
-  function UnionOption(options: T, name: string, data: any[]) {
+function Union(options, proto={}, static_={}, factory=_factory) {
+  function UnionOption(options, name, data) {
     this.options = options;
     this.name = name;
     this.data = data;
@@ -85,62 +69,31 @@ function Union<T>(options: T, proto:any={}, static:any={}, factory:any=_factory)
   if (options.hasOwnProperty('toString')) {
     throw new Error('Union: cannot use reserved name `toString` as part of a Union');
   }
-  (<any>union_).toString = () => `[Union { ${Object.keys(options).join(', ')} }]`;
-  for (var k in static) {
-    if (static.hasOwnProperty(k)) {
-      union_[k] = static[k];
+  union_.toString = () => `[Union { ${Object.keys(options).join(', ')} }]`;
+  for (var k in static_) {
+    if (static_.hasOwnProperty(k)) {
+      union_[k] = static_[k];
     }
   }
   if (union_.hasOwnProperty('OptionClass')) {
     throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
   }
-  (<any>union_).OptionClass = UnionOption;
-  return <T>union_;
+  union_.OptionClass = UnionOption;
+  return union_;
 }
 
 
-interface Maybe {
-  Some: (someValue: any) => MaybeOption;
-  None: () => MaybeOption;
-  all: (values: Array<MaybeOption|any>) => MaybeOption;
-}
-
-interface MaybeOption {
-  _promote: (val: MaybeOption|any) => MaybeOption;
-  /**
-   * @throws Error if the match is not exhaustive
-   */
-  match: (opts: Object) => any;
-  isSome: () => Boolean;
-  isNone: () => Boolean;
-  /**
-   * @throws whatever is passed as the arg
-   */
-  expect: (err) => any;
-  /**
-   * @throws Error if it is None
-   */
-  unwrap: () => any;
-  unwrapOr: (def) => any;
-  unwrapOrElse: (fn: () => any) => any;
-  okOr: (err) => Result;
-  okOrElse: (errFn: () => any) => Result;
-  promiseOr: (err: any) => Promise<any>;
-  promiseOrElse: (err: () => any) => Promise<any>;
-  and: (other: any|Maybe) => Maybe;
-  andThen: (fn: (someValue) => any|Maybe) => Maybe;
-  or: (other: any|Maybe) => Maybe;
-  orElse: (fn: () => any|Maybe) => Maybe;
-}
-
-var maybeProto: MaybeOption = {
+var maybeProto = {
   _promote(value) {
-    if (value instanceof (<any>Maybe).OptionClass) {
+    if (value instanceof Maybe.OptionClass) {
       return value;
     } else {
       return Maybe.Some(value);
     }
   },
+  /**
+   * @throws Error if the match is not exhaustive
+   */
   match(paths) {
     return match.call({
       options: this.options,
@@ -154,6 +107,9 @@ var maybeProto: MaybeOption = {
   isNone() {
     return this.name === 'None';
   },
+  /**
+   * @throws whatever is passed as the arg
+   */
   expect(err) {
     if (this.name === 'Some') {
       return this.data;
@@ -161,6 +117,9 @@ var maybeProto: MaybeOption = {
       throw err;
     }
   },
+  /**
+   * @throws Error if it is None
+   */
   unwrap() {
     if (this.name === 'Some') {
       return this.data;
@@ -201,11 +160,7 @@ var maybeProto: MaybeOption = {
 };
 
 
-interface MaybeStatic {
-  all: (values: ResultOption[]) => ResultOption;
-}
-
-var maybeStatic: MaybeStatic = {
+var maybeStatic = {
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => maybeProto._promote(next)
       .andThen(v => Maybe.Some(resArr.concat(v))))
@@ -214,8 +169,8 @@ var maybeStatic: MaybeStatic = {
 
 
 var Maybe = Union({
-  Some: $,
-  None: $,
+  Some: null,
+  None: null,
 }, maybeProto, maybeStatic, (options, name, UnionOptionClass) => {
   if (name === 'Some') {
     return (value) => {
@@ -232,54 +187,17 @@ var Maybe = Union({
 });
 
 
-var ResultError = Union({
-  UnwrapErrAsOk: null,
-  UnwrapErr: null,
-});
-
-
-interface Result {
-  Ok: (okValue: any) => ResultOption;
-  Err: (errValue: any) => ResultOption;
-  all: (values: ResultOption[]) => ResultOption;
-}
-
-interface ResultOption {
-  _promote: (val: ResultOption|any) => ResultOption;
-  /**
-   * @throws Error if the match is not exhaustive
-   */
-  match: (opts: Object) => any;
-  isOk: () => Boolean;
-  isErr: () => Boolean;
-  ok: () => Maybe;
-  err: () => Maybe;
-  promise: () => Promise<any>;
-  promiseErr: () => Promise<any>;
-  and: (other: any|Result) => Result;
-  andThen: (fn: (okValue) => any|Result) => Result;
-  or: (other: any|Result) => Result;
-  orElse: (fn: (errValue) => any|Result) => Result;
-  unwrapOr: (def: any) => any;
-  unwrapOrElse: (fn: (errValue) => any) => any;
-  /**
-   * @throws the value from Err(value)
-   */
-  unwrap: () => any;
-  /**
-   * @throws the value from Ok(value)
-   */
-  unwrapErr: () => any;
-}
-
-var resultProto: ResultOption = {
+var resultProto = {
   _promote(value) {
-    if (value instanceof (<any>Result).OptionClass) {
+    if (value instanceof Result.OptionClass) {
       return value;
     } else {
       return Result.Ok(value);
     }
   },
+  /**
+   * @throws Error if the match is not exhaustive
+   */
   match(paths) {
     return match.call({
       options: this.options,
@@ -323,27 +241,30 @@ var resultProto: ResultOption = {
   unwrapOrElse(fn) {
     return (this.name === 'Ok') ? this.data : fn(this.data);
   },
+  /**
+   * @throws the value from Err(value)
+   */
   unwrap() {
     if (this.name === 'Ok') {
       return this.data;
     } else {
-      throw ResultError.UnwrapErr(this.data);
+      throw new Error('Result Union: Tried to .unwrap() Err as Ok');
     }
   },
+  /**
+   * @throws the value from Ok(value)
+   */
   unwrapErr() {
     if (this.name === 'Ok') {
-      throw ResultError.UnwrapErrAsOk(this.data);
+      throw new Error('Result Union: Tried to .unwrap() Ok as Err');
     } else {
       return this.data;
     }
   },
 };
 
-interface ResultStatic {
-  all: (values: Array<ResultOption|any>) => ResultOption;
-}
 
-var resultStatic: ResultStatic = {
+var resultStatic = {
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => resultProto._promote(next)
       .andThen(v => Result.Ok(resArr.concat(v))))
@@ -351,8 +272,8 @@ var resultStatic: ResultStatic = {
 };
 
 var Result = Union({
-  Ok:  $,
-  Err: $,
+  Ok: null,
+  Err: null,
 }, resultProto, resultStatic, (options, name, UnionOptionClass) => {
   if (name === 'Ok') {
     return (value) => {

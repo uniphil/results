@@ -300,31 +300,11 @@ describe('Result', () => {
   });
   it('.unwrap', () => {
     assert.equal(Ok(1).unwrap(), 1);
-    assert.throws(() => Err(2).unwrap());
-    var answer;
-    try {
-      Err(2).unwrap();
-    } catch (err) {
-      answer = err.match({
-        UnwrapErr: () => 'the right answer',
-        _: (what) => 'the wrong answer: ' + what,
-      });
-      assert.equal(answer, 'the right answer');
-    }
+    assert.throws(() => None().unwrap(), Error);
   });
   it('.unwrapErr', () => {
+    assert.equal(Err(1).unwrapErr(), 1);
     assert.throws(() => Ok(1).unwrapErr());
-    var answer;
-    try {
-      Ok(1).unwrapErr();
-    } catch (err) {
-      answer = err.match({
-        UnwrapErrAsOk: () => 'the right answer',
-        _: (what) => 'the wrong answer: ' + what,
-      });
-      assert.equal(answer, 'the right answer');
-    }
-    assert.equal(Err(2).unwrapErr(), 2);
   });
 
   describe('Result.all', () => {
