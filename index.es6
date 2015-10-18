@@ -187,11 +187,6 @@ var Maybe = Union({
 });
 
 
-var ResultError = Union({
-  UnwrapErrAsOk: null,
-  UnwrapErr: null,
-});
-
 var resultProto = {
   _promote(value) {
     if (value instanceof Result.OptionClass) {
@@ -253,7 +248,7 @@ var resultProto = {
     if (this.name === 'Ok') {
       return this.data;
     } else {
-      throw ResultError.UnwrapErr(this.data);
+      throw new Error('Result Union: Tried to .unwrap() Err as Ok');
     }
   },
   /**
@@ -261,7 +256,7 @@ var resultProto = {
    */
   unwrapErr() {
     if (this.name === 'Ok') {
-      throw ResultError.UnwrapErrAsOk(this.data);
+      throw new Error('Result Union: Tried to .unwrap() Ok as Err');
     } else {
       return this.data;
     }
