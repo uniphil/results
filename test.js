@@ -77,12 +77,6 @@ describe('Maybe', () => {
     assert.ok(Some(1).okOrElse(() => 'sad').isOk());
     assert.ok(None().okOrElse(() => 'sad').isErr());
   });
-  it('should go into an array', () => {
-    assert.equal(Some(1).array().length, 1);
-    assert.equal(None().array().length, 0);
-
-    assert.equal(Some(1).array()[0], 1);
-  });
   it('should never be the result of .and if Some', () => {
     assert.equal(Some(1).and(Some(2)).unwrap(), 2);
     assert.ok(None().and(Some(2)).isNone());
@@ -157,11 +151,6 @@ describe('Result', () => {
     assert.ok(Ok(1).err().isNone());
     assert.ok(Err(2).err().isSome());
     assert.equal(Err(2).err().unwrap(), 2);
-  });
-  it('.array', () => {
-    assert.equal(Ok(1).array().length, 1);
-    assert.equal(Err(2).array().length, 0);
-    assert.equal(Ok(1).array()[0], 1);
   });
   it('.and', () => {
     assert.ok(Ok(1).and(Ok(-1)).isOk());

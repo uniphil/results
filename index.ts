@@ -110,7 +110,6 @@ interface MaybeOption {
   unwrapOrElse: (fn: () => any) => any;
   okOr: (err) => Result;
   okOrElse: (errFn: () => any) => Result;
-  array: () => Array<any>;
   and: (other: Maybe) => Maybe;
   andThen: (fn: (someValue) => Maybe) => Maybe;
   or: (other: Maybe) => Maybe;
@@ -156,9 +155,6 @@ var maybeProto: MaybeOption = {
   },
   okOrElse(errFn) {
     return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(errFn());
-  },
-  array() {
-    return (this.name === 'Some') ? [this.data] : [];  // .iter; .into_item
   },
   and(other) {
     return (this.name === 'Some') ? other : this;
@@ -216,7 +212,6 @@ interface ResultOption {
   isErr: () => Boolean;
   ok: () => Maybe;
   err: () => Maybe;
-  array: () => Array<any>;
   and: (other: Result) => Result;
   andThen: (fn: (okValue) => Result) => Result;
   or: (other: Result) => Result;
@@ -252,9 +247,6 @@ var resultProto: ResultOption = {
   },
   err() {
     return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.data);
-  },
-  array() {
-    return (this.name === 'Ok') ? [this.data] : [];  // .iter; .into_item
   },
   and(other) {
     return (this.name === 'Ok') ? other : this;
