@@ -53,6 +53,10 @@ describe('Maybe', () => {
     assert.equal(Some(1).isNone(), false);
     assert.equal(None().isSome(), false);
   });
+  it('.Some should unwrap Maybes given to it', () => {
+    assert.equal(Some(Some(1)).unwrap(), 1);
+    assert.equal(Some(None()).unwrap(), undefined);
+  });
   it('should throw or not for expect', () => {
     assert.doesNotThrow(() => {Some(1).expect('err')});
     assert.throws(() => {None().expect('err')}, 'err');
@@ -83,6 +87,10 @@ describe('Maybe', () => {
     assert.ok(Some(1).and(None()).isNone());
     assert.ok(None().and(None()).isNone());
   });
+  it('.and should promote non-Maybe to Some', () => {
+    assert.ok(Some(1).and(2).isSome());
+    assert.equal(Some(1).and(2).unwrap(), 2);
+  });
   it('should be used with andThen if Some', () => {
     assert.equal(Some(1).andThen((v) => Some(v*2)).unwrap(), 2);
     assert.ok(None().andThen((v) => Some(v*2)).isNone());
@@ -90,17 +98,29 @@ describe('Maybe', () => {
     assert.ok(Some(1).andThen((v) => None()).isNone());
     assert.ok(None().andThen((v) => None()).isNone());
   });
+  it('.andThen should promote non-Maybe to Some', () => {
+    assert.ok(Some(1).andThen(() => 2).isSome());
+    assert.equal(Some(1).andThen(() => 2).unwrap(), 2);
+  });
   it('.or', () => {
     assert.equal(Some(1).or(Some(2)).unwrap(), 1);
     assert.equal(None().or(Some(2)).unwrap(), 2);
     assert.equal(Some(1).or(None()).unwrap(), 1);
     assert.ok(None().or(None()).isNone());
   });
+  it('.or should promote non-Maybe to Some', () => {
+    assert.ok(None().or(1).isSome());
+    assert.equal(None().or(1).unwrap(), 1);
+  });
   it('.orElse', () => {
     assert.equal(Some(1).orElse(() => Some(2)).unwrap(), 1);
     assert.equal(None().orElse(() => Some(2)).unwrap(), 2);
     assert.equal(Some(1).orElse(() => None()).unwrap(), 1);
     assert.ok(None().orElse(() => None()).isNone());
+  });
+  it('.orElse should promote non-Maybe to Some', () => {
+    assert.ok(None().orElse(() => 1).isSome());
+    assert.equal(None().orElse(() => 1).unwrap(), 1);
   });
   describe('Maybe.all', () => {
     it('should make an empty Some for an empty array', () => {
@@ -119,11 +139,18 @@ describe('Maybe', () => {
       assert.deepEqual(ma2.unwrap(), [1, 2]);
       assert.deepEqual(Maybe.all([Some(1), Some(2), Some(3)]).unwrap(), [1, 2, 3]);
     });
+    it('should accept non-Maybe input as Some', () => {
+      assert.ok(Maybe.all([0]).isSome());
+      assert.deepEqual(Maybe.all([0]).unwrap(), [0]);
+      assert.deepEqual(Maybe.all([0, Some(0)]).unwrap(), [0, 0]);
+    });
     it('should be None if any inputs are None', () => {
       assert(Maybe.all([None()]).isNone());
       assert(Maybe.all([None(), None()]).isNone());
       assert(Maybe.all([Some(1), None()]).isNone());
       assert(Maybe.all([None(), Some(1)]).isNone());
+      assert(Maybe.all([None(), 1]).isNone());
+      assert(Maybe.all([1, None()]).isNone());
     });
   });
 });
@@ -141,6 +168,14 @@ describe('Result', () => {
   it('should should anti-self-other-identify', () => {
     assert.equal(Ok(1).isErr(), false);
     assert.equal(Err(2).isOk(), false);
+  });
+  it('.Ok should unwrap Results given to it', () => {
+    assert.equal(Ok(Ok(1)).unwrap(), 1);
+    assert.equal(Ok(Err(2)).unwrap(), 2);
+  });
+  it('.Err should not unwrap Results given to it', () => {
+    assert.ok(Err(Ok(1)).unwrapErr().isOk());
+    assert.ok(Err(Err(2)).unwrapErr().isErr());
   });
   it('should convert to an Option', () => {
     assert.ok(Ok(1).ok().isSome());
@@ -162,10 +197,18 @@ describe('Result', () => {
     assert.ok(Err(2).and(Err(-2)).isErr());
     assert.equal(Err(2).and(Err(-2)).unwrapErr(), 2);
   });
+  it('.and should promote non-Result to Ok', () => {
+    assert.ok(Err(1).or(2).isOk());
+    assert.equal(Err(1).or(2).unwrap(), 2);
+  });
   it('.andThen', () => {
     var sq = (v) => Ok(v * v);
     assert.equal(Ok(-1).andThen(sq).unwrap(), 1);
     assert.ok(Err(2).andThen(sq).isErr());
+  });
+  it('.andThen should promote non-Result to Ok', () => {
+    assert.ok(Ok(1).andThen(() => 2).isOk());
+    assert.equal(Ok(1).andThen(() => 2).unwrap(), 2);
   });
   it('.or', () => {
     assert.ok(Ok(1).or(Ok(-1)).isOk());
@@ -177,10 +220,18 @@ describe('Result', () => {
     assert.ok(Err(2).or(Err(-2)).isErr());
     assert.equal(Err(2).or(Err(-2)).unwrapErr(), -2);
   });
+  it('.or should promote non-result to Ok', () => {
+    assert.ok(Err(1).or(2).isOk());
+    assert.equal(Err(1).or(2).unwrap(), 2);
+  });
   it('.orElse', () => {
     var timesTwo = (n) => Ok(n*2);
     assert.equal(Ok(1).orElse(timesTwo).unwrap(), 1);
     assert.equal(Err(-2).orElse(timesTwo).unwrap(), -4);
+  });
+  it('.orElse should promote non-Result to Ok', () => {
+    assert.ok(Err(1).orElse(() => 2).isOk());
+    assert.equal(Err(1).orElse(() => 2).unwrap(), 2);
   });
   it('.unwrapOr', () => {
     assert.equal(Ok(1).unwrapOr(5), 1);
@@ -237,13 +288,21 @@ describe('Result', () => {
       assert.deepEqual(oa2.unwrap(), [1, 2]);
       assert.deepEqual(Result.all([Ok(1), Ok(2), Ok(3)]).unwrap(), [1, 2, 3]);
     });
+    it('should accept non-Result input as Ok', () => {
+      assert.ok(Result.all([0]).isOk());
+      assert.deepEqual(Result.all([0]).unwrap(), [0]);
+      assert.deepEqual(Result.all([0, Ok(0)]).unwrap(), [0, 0]);
+    });
     it('should be the first Err if any inputs are Err', () => {
       assert(Result.all([Err()]).isErr());
       assert(Result.all([Err(9), Err(8)]).isErr());
       assert(Result.all([Ok(1), Err(9)]).isErr());
       assert(Result.all([Err(9), Ok(1)]).isErr());
+      assert(Result.all([Err(9), 1]).isErr());
+      assert(Result.all([1, Err(9)]).isErr());
 
       assert.equal(Result.all([Err(9), Err(8)]).unwrapErr(), 9);
+      assert.equal(Result.all([0, Err(9)]).unwrapErr(), 9);
     });
   });
 });

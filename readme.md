@@ -212,8 +212,14 @@ _in progress_
     `.andThen` (possibly chained with `.or` or `.orElse`) instead.
   * Removed `.array` from `Result` and `Maybe` proto. It came from rust's
     `.iter` and `.intoIter`, but it's not really useful in javascript...
+  * `OptionClass` is now a reserved property for `Union` instances, so it can no
+    longer be used as a key in Unions.
 
 ### Other Changes
+
+  * `OptionClass`! Check which Union a value is coming from with `instanceof`
+  * `Some` and `Ok` auto-promotion for the `.and` and `.or` families of methods,
+    as well as `.all` on the union instances.
 
 
 ### v0.6.0
