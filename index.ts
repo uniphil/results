@@ -108,12 +108,8 @@ interface MaybeOption {
   unwrap: () => any;
   unwrapOr: (def) => any;
   unwrapOrElse: (fn: () => any) => any;
-  map: (fn: (someValue) => any) => Maybe;
-  mapOr: (def, fn: (someValue) => any) => any;
-  mapOrElse: (defFn: () => any, fn: (someValue) => any) => any;
   okOr: (err) => Result;
   okOrElse: (errFn: () => any) => Result;
-  array: () => Array<any>;
   and: (other: Maybe) => Maybe;
   andThen: (fn: (someValue) => Maybe) => Maybe;
   or: (other: Maybe) => Maybe;
@@ -154,23 +150,11 @@ var maybeProto: MaybeOption = {
   unwrapOrElse(fn) {
     return (this.name === 'Some') ? this.data : fn();
   },
-  map(fn) {
-    return (this.name === 'Some') ? Maybe.Some(fn(this.data)) : this;
-  },
-  mapOr(def, fn) {
-    return (this.name === 'Some') ? fn(this.data) : def;
-  },
-  mapOrElse(defFn, fn) {
-    return (this.name === 'Some') ? fn(this.data) : defFn();
-  },
   okOr(err): Result {
     return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(err);
   },
   okOrElse(errFn) {
     return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(errFn());
-  },
-  array() {
-    return (this.name === 'Some') ? [this.data] : [];  // .iter; .into_item
   },
   and(other) {
     return (this.name === 'Some') ? other : this;
@@ -193,7 +177,7 @@ interface MaybeStatic {
 
 var maybeStatic: MaybeStatic = {
   all: (values) => values.reduce((res, next) =>
-    res.andThen(resArr => next.map(v => resArr.concat(v)))
+    res.andThen(resArr => next.andThen(v => Maybe.Some(resArr.concat(v))))
   , Maybe.Some([])),
 };
 
@@ -228,9 +212,6 @@ interface ResultOption {
   isErr: () => Boolean;
   ok: () => Maybe;
   err: () => Maybe;
-  map: (fn: (okValue) => any) => Result;
-  mapErr: (fn: (errValue) => any) => Result;
-  array: () => Array<any>;
   and: (other: Result) => Result;
   andThen: (fn: (okValue) => Result) => Result;
   or: (other: Result) => Result;
@@ -266,15 +247,6 @@ var resultProto: ResultOption = {
   },
   err() {
     return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.data);
-  },
-  map(fn) {
-    return (this.name === 'Ok') ? Result.Ok(fn(this.data)) : this;
-  },
-  mapErr(fn) {
-    return (this.name === 'Ok') ? this : Result.Err(fn(this.data));
-  },
-  array() {
-    return (this.name === 'Ok') ? [this.data] : [];  // .iter; .into_item
   },
   and(other) {
     return (this.name === 'Ok') ? other : this;
@@ -316,7 +288,7 @@ interface ResultStatic {
 
 var resultStatic: ResultStatic = {
   all: (values) => values.reduce((res, next) =>
-    res.andThen(resArr => next.map(v => resArr.concat(v)))
+    res.andThen(resArr => next.andThen(v => Result.Ok(resArr.concat(v))))
   , Result.Ok([])),
 };
 

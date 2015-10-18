@@ -208,6 +208,11 @@ _in progress_
 
 ### Breaking
 
+  * Removed the `.map` family of methods from `Result` and `Maybe` -- use
+    `.andThen` (possibly chained with `.or` or `.orElse`) instead.
+  * Removed `.array` from `Result` and `Maybe` proto. It came from rust's
+    `.iter` and `.intoIter`, but it's not really useful in javascript...
+
 ### Other Changes
 
 
