@@ -202,7 +202,7 @@ Todo for v1.0.0:
      * [ ] Add API docs
 
 
- ### v0.7.0
+### v0.7.0
 
 _in progress_
 
