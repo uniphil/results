@@ -190,12 +190,7 @@ Changes
 
 Todo for v1.0.0:
 
- * [x] Make errors nice.
-     * just throw regular Error instances.
-
- * [ ] Maaaaaaybe add some methods like `.equals` and `.toString`
-
- * [ ] Fix up typescript API docs
+ * [ ] Fix up API docs
 
  * [ ] Improve the readme
      * [ ] Get better examples
