@@ -18,7 +18,7 @@ $ npm install results
 Docs
 ----
 
-[API Docs](http://uniphil.github.io/results/)
+API Docs: _coming soon_ -- they used to be auto-generated with typedoc, but now that typescript is gone, a better (possibly manual) solution is needed.
 
 
 Features
@@ -214,6 +214,8 @@ _in progress_
     `.iter` and `.intoIter`, but it's not really useful in javascript...
   * `OptionClass` is now a reserved property for `Union` instances, so it can no
     longer be used as a key in Unions.
+  * The typescript declaration file is removed. It could be re-created and added
+    to definitelyTyped or something, if anyone wants it.
 
 ### Other Changes
 
@@ -224,6 +226,8 @@ _in progress_
     `'[[UnionOption A(1, 2) from Union { A }]]'`
   * `Maybe`'s prototype grew `.promiseOr` and `.promiseOrElse` methods.
   * `Result`'s prototype grew `.promise` and `.promiseErr` methods.
+  * Converted source from typescript to es6 javascript, so we can use more es6
+    features, and remove ugly typescript hacks.
 
 
 ### v0.6.0
