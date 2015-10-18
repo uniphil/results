@@ -6,6 +6,7 @@
  */
 
 /// <reference path="./node.d.ts" />
+/// <reference path="./promise.d.ts" />
 
 
 var $;  // just a  placeholder for RHS of objects whose keys we want
@@ -124,6 +125,8 @@ interface MaybeOption {
   unwrapOrElse: (fn: () => any) => any;
   okOr: (err) => Result;
   okOrElse: (errFn: () => any) => Result;
+  promiseOr: (err: any) => Promise<any>;
+  promiseOrElse: (err: () => any) => Promise<any>;
   and: (other: any|Maybe) => Maybe;
   andThen: (fn: (someValue) => any|Maybe) => Maybe;
   or: (other: any|Maybe) => Maybe;
@@ -176,6 +179,12 @@ var maybeProto: MaybeOption = {
   },
   okOrElse(errFn) {
     return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(errFn());
+  },
+  promiseOr(err) {
+    return (this.name === 'Some') ? Promise.resolve(this.data) : Promise.reject(err);
+  },
+  promiseOrElse(fn) {
+    return (this.name === 'Some') ? Promise.resolve(this.data) : Promise.reject(fn());
   },
   and(other) {
     return (this.name === 'Some') ? this._promote(other) : this;
@@ -245,6 +254,8 @@ interface ResultOption {
   isErr: () => Boolean;
   ok: () => Maybe;
   err: () => Maybe;
+  promise: () => Promise<any>;
+  promiseErr: () => Promise<any>;
   and: (other: any|Result) => Result;
   andThen: (fn: (okValue) => any|Result) => Result;
   or: (other: any|Result) => Result;
@@ -287,6 +298,12 @@ var resultProto: ResultOption = {
   },
   err() {
     return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.data);
+  },
+  promise() {
+    return (this.name === 'Ok') ? Promise.resolve(this.data) : Promise.reject(this.data);
+  },
+  promiseErr() {
+    return (this.name === 'Ok') ? Promise.reject(this.data) : Promise.resolve(this.data);
   },
   and(other) {
     return (this.name === 'Ok') ? this._promote(other) : this;

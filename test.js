@@ -89,6 +89,30 @@ describe('Maybe', () => {
     assert.ok(Some(1).okOrElse(() => 'sad').isOk());
     assert.ok(None().okOrElse(() => 'sad').isErr());
   });
+  it('Some should resolve a promise with .promiseOr', () => {
+    return Some(1)
+      .promiseOr()
+      .then(v => v === 1 ? v :
+        Promise.reject(new Error(`got '${v}', expected 1`)));
+  });
+  it('None should reject with .promiseOr', () => {
+    return None()
+      .promiseOr(1)
+      .catch(e => e === 1 ? Promise.resolve(e) :
+        Promise.reject(new Error(`got '${e}', expected 1`)));
+  });
+  it('Some should resolve a promise with .promiseOrElse', () => {
+    return Some(1)
+      .promiseOrElse()
+      .then(v => v === 1 ? v :
+        Promise.reject(new Error(`got '${v}', expected 1`)));
+  });
+  it('None should reject with .promiseOrElse', () => {
+    return None()
+      .promiseOrElse(() => 1)
+      .catch(e => e === 1 ? Promise.resolve(e) :
+        Promise.reject(new Error(`got '${e}', expected 1`)));
+  });
   it('should never be the result of .and if Some', () => {
     assert.equal(Some(1).and(Some(2)).unwrap(), 2);
     assert.ok(None().and(Some(2)).isNone());
@@ -190,10 +214,34 @@ describe('Result', () => {
     assert.equal(Ok(1).ok().unwrap(), 1);
     assert.ok(Err(2).ok().isNone());
   });
-  it('should convert to an Option<E>', () => {
+  it('should convert to an Option with .err', () => {
     assert.ok(Ok(1).err().isNone());
     assert.ok(Err(2).err().isSome());
     assert.equal(Err(2).err().unwrap(), 2);
+  });
+  it('Ok should resolve a promise with .promise', () => {
+    return Ok(1)
+      .promise()
+      .then(v => v === 1 ? v :
+        Promise.reject(new Error(`got '${v}', expected 1`)));
+  });
+  it('Err should reject with .promise', () => {
+    return Err(1)
+      .promise()
+      .catch(e => e === 1 ? Promise.resolve(e) :
+        Promise.reject(new Error(`got '${e}', expected 1`)));
+  });
+  it('Ok should reject a promise with .promiseErr', () => {
+    return Ok(1)
+      .promiseErr()
+      .catch(e => e === 1 ? Promise.resolve(e) :
+        Promise.reject(new Error(`got '${e}', expected 1`)));
+  });
+  it('Err should resolve with .promiseErr', () => {
+    return Err(1)
+      .promiseErr()
+      .then(v => v === 1 ? v :
+        Promise.reject(new Error(`got '${v}', expected 1`)));
   });
   it('.and', () => {
     assert.ok(Ok(1).and(Ok(-1)).isOk());

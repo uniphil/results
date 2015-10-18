@@ -222,6 +222,8 @@ _in progress_
     as well as `.all` on the union instances.
   * Added toString methods. Some samples: `'[Union { A, B }]'`,
     `'[[UnionOption A(1, 2) from Union { A }]]'`
+  * `Maybe`'s prototype grew `.promiseOr` and `.promiseOrElse` methods.
+  * `Result`'s prototype grew `.promise` and `.promiseErr` methods.
 
 
 ### v0.6.0
