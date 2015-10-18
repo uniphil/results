@@ -36,11 +36,7 @@ function match(to) {
 
 
 function _factory(options, name, UnionOptionClass) {
-  return function() {
-    var data = [];
-    for (var i=0; i<arguments.length; i++) {
-      data[i] = arguments[i];
-    }
+  return function(...data) {
     return new UnionOptionClass(options, name, data);
   };
 }
@@ -62,28 +58,28 @@ function Union(options, proto={}, static_={}, factory=_factory) {
         `from Union { ${Object.keys(this.options).join(', ')} }]`;
     };
   }
-  var union_ = Object.keys(options).reduce((obj, name) => {
+  const union = Object.keys(options).reduce((obj, name) => {
     obj[name] = factory(options, name, UnionOption);
     return obj;
   }, {});
   if (options.hasOwnProperty('toString')) {
     throw new Error('Union: cannot use reserved name `toString` as part of a Union');
   }
-  union_.toString = () => `[Union { ${Object.keys(options).join(', ')} }]`;
-  for (var k in static_) {
+  union.toString = () => `[Union { ${Object.keys(options).join(', ')} }]`;
+  for (const k in static_) {
     if (static_.hasOwnProperty(k)) {
-      union_[k] = static_[k];
+      union[k] = static_[k];
     }
   }
-  if (union_.hasOwnProperty('OptionClass')) {
+  if (union.hasOwnProperty('OptionClass')) {
     throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
   }
-  union_.OptionClass = UnionOption;
-  return union_;
+  union.OptionClass = UnionOption;
+  return union;
 }
 
 
-var maybeProto = {
+const maybeProto = {
   _promote(value) {
     if (value instanceof Maybe.OptionClass) {
       return value;
@@ -160,7 +156,7 @@ var maybeProto = {
 };
 
 
-var maybeStatic = {
+const maybeStatic = {
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => maybeProto._promote(next)
       .andThen(v => Maybe.Some(resArr.concat(v))))
@@ -168,7 +164,7 @@ var maybeStatic = {
 };
 
 
-var Maybe = Union({
+const Maybe = Union({
   Some: null,
   None: null,
 }, maybeProto, maybeStatic, (options, name, UnionOptionClass) => {
@@ -187,7 +183,7 @@ var Maybe = Union({
 });
 
 
-var resultProto = {
+const resultProto = {
   _promote(value) {
     if (value instanceof Result.OptionClass) {
       return value;
@@ -264,14 +260,14 @@ var resultProto = {
 };
 
 
-var resultStatic = {
+const resultStatic = {
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => resultProto._promote(next)
       .andThen(v => Result.Ok(resArr.concat(v))))
   , Result.Ok([])),
 };
 
-var Result = Union({
+const Result = Union({
   Ok: null,
   Err: null,
 }, resultProto, resultStatic, (options, name, UnionOptionClass) => {
