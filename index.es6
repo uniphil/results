@@ -5,23 +5,23 @@
  * @author uniphil
  */
 
+ const _ = Symbol('Union match catch-all symbol');
+
 
 /**
  * @throws Error if the match is not exhaustive, or if there are weird keys
  */
 function match(to) {
-  for (let k in to) {
-    if (to.hasOwnProperty(k)) {
-      if (!this.options.hasOwnProperty(k) && k !== '_') {
-        throw new Error(`Union match: unrecognized match option: '${k}'`);
-      }
+  for (let k of Object.keys(to)) {
+    if (!this.options.hasOwnProperty(k) && k !== _) {
+      throw new Error(`Union match: unrecognized match option: '${k}'`);
     }
   }
-  if (typeof to._ === 'function') {  // match is de-facto exhaustive w/ `_`
+  if (typeof to[_] === 'function') {  // match is de-facto exhaustive w/ `_`
     if (typeof to[this.name] === 'function') {
       return to[this.name].apply(null, this.data);
     } else {
-      return to._(this);
+      return to[_](this);
     }
   } else {
     // ensure match is exhaustive
@@ -292,6 +292,7 @@ const Result = Union({
 
 module.exports = {
   Union,
+  _,
 
   Maybe,
   Some: Maybe.Some,

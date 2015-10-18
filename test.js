@@ -1,5 +1,5 @@
 var assert = require('assert');
-var { Union, Result, Ok, Err, Maybe, Some, None } = require('./index');
+var { Union, Result, Ok, Err, Maybe, Some, None, _ } = require('./index');
 
 
 describe('Union', () => {
@@ -21,13 +21,13 @@ describe('Union', () => {
     assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
   });
   describe('.match', () => {
-    it('should ensure that the match paths are exhaustive', () => {
+    it('should throw if the match paths are not exhaustive', () => {
       var myUnion = Union({A: 0, B: 0}).A();
       assert.throws(() => myUnion.match({a: () => 'whatever'}), Error);
     });
     it('should always be exhaustive with a wildcard match', () => {
-      assert.equal(Union({A: 0, B: 0}).A().match({_: () => 42}), 42);
-      assert.equal(Union({A: 0, B: 0}).B().match({_: () => 42}), 42);
+      assert.equal(Union({A: 0, B: 0}).A().match({[_]: () => 42}), 42);
+      assert.equal(Union({A: 0, B: 0}).B().match({[_]: () => 42}), 42);
     });
     it('should pass a value to `match` callbacks', () => {
       assert.equal(Union({A: 1}).A(42).match({A: (v) => v}), 42);
@@ -36,13 +36,23 @@ describe('Union', () => {
       assert.equal(Union({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
     });
     it('should pass itself to catch-all `match` callbacks', () => {
-      assert.equal(Union({A: 1}).A(42).match({_: (en) => en.name}), 'A');
-      assert.equal(Union({A: 1}).A(42).match({_: (en) => en.data[0]}), 42);
+      assert.equal(Union({A: 1}).A(42).match({[_]: (en) => en.name}), 'A');
+      assert.equal(Union({A: 1}).A(42).match({[_]: (en) => en.data[0]}), 42);
     });
     it('should throw for unrecognized keys', () => {
       var a = Union({A: 0, B: 1}).A();
       var f = () => null;
       assert.throws(() => a.match({A: f, B: f, C: f}), Error);
+    });
+    it('should allow _ as a key (though this is a terrible idea)', () => {
+      const u = Union({
+        A: null,
+        _: null,
+      });
+      assert.equal(u.A().match({_: () => 0, A:   () => 1}), 1);
+      assert.equal(u.A().match({_: () => 0, [_]: () => 1}), 1);
+      assert.equal(u._().match({_: () => 1, A:   () => 0}), 1);
+      assert.equal(u._().match({_: () => 1, [_]: () => 0}), 1);
     });
   });
 });
