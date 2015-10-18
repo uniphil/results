@@ -81,6 +81,10 @@ function Union<T>(options: T, proto:any={}, static:any={}, factory:any=_factory)
       union_[k] = static[k];
     }
   }
+  if (union_.hasOwnProperty('OptionClass')) {
+    throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
+  }
+  (<any>union_).OptionClass = UnionOption;
   return <T>union_;
 }
 
@@ -88,10 +92,11 @@ function Union<T>(options: T, proto:any={}, static:any={}, factory:any=_factory)
 interface Maybe {
   Some: (someValue: any) => MaybeOption;
   None: () => MaybeOption;
-  all: (values: MaybeOption[]) => MaybeOption;
+  all: (values: Array<MaybeOption|any>) => MaybeOption;
 }
 
 interface MaybeOption {
+  _promote: (val: MaybeOption|any) => MaybeOption;
   /**
    * @throws Error if the match is not exhaustive
    */
@@ -110,13 +115,20 @@ interface MaybeOption {
   unwrapOrElse: (fn: () => any) => any;
   okOr: (err) => Result;
   okOrElse: (errFn: () => any) => Result;
-  and: (other: Maybe) => Maybe;
-  andThen: (fn: (someValue) => Maybe) => Maybe;
-  or: (other: Maybe) => Maybe;
-  orElse: (fn: () => Maybe) => Maybe;
+  and: (other: any|Maybe) => Maybe;
+  andThen: (fn: (someValue) => any|Maybe) => Maybe;
+  or: (other: any|Maybe) => Maybe;
+  orElse: (fn: () => any|Maybe) => Maybe;
 }
 
 var maybeProto: MaybeOption = {
+  _promote(value) {
+    if (value instanceof (<any>Maybe).OptionClass) {
+      return value;
+    } else {
+      return Maybe.Some(value);
+    }
+  },
   match(paths) {
     return match.call({
       options: this.options,
@@ -157,16 +169,16 @@ var maybeProto: MaybeOption = {
     return (this.name === 'Some') ? Result.Ok(this.data) : Result.Err(errFn());
   },
   and(other) {
-    return (this.name === 'Some') ? other : this;
+    return (this.name === 'Some') ? this._promote(other) : this;
   },
   andThen(fn) {
-    return (this.name === 'Some') ? fn(this.data) : this;
+    return (this.name === 'Some') ? this._promote(fn(this.data)) : this;
   },
   or(other) {
-    return (this.name === 'Some') ? this : other;
+    return (this.name === 'Some') ? this : this._promote(other);
   },
   orElse(fn) {
-    return (this.name === 'Some') ? this : fn();
+    return (this.name === 'Some') ? this : this._promote(fn());
   },
 };
 
@@ -177,7 +189,8 @@ interface MaybeStatic {
 
 var maybeStatic: MaybeStatic = {
   all: (values) => values.reduce((res, next) =>
-    res.andThen(resArr => next.andThen(v => Maybe.Some(resArr.concat(v))))
+    res.andThen(resArr => maybeProto._promote(next)
+      .andThen(v => Maybe.Some(resArr.concat(v))))
   , Maybe.Some([])),
 };
 
@@ -214,6 +227,7 @@ interface Result {
 }
 
 interface ResultOption {
+  _promote: (val: ResultOption|any) => ResultOption;
   /**
    * @throws Error if the match is not exhaustive
    */
@@ -222,10 +236,10 @@ interface ResultOption {
   isErr: () => Boolean;
   ok: () => Maybe;
   err: () => Maybe;
-  and: (other: Result) => Result;
-  andThen: (fn: (okValue) => Result) => Result;
-  or: (other: Result) => Result;
-  orElse: (fn: (errValue) => Result) => Result;
+  and: (other: any|Result) => Result;
+  andThen: (fn: (okValue) => any|Result) => Result;
+  or: (other: any|Result) => Result;
+  orElse: (fn: (errValue) => any|Result) => Result;
   unwrapOr: (def: any) => any;
   unwrapOrElse: (fn: (errValue) => any) => any;
   /**
@@ -239,6 +253,13 @@ interface ResultOption {
 }
 
 var resultProto: ResultOption = {
+  _promote(value) {
+    if (value instanceof (<any>Result).OptionClass) {
+      return value;
+    } else {
+      return Result.Ok(value);
+    }
+  },
   match(paths) {
     return match.call({
       options: this.options,
@@ -259,16 +280,16 @@ var resultProto: ResultOption = {
     return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.data);
   },
   and(other) {
-    return (this.name === 'Ok') ? other : this;
+    return (this.name === 'Ok') ? this._promote(other) : this;
   },
   andThen(fn) {
-    return (this.name === 'Ok') ? fn(this.data) : this;
+    return (this.name === 'Ok') ? this._promote(fn(this.data)) : this;
   },
   or(other) {
-    return (this.name === 'Ok') ? this : other;
+    return (this.name === 'Ok') ? this : this._promote(other);
   },
   orElse(fn) {
-    return (this.name === 'Ok') ? this : fn(this.data);
+    return (this.name === 'Ok') ? this : this._promote(fn(this.data));
   },
   unwrapOr(def) {
     return (this.name === 'Ok') ? this.data : def;
@@ -293,12 +314,13 @@ var resultProto: ResultOption = {
 };
 
 interface ResultStatic {
-  all: (values: ResultOption[]) => ResultOption;
+  all: (values: Array<ResultOption|any>) => ResultOption;
 }
 
 var resultStatic: ResultStatic = {
   all: (values) => values.reduce((res, next) =>
-    res.andThen(resArr => next.andThen(v => Result.Ok(resArr.concat(v))))
+    res.andThen(resArr => resultProto._promote(next)
+      .andThen(v => Result.Ok(resArr.concat(v))))
   , Result.Ok([])),
 };
 
