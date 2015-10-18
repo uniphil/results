@@ -40,7 +40,6 @@ function match(to: any): any {
 };
 
 
-
 interface UnionOption {
   options: any;
   name: String;
@@ -72,10 +71,20 @@ function Union<T>(options: T, proto:any={}, static:any={}, factory:any=_factory)
   if (typeof proto.match === 'undefined') {
     proto.match = match;
   }
+  if (!proto.hasOwnProperty('toString')) {
+    proto.toString = function() {
+      return `[UnionOption ${this.name}(${this.data.join(', ')}) ` +
+        `from Union { ${Object.keys(this.options).join(', ')} }]`;
+    };
+  }
   var union_ = Object.keys(options).reduce((obj, name) => {
     obj[name] = factory(options, name, UnionOption);
     return obj;
   }, {});
+  if (options.hasOwnProperty('toString')) {
+    throw new Error('Union: cannot use reserved name `toString` as part of a Union');
+  }
+  (<any>union_).toString = () => `[Union { ${Object.keys(options).join(', ')} }]`;
   for (var k in static) {
     if (static.hasOwnProperty(k)) {
       union_[k] = static[k];

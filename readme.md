@@ -220,6 +220,8 @@ _in progress_
   * `OptionClass`! Check which Union a value is coming from with `instanceof`
   * `Some` and `Ok` auto-promotion for the `.and` and `.or` families of methods,
     as well as `.all` on the union instances.
+  * Added toString methods. Some samples: `'[Union { A, B }]'`,
+    `'[[UnionOption A(1, 2) from Union { A }]]'`
 
 
 ### v0.6.0

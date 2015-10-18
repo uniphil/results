@@ -12,6 +12,14 @@ describe('Union', () => {
   it('should.. work for empty object... I guess', () => {
     assert.ok(Union({}));
   });
+  it('should stringify nicely', () => {
+    assert.equal(String(Union({A: null})), '[Union { A }]');
+    assert.equal(String(Union({A: null, B: null})), '[Union { A, B }]');
+    const u = Union({A: null});
+    assert.equal(String(u.A()), `[UnionOption A() from Union { A }]`);
+    assert.equal(String(u.A(1)), `[UnionOption A(1) from Union { A }]`);
+    assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
+  });
   describe('.match', () => {
     it('should ensure that the match paths are exhaustive', () => {
       var myUnion = Union({A: 0, B: 0}).A();
