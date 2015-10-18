@@ -53,6 +53,10 @@ describe('Maybe', () => {
     assert.equal(Some(1).isNone(), false);
     assert.equal(None().isSome(), false);
   });
+  it('.Some should unwrap Maybes given to it', () => {
+    assert.equal(Some(Some(1)).unwrap(), 1);
+    assert.equal(Some(None()).unwrap(), undefined);
+  });
   it('should throw or not for expect', () => {
     assert.doesNotThrow(() => {Some(1).expect('err')});
     assert.throws(() => {None().expect('err')}, 'err');
@@ -141,6 +145,14 @@ describe('Result', () => {
   it('should should anti-self-other-identify', () => {
     assert.equal(Ok(1).isErr(), false);
     assert.equal(Err(2).isOk(), false);
+  });
+  it('.Ok should unwrap Results given to it', () => {
+    assert.equal(Ok(Ok(1)).unwrap(), 1);
+    assert.equal(Ok(Err(2)).unwrap(), 2);
+  });
+  it('.Err should not unwrap Results given to it', () => {
+    assert.ok(Err(Ok(1)).unwrapErr().isOk());
+    assert.ok(Err(Err(2)).unwrapErr().isErr());
   });
   it('should convert to an Option', () => {
     assert.ok(Ok(1).ok().isSome());

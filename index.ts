@@ -185,10 +185,20 @@ var maybeStatic: MaybeStatic = {
 var Maybe = Union({
   Some: $,
   None: $,
-}, maybeProto, maybeStatic, (options, name, UnionOptionClass) =>
-  name === 'Some' ?
-    (value) => new UnionOptionClass(options, name, value) :
-    () => new UnionOptionClass(options, name, null));
+}, maybeProto, maybeStatic, (options, name, UnionOptionClass) => {
+  if (name === 'Some') {
+    return (value) => {
+      if (value instanceof UnionOptionClass) {
+        const unwrapped = value.unwrapOr();  // Some's value or Undefined
+        return new UnionOptionClass(options, 'Some', unwrapped);
+      } else {
+        return new UnionOptionClass(options, 'Some', value);
+      }
+    };
+  } else {  // None
+    return () => new UnionOptionClass(options, 'None', null);
+  }
+});
 
 
 var ResultError = Union({
@@ -295,8 +305,20 @@ var resultStatic: ResultStatic = {
 var Result = Union({
   Ok:  $,
   Err: $,
-}, resultProto, resultStatic, (options, name, UnionOptionClass) =>
-  (value) => new UnionOptionClass(options, name, value));
+}, resultProto, resultStatic, (options, name, UnionOptionClass) => {
+  if (name === 'Ok') {
+    return (value) => {
+      if (value instanceof UnionOptionClass) {
+        const unwrapped = value.unwrapOrElse(e => e);
+        return new UnionOptionClass(options, 'Ok', unwrapped);
+      } else {
+        return new UnionOptionClass(options, 'Ok', value);
+      }
+    }
+  } else {
+    return (err) => new UnionOptionClass(options, 'Err', err);
+  }
+});
 
 
 module.exports = {
