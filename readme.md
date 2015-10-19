@@ -218,6 +218,7 @@ _in progress_
         A: () => console.log('A!'),
         [_]: () => console.log('something else...'),
       });
+      ```
 
 ### Other Changes
 
