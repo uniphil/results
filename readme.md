@@ -211,6 +211,13 @@ _in progress_
     longer be used as a key in Unions.
   * The typescript declaration file is removed. It could be re-created and added
     to definitelyTyped or something, if anyone wants it.
+  * **Match's _ special-case catch-all key is removed**. Instead, `results` now
+    exports a symbol as `_` that you can use as a computed key like
+      ```js
+      Union({A: {}, B: {}, C: {}}).A().match({
+        A: () => console.log('A!'),
+        [_]: () => console.log('something else...'),
+      });
 
 ### Other Changes
 
