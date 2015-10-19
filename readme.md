@@ -213,12 +213,13 @@ _in progress_
     to definitelyTyped or something, if anyone wants it.
   * **Match's _ special-case catch-all key is removed**. Instead, `results` now
     exports a symbol as `_` that you can use as a computed key like
-      ```js
-      Union({A: {}, B: {}, C: {}}).A().match({
-        A: () => console.log('A!'),
-        [_]: () => console.log('something else...'),
-      });
-      ```
+
+    ```js
+    Union({A: {}, B: {}, C: {}}).A().match({
+      A: () => console.log('A!'),
+      [_]: () => console.log('something else...'),
+    });
+    ```
 
 ### Other Changes
 
