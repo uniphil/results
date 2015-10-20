@@ -1,10 +1,11 @@
-Results
+Results [![Build Status](https://travis-ci.org/uniphil/results.svg)](https://travis-ci.org/uniphil/results)
 =======
 
-[![Build Status](https://travis-ci.org/uniphil/results.svg)](https://travis-ci.org/uniphil/results)
+Results brings **Discriminated Unions** (aka **Sum Types** or **Algebraic Types**) to JavaScript, with **`match`** for better program flow control.
 
+Results ships with full-featured **`Maybe`** (sometimes called an **Option Type**) and **`Result`** unions built-in, helping you safely deal with optional data and error handling.
 
-Lightweight rust-inspired `Maybe`, `Result`, and `Union` program flow control for JavaScript -- with `match`!.
+The goal of Results is **JavaScript with fewer bugs**.
 
 
 Install
@@ -15,186 +16,187 @@ $ npm install results
 ```
 
 
-Docs
-----
+Quickstart
+----------
 
-API Docs: _coming soon_ -- they used to be auto-generated with typedoc, but now that typescript is gone, a better (possibly manual) solution is needed.
+#### `Result` for error handling
 
+```js
+import { Result, Ok, Err } from 'results';
 
-Features
---------
-
-Rust-like `Maybe` and `Result` for nice data processing flows:
-
-```javascript
-var {Some, None, Ok, Err} = require('results');
-
-
-function getLatest() {
-  // this function might fetch data from a server or something, but we'll just
-  // hard-code it for illustration
-  return Some('{ "nums": [1, 7, 3, 3] }');
-}
-
-
-function parseJSON(raw) {
-  try {
-    return Ok(JSON.parse(raw));
-  } catch (parseErr) {
-    return Err(parseErr);
-  }
-}
-
-function validate(data) {
-  if (!(data.nums instanceof Array)) {
-    return Err('nums property was not an Array');
-  }
-  if (!(data.nums.length > 0)) {
-    return Err('nums array must have at least one number');
-  }
-  if (!data.nums.every((n) => typeof n === 'number')) {
-    return Err('nums array should contain only numbers');
-  }
-  return Ok(data);
-}
-
-function summarize(data) {
-  var total = data.nums.reduce((sum, val) => sum + val, 0),
-      min = Math.min.apply(null, data.nums),
-      max = Math.max.apply(null, data.nums),
-      avg = total / data.nums.length;
-
-  if ([total, min, max, avg].some(isNaN)) {
-    console.log(data, total, min, max, avg);
-    return Err('Math error -- found a NaN');
-  }
-
-  return Ok({total, min, max, avg});
-}
-
-function prettyPrint(data) {
-  var pretty = JSON.stringify(data, null, 2);
-  if (pretty === undefined) {
-    return Err('prettyPrint failed :(');
+function validateNumber(number) {
+  if (isNaN(number)) {
+    return Err(`expected a number but got '${number}' (a '${typeof number}')`);
   } else {
-    return Ok(pretty);
+    return Ok(number);
   }
 }
 
-// We can now compose these functions with their nice methods:
-function logLatestReport() {
-  var latestReport = getLatest().okOr('Nothing new')
-    .andThen(parseJSON)
-    .andThen(validate)
-    .andThen(summarize)
-    .andThen(prettyPrint);
-
-  latestReport.match({
-    Ok: (report) => console.log(report),
-    Err: (reason) => console.error(':(', reason),
-  });
-}
-
-```
-All of the methods for `Result` and `Option` (called `Maybe` in results) that make sense in JavaScript should be there.
-
-Match expressions are almost like Rust with es6 arrow functions:
-
-```javascript
-
-var messageSent = Ok('sent!');  // or Err(why) as the case may be...
-
-messageSent.match({
-  Ok: (okMessage) => console.log(okMessage, 'woo hoo!'),
-  Err: (why) => {
-    console.error(why, ':(');
-    notifyFailure('message sending', why);
-  },
-});
-
-```
-
-`Maybe` and `Result` are generalized as `Union` (which is a sort of Sum Type or Discriminated Union-ish tool). `Union` comes with the `match` expression for nice control flow everywhere:
-
-```javascript
-var _;  // just a placeholder to make the Union object declaration valid
-var HTTPVerbs = Union({
-  OPTIONS: _,
-  HEAD: _,
-  GET: _,
-  POST: _,
-  PUT: _,
-  DELETE: _,
-});
-
-
-function isIdempotent(verb) {
-  return verb.match({
-    POST: () => false,
-    _: () => true,      // `_` is catch-all, just like in rust!
-  });
-}
-
-isIdempotent(HTTPVerbs.OPTIONS());
-// => true
-
-isIdempotent(HTTPVerbs.POST());
-// => false
-
-```
-
-Methods, like the ones on `Result`s and `Maybe`s, can be attached when creating the `Union`:
-
-```javascript
-var _;
-var HTTPVerbs = Union({
-  OPTIONS: _,
-  HEAD: _,
-  GET: _,
-  POST: _,
-  PUT: _,
-  DELETE: _,
-}, {
-  isIdempotent: function() {
-    return this.name === 'POST' ? false : true;
+function computeSum(numbers) {
+  if (!(numbers instanceOf Array)) {
+    return Err(`expected an Array but got '${numbers}' (a '${typeof numbers}')`);
   }
+  return Result.all(numbers.map(validateNumber))
+    .andThen(nums => nums.reduce((a, b) => a + b));
+}
+
+// Since computeSum returns a Result (eiter an Err() or an Ok()), we can match
+// for it and handle all possible cases:
+computeSum([1, 2, 3, 4, -5]).match({
+  Ok: sum => console.log(`The sum is: ${sum}`),
+  Err: err => console.error(`Something went wrong: ${err}`)
 });
 
-// or, since we are a method on the UnionOption, we can even use `match` in the method:
-var _;
-var HTTPVerbs = Union({
-  OPTIONS: _,
-  HEAD: _,
-  GET: _,
-  POST: _,
-  PUT: _,
-  DELETE: _,
+// Result is a synchronous compliment to Promise, and plays nicely with it:
+fetch('http://example.com/numbers')
+  .then(resp => resp.json())
+  .then(nums => computeSum(nums).toPromise())
+  .then(sum => console.log(`The sum is: ${sum}`))
+  .catch(err => console.error(`Something went wrong: ${err}`));
+```
+
+#### `Maybe` for nullable references
+
+```js
+import { Maybe, Some, None } from 'results';
+
+// Take a tree of Maybe({val: any, left: Maybe, right: Maybe}) and flatten it
+// into an array of values:
+function flattenDepthFirst(root) {
+  return root.match({
+    None: () => [],
+    Some: node => [node.val]
+                    .concat(flattenDepthFirst(node.left))
+                    .concat(flattenDepthFirst(node.right))
+  });
+}
+```
+
+#### `Maybe` for default values and possibly-undefined return values
+
+```js
+import { Maybe, Some, None } from 'results';
+
+function printGreeting(name) {
+  // get the name, or set a default if name is None()
+  const nameToPrint = name.match({
+    Some: n => n,
+    None: () => 'friend'
+  });
+  console.log(`Hello, oh wonderful ${nameToPrint}!`);
+}
+
+// The Maybe union has helpful methods, like .unwrapOr for getting the value
+// with a default:
+function printGreeting(name) {
+  const nameToPrint = name.unwrapOr('friend');
+  console.log(`Hello, oh wonderful ${nameToPrint}!`)
+}
+
+// For functions whose result may not be defined, using Maybe encourages the
+// caller to handle all cases
+function get(obj, key) {
+  if (obj.hasOwnProperty(key)) {
+    return Some(obj[key]);
+  } else {
+    return None();
+  }
+}
+```
+
+#### `Union` as a powerful Enum
+
+```js
+import { Union, _ } from 'results';
+
+const HTTPVerbs = Union({
+  Options: {},  // the {} values are just place-holders, only the keys are used
+  Head: {},
+  Get: {},
+  Post: {},
+  Put: {},
+  Delete: {}
 }, {
-  isIdempotent: function() {
+  // the optional second object parameter to Union creates prototype methods:
+  isIdempotent() {
     return this.match({
-      POST: () => false,
-      _: () => true,
+      Post: () => false,
+      [_]: () => true  // "_" is a Symbol to be used as a catch-all in match
     });
   }
 });
 
+let myVerb = HTTPVerbs.Get();
+console.log(`Get ${myVerb.isIdempotent() ? 'is' : 'is not'} idempotent.`);
+// => "Get is idempotent"
+myVerb = HTTPVerbs.Post();
+console.log(`Post ${myVerb.isIdempotent() ? 'is' : 'is not'} idempotent.`);
+// => "Post is not idempotent"
 
-HTTPVerbs.PUT().isIdempotent();
-// => true
-
+myVerb.match({
+  Delete: () => console.warn('some data was deleted!'),
+  [_]: () => null
+});
 ```
+
+While there is nothing react-specific in Results, it does enable some nice patterns:
+
+```js
+import React from 'react';
+import { Union } from 'results';
+
+const AsyncState = Union({
+  Pending: {},
+  Success: {},
+  Failed: {}
+});
+
+class Spinner extends React.Component {
+  static propTypes = {
+    reqState: React.PropTypes.instanceOf(AsyncState.OptionClass)
+  }
+  render() {
+    return this.props.reqState.match({
+      Pending: loaded => (
+        <div className="spinner overlay spinning">
+          <div className="spinner-animation">
+            Loading {loaded}%...
+          </div>
+        </div>
+      ),
+      Failed: errMsg => (
+        <div className="spinner overlay failed">
+          <div className="spinner-err-message">
+            <h3>Failed to load :( </h3>
+            <p>{errMsg}</p>
+          </div>
+        </div>
+      ),
+      Success: <div style={{display: 'none'}}></div>
+    });
+  }
+}
+```
+
+API
+---
+_coming soon..._
+
+
+Credits
+-------
+
+Results is written and maintained by [uniphil](https://github.com/uniphil/),
+with help, support, and opinions from [mystor](https://github.com/mystor/).
+
+The APIs for `Maybe`, and `Result` are _heavily_ influenced by
+[rust](https://www.rust-lang.org/)'s
+[`Option`](https://doc.rust-lang.org/std/option/) and
+[`Result`](https://doc.rust-lang.org/std/result/).
 
 
 Changes
 -------
-
-Todo for v1.0.0:
-
- * [ ] Fix up API docs
-
- * [ ] Improve the readme
-     * [ ] Get better examples
-     * [ ] Add API docs
 
 
 ### v0.7.0
@@ -232,6 +234,8 @@ _in progress_
   * `Result`'s prototype grew `.promise` and `.promiseErr` methods.
   * Converted source from typescript to es6 javascript, so we can use more es6
     features, and remove ugly typescript hacks.
+  * Rewrote the readme with hopefully better content :) Still lots more to
+    improve!
 
 
 ### v0.6.0
