@@ -25,10 +25,10 @@ Quickstart
 import { Result, Ok, Err } from 'results';
 
 function validateNumber(number) {
-  if (isNaN(number)) {
-    return Err(`expected a number but got '${number}' (a '${typeof number}')`);
-  } else {
+  if (isFinite(number)) {
     return Ok(number);
+  } else {
+    return Err(`expected a finite number but got '${number}' (a '${typeof number}')`);
   }
 }
 
