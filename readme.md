@@ -597,12 +597,20 @@ The APIs for `Maybe`, and `Result` are _heavily_ influenced by
 Changes
 -------
 
-
-### v0.7.0
+### v0.8.0
 
 _in progress_
 
-### Breaking
+#### Breaking
+
+#### Other Changes
+
+
+### v0.7.0
+
+2015-10-21
+
+#### Breaking
 
   * Removed the `.map` family of methods from `Result` and `Maybe` -- use
     `.andThen` (possibly chained with `.or` or `.orElse`) instead.
@@ -622,7 +630,7 @@ _in progress_
     });
     ```
 
-### Other Changes
+#### Other Changes
 
   * `OptionClass`! Check which Union a value is coming from with `instanceof`
   * `Some` and `Ok` auto-promotion for the `.and` and `.or` families of methods,
