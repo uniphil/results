@@ -180,7 +180,138 @@ class Spinner extends React.Component {
 
 API
 ---
-_coming soon..._
+
+### `Union(options[, proto[, static_[, factory]]])`
+
+Creates a discriminated union with members specified in the `options` object.
+
+Returns a `union` object.
+
+- **`options`** An object defining the members of the set. One member is added
+  for each key of `options`, and the values are ignored. Almost any name can be
+  used for the members except for two reserved names:
+  - `toString`, which is automatically added for nicer debugging, and
+  - `OptionClass`, which is used to attach the constructor function for member
+    instances, for typechecking purposes.
+  **Union() will throw** if either of those names are used as members in
+  `options`.
+
+  `Maybe.None()` is an example of a member added via `options`.
+
+- **`proto`** will be used to set the protoype of member instances. `match` and
+  `toString` will automatically be added to the prototype by default, but if you
+  define those in `proto` they will override the built-in implementations.
+
+  `Result.Ok(1).toPromise()` is an example of a method attached through `proto`.
+
+- **`static_`** like `proto` but for the object returned by `Union()`: functions
+  defined here can inspect the union, like accessing `this.OptionClass`. By
+  default, `toString` is added for you, but defining it in `static_` will
+  override the default implementation.
+  **Union() will throw** if a key in `static_` already exists in `options`.
+
+  `Result.all()` is an example of a function attached through `static_`.
+
+- **`factory`** is not stable and should not be considered part of the public
+  API :) It is used internally by `Maybe` and `Result`, check the source if you
+  want to get down and dirty.
+
+
+#### `Union._` the catch-all symbol
+
+A reference to a symbol you can import and use as a computed property
+(`{[computedProp]: val}`) in a `match` to handle any unmatched paths.
+
+Since `Union._` is a symbol, you technically _can_ also have `'_'` as a member
+of a union. But please don't :)
+
+
+```js
+import { Union, _ } from 'results';
+const Stoplight = Union({  // Union(), creating a `union` object called StopLight.
+  Red: {},
+  Amber: {},
+  Green: {}
+});
+Stoplight.Green().match({
+  Red: () => console.error('red'),
+  Amber: () => console.warn('amber'),
+  [_]: () => console.info('any other colour')  // The wildcard symbol reference "_" used via a computed property
+});
+```
+
+#### `union` object
+
+Created by `Union()`, this is an object with a key for each member of the union,
+plus anything attached via `static_`, which include `OptionClass` and `toString`
+by default. It is not safe to iterate the keys of a `union` object.
+
+Each member name's key maps to a factory to create a member instance, from a
+constructor called `OptionClass` (whose reference is also attached to the
+`union` object via they key "OptionClass").
+
+
+### `OptionClass()` constructor
+
+A function for creating OptionClass instances. You should not call this
+constructor directly, but rather use one of the factories attached to the
+`union` object via keys named after the union's members.
+
+In the `Stoplight` example above, the following is ok:
+
+```js
+assert(Stoplight.Green() instanceof Stoplight.OptionClass)
+```
+
+
+#### `OptionClassFactory(...payloads)` functions
+
+Attached to `union` objects by keys named after the union's members. These
+functions create the "values" used in result. `Maybe.Some()`, `Maybe.None()`,
+`Result.Ok()`, and `Result.Err()` are all OptionClass factories. In the
+`Stoplight` example above, `Stoplight.Green` is an OptionClassFactory.
+
+- **`payloads`** Zero or more arguments of any type can be passed as params.
+  They will be stored on the `OptionClass` instance, and are accessible via
+  `.match` callbacks, or as through properties on `OptionClassInstance`s.
+
+
+#### `OptionClassInstance` objects
+
+The values that are usually passed around when using Results. They have three
+properties that are public, but it is recommended that you _only_ access these
+properties via methods on the object, like the default `match` method provided
+for every union, or methods you passed to `Union()` via the `proto` param. The
+property names are:
+
+- **`.options`** A reference to the object used to create the union with
+  `Union()`. You can inspect its keys to find the members of this instance's
+  union.
+- **`.name`** The member name of this OptionClass instance.
+  `Maybe.None().name === 'None'`.
+- **`.data`** All payloads provided to `OptionClassFactory` in an array.
+  `Stoplight.Red(1, 2, 3).data` is `[1, 2, 3]`.
+
+
+### `match(to)` method
+
+Automatically attached to every `OptionClassInstance`, `.match` is a better way
+to control program flow depending on which member of Union you are dealing with.
+
+- **`to`** an object, mapping member names to callback functions. The object
+  _either_ exhaustively cover all members in the Union with callbacks, _or_
+  map zero or more members to callbacks and provide a catch-all callback for
+  the symbol `_`, exported by Results. If the coverage is not exhaustive, or
+  if unrecognized names are included as keys, `.match` will throw.
+
+  `.match` will call the matching callback passing params as defined below, and
+  synchronously returning the result of the callback.
+
+  - callback for _member name_ keys: a function. It will be passed any payloads
+    provided to `OptionClassFactory` as params.
+
+  - callback for the _catch-all key "_`_`_"_: a function. It will be provided
+    a single param, the `OptionClassInstance`.
 
 
 Credits
