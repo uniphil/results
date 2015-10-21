@@ -7,7 +7,8 @@ describe('Union', () => {
     assert.throws(() => Union(), Error);
   });
   it('should accept an object', () => {
-    assert.equal(Union({A: null}).A().match({A: () => 42}), 42);
+    const U = Union({A: null});
+    assert.equal(U.match(U.A(), {A: () => 42}), 42);
   });
   it('should.. work for empty object... I guess', () => {
     assert.ok(Union({}));
@@ -21,38 +22,47 @@ describe('Union', () => {
     assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
   });
   describe('.match', () => {
+    it('should throw if the instance is not from this union', () => {
+      const U1 = Union({A: null});
+      const U2 = Union({A: null});
+      assert.throws(() => U1.match(U2.A(), {A: () => 1}));
+    });
     it('should throw if the match paths are not exhaustive', () => {
-      var myUnion = Union({A: 0, B: 0}).A();
-      assert.throws(() => myUnion.match({a: () => 'whatever'}), Error);
+      const U = Union({A: 0, B: 0});
+      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), Error);
     });
     it('should always be exhaustive with a wildcard match', () => {
-      assert.equal(Union({A: 0, B: 0}).A().match({[_]: () => 42}), 42);
-      assert.equal(Union({A: 0, B: 0}).B().match({[_]: () => 42}), 42);
+      const U = Union({A: 0, B: 0});
+      assert.equal(U.match(U.A(), {[_]: () => 42}), 42);
+      assert.equal(U.match(U.B(), {[_]: () => 42}), 42);
     });
     it('should pass a value to `match` callbacks', () => {
-      assert.equal(Union({A: 1}).A(42).match({A: (v) => v}), 42);
+      const U = Union({A: 1});
+      assert.equal(U.match(U.A(42), {A: (v) => v}), 42);
     });
     it('should pass all values to `match` callbacks', () => {
-      assert.equal(Union({A: 2}).A(42, 41).match({A: (v, z) => z}), 41);
+      const U = Union({A: 2});
+      assert.equal(U.match(U.A(42, 41), {A: (v, z) => z}), 41);
     });
     it('should pass itself to catch-all `match` callbacks', () => {
-      assert.equal(Union({A: 1}).A(42).match({[_]: (en) => en.name}), 'A');
-      assert.equal(Union({A: 1}).A(42).match({[_]: (en) => en.data[0]}), 42);
+      const U = Union({A: 1});
+      assert.equal(U.match(U.A(42), {[_]: (en) => en.name}), 'A');
+      assert.equal(U.match(U.A(42), {[_]: (en) => en.data[0]}), 42);
     });
     it('should throw for unrecognized keys', () => {
-      var a = Union({A: 0, B: 1}).A();
+      var U = Union({A: 0, B: 1});
       var f = () => null;
-      assert.throws(() => a.match({A: f, B: f, C: f}), Error);
+      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), Error);
     });
     it('should allow _ as a key (though this is a terrible idea)', () => {
-      const u = Union({
+      const U = Union({
         A: null,
         _: null,
       });
-      assert.equal(u.A().match({_: () => 0, A:   () => 1}), 1);
-      assert.equal(u.A().match({_: () => 0, [_]: () => 1}), 1);
-      assert.equal(u._().match({_: () => 1, A:   () => 0}), 1);
-      assert.equal(u._().match({_: () => 1, [_]: () => 0}), 1);
+      assert.equal(U.match(U.A(), {_: () => 0, A:   () => 1}), 1);
+      assert.equal(U.match(U.A(), {_: () => 0, [_]: () => 1}), 1);
+      assert.equal(U.match(U._(), {_: () => 1, A:   () => 0}), 1);
+      assert.equal(U.match(U._(), {_: () => 1, [_]: () => 0}), 1);
     });
   });
 });
@@ -60,8 +70,8 @@ describe('Union', () => {
 
 describe('Maybe', () => {
   it('should map to Some or None callbacks', () => {
-    assert.equal(Some(1).match({Some: (v) => v, None: () => null}), 1);
-    assert.equal(None().match({Some: () => null, None: () => 1}), 1);
+    assert.equal(Maybe.match(Some(1), {Some: (v) => v, None: () => null}), 1);
+    assert.equal(Maybe.match(None(), {Some: () => null, None: () => 1}), 1);
   });
   it('should self-identify', () => {
     assert.ok(Some(1).isSome());
@@ -200,8 +210,8 @@ describe('Maybe', () => {
 
 describe('Result', () => {
   it('should map to Ok or Err callbacks', () => {
-    assert.equal(Ok(1).match({Ok: (v) => v, Err: (e) => e}), 1);
-    assert.equal(Err(2).match({Ok: (v) => v, Err: (e) => e}), 2);
+    assert.equal(Result.match(Ok(1), {Ok: (v) => v, Err: (e) => e}), 1);
+    assert.equal(Result.match(Err(2), {Ok: (v) => v, Err: (e) => e}), 2);
   });
   it('should self-identify', () => {
     assert.ok(Ok(1).isOk());
