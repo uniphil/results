@@ -42,7 +42,7 @@ function computeSum(numbers) {
 
 // Since computeSum returns a Result (eiter an Err() or an Ok()), we can match
 // for it and handle all possible cases:
-computeSum([1, 2, 3, 4, -5]).match({
+Result.match(computeSum([1, 2, 3, 4, -5]), {
   Ok: sum => console.log(`The sum is: ${sum}`),
   Err: err => console.error(`Something went wrong: ${err}`)
 });
@@ -63,7 +63,7 @@ import { Maybe, Some, None } from 'results';
 // Take a tree of Maybe({val: any, left: Maybe, right: Maybe}) and flatten it
 // into an array of values:
 function flattenDepthFirst(root) {
-  return root.match({
+  return Maybe.match(root, {
     None: () => [],
     Some: node => [node.val]
                     .concat(flattenDepthFirst(node.left))
@@ -79,7 +79,7 @@ import { Maybe, Some, None } from 'results';
 
 function printGreeting(name) {
   // get the name, or set a default if name is None()
-  const nameToPrint = name.match({
+  const nameToPrint = Maybe.match(name, {
     Some: n => n,
     None: () => 'friend'
   });
@@ -119,7 +119,7 @@ const HTTPVerbs = Union({
 }, {
   // the optional second object parameter to Union creates prototype methods:
   isIdempotent() {
-    return this.match({
+    return HTTPVerbs.match(this, {
       Post: () => false,
       [_]: () => true  // "_" is a Symbol to be used as a catch-all in match
     });
@@ -133,7 +133,7 @@ myVerb = HTTPVerbs.Post();
 console.log(`Post ${myVerb.isIdempotent() ? 'is' : 'is not'} idempotent.`);
 // => "Post is not idempotent"
 
-myVerb.match({
+HTTPVerbs.match(myVerb, {
   Delete: () => console.warn('some data was deleted!'),
   [_]: () => null
 });
@@ -156,7 +156,7 @@ class Spinner extends React.Component {
     reqState: React.PropTypes.instanceOf(AsyncState.OptionClass)
   }
   render() {
-    return this.props.reqState.match({
+    return AsyncState.match(this.props.reqState, {
       Pending: loaded => (
         <div className="spinner overlay spinning">
           <div className="spinner-animation">
@@ -198,9 +198,9 @@ Returns a `union` object.
 
   `Maybe.None()` is an example of a member added via `options`.
 
-- **`proto`** will be used to set the protoype of member instances. `match` and
-  `toString` will automatically be added to the prototype by default, but if you
-  define those in `proto` they will override the built-in implementations.
+- **`proto`** will be used to set the protoype of member instances. `toString`
+  will automatically be added to the prototype by default, but if you define
+  it in `proto` it will override the built-in implementations.
 
   `Result.Ok(1).toPromise()` is an example of a method attached through `proto`.
 
@@ -233,7 +233,7 @@ const Stoplight = Union({  // Union(), creating a `union` object called StopLigh
   Amber: {},
   Green: {}
 });
-Stoplight.Green().match({
+Stoplight.match(Stoplight.Green(), {
   Red: () => console.error('red'),
   Amber: () => console.warn('amber'),
   [_]: () => console.info('any other colour')  // The wildcard symbol reference "_" used via a computed property
@@ -249,6 +249,33 @@ by default. It is not safe to iterate the keys of a `union` object.
 Each member name's key maps to a factory to create a member instance, from a
 constructor called `OptionClass` (whose reference is also attached to the
 `union` object via they key "OptionClass").
+
+
+
+
+#### `match(option, paths)` static method on `union` object
+
+Automatically attached to every `union` object, `.match` is a better way to
+control program flow depending on which member of Union you are dealing with.
+
+- **`option`** the OptionClass instance to match against, like `Some('hi')` or
+  `Err(new Error(':('))`. If `option` is not an instance of the union's
+  `OptionClass`, `match` will throw.
+
+- **`paths`** an object, mapping member names to callback functions. The object
+  must _either_ exhaustively cover all members in the Union with callbacks, _or_
+  map zero or more members to callbacks and provide a catch-all callback for the
+  symbol `_`, exported by Results. If the coverage is not exhaustive, or if
+  unrecognized names are included as keys, `.match` will throw.
+
+`.match` will synchronously call the matching callback and return its result,
+passing params to the callback as follows:
+
+- callback function for _member name_ keys will be passed all payloads provided
+  to `OptionClassFactory` as params.
+
+- callback function for the _catch-all key "_`_`_"_ will be provided a single
+  param: the `OptionClassInstance` being matched against (aka `option`).
 
 
 ### `OptionClass()` constructor
@@ -273,7 +300,7 @@ functions create the "values" used in result. `Maybe.Some()`, `Maybe.None()`,
 
 - **`payloads`** Zero or more arguments of any type can be passed as params.
   They will be stored on the `OptionClass` instance, and are accessible via
-  `.match` callbacks, or as through properties on `OptionClassInstance`s.
+  `.match` callbacks, or via properties on `OptionClassInstance`s.
 
 
 #### `OptionClassInstance` objects
@@ -293,27 +320,6 @@ property names are:
   `Stoplight.Red(1, 2, 3).data` is `[1, 2, 3]`.
 
 
-### `match(to)` method
-
-Automatically attached to every `OptionClassInstance`, `.match` is a better way
-to control program flow depending on which member of Union you are dealing with.
-
-- **`to`** an object, mapping member names to callback functions. The object
-  _either_ exhaustively cover all members in the Union with callbacks, _or_
-  map zero or more members to callbacks and provide a catch-all callback for
-  the symbol `_`, exported by Results. If the coverage is not exhaustive, or
-  if unrecognized names are included as keys, `.match` will throw.
-
-  `.match` will call the matching callback passing params as defined below, and
-  synchronously returning the result of the callback.
-
-  - callback for _member name_ keys: a function. It will be passed any payloads
-    provided to `OptionClassFactory` as params.
-
-  - callback for the _catch-all key "_`_`_"_: a function. It will be provided
-    a single param, the `OptionClassInstance`.
-
-
 ### `Maybe` -- `[Union { Some, None }]`
 
 An optional type.
@@ -329,6 +335,11 @@ Also exported as `Some` from Results (`import { Some } from 'results';`).
 Also exported as `None` from Results (`import { None } from 'results';`).
 Accepts no parameters
 
+#### `Maybe.match(thing, paths)`
+
+defers to `match` (see above), but will only pass a single payload parameter to
+a callback for Some (no parameters are passed to a None callback).
+
 #### `Maybe.all(maybes)`
 
 Like `Promise.all`: takes an array of `Some()`s and `None()`s, and returns a
@@ -340,11 +351,6 @@ wrapped in `Some()`.
 
 
 #### Prototype methods on Maybe (available on any instance of Some or None)
-
-##### `match(paths)`
-
-defers to `match` (see above), but will only pass a single payload parameter to
-a callback for Some (no parameters are passed to a None callback).
 
 ##### `isSome()` and `isNone()`
 
@@ -470,6 +476,11 @@ Also exported as `Err` from Results (`import { Err } from 'results';`).
 - **`err`** A single parameter of any type, but consider making it an instance
   of `Error` to follow `Promise` conventions.
 
+##### `Result.match(thing, paths)`
+
+defers to `match` (see above), but will only pass a single payload parameter to
+a callback for Ok or Err.
+
 #### `Result.all(results)`
 
 Like `Promise.all`: takes an array of `Ok()`s and `Err()`s, and returns a
@@ -480,11 +491,6 @@ wrapped in `Ok()`.
 - **`results`** an array of `Ok()`s and `Err()`s or any other value.
 
 #### Prototype methods on Result (available on any instance of Ok or Err)
-
-##### `match(paths)`
-
-defers to `match` (see above), but will only pass a single payload parameter to
-a callback for Ok or Err.
 
 ##### `isOk()` and `isErr()`
 
@@ -602,6 +608,27 @@ Changes
 _in progress_
 
 #### Breaking
+
+  * **.match is no longer a proto method**. It is now a static method living on
+    the Union, like `.all` for Result and Maybe. It now takes two parameters:
+    the first one being the instance to match against, and the second being the
+    object defining the match handlers.
+
+    ```js
+    import { Some, None, Maybe } from 'results';
+
+    // BEFORE (<= v0.7)
+    Some(1).match({
+      Some: n => console.log('some!', n),
+      None: () => console.log('none :(')
+    });
+
+    // AFTER (>= v0.8)
+    Maybe.match(Some(1), {
+      Some: n => console.log('some!', n),
+      None: () => console.log('none :(')
+    });
+    ```
 
 #### Other Changes
 
