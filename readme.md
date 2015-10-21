@@ -605,7 +605,7 @@ Changes
 
 ### v0.8.0
 
-_in progress_
+2015-10-21
 
 #### Breaking
 
@@ -629,8 +629,6 @@ _in progress_
       None: () => console.log('none :(')
     });
     ```
-
-#### Other Changes
 
 
 ### v0.7.0
