@@ -314,6 +314,136 @@ to control program flow depending on which member of Union you are dealing with.
     a single param, the `OptionClassInstance`.
 
 
+### `Maybe` -- `[Union { Some, None }]`
+
+An optional type.
+
+#### `Maybe.Some(payload)`
+
+Also exported as `Some` from Results (`import { Some } from 'results';`).
+
+- **`payload`** A single parameter of any type.
+
+#### `Maybe.None()`
+
+Also exported as `None` from Results (`import { None } from 'results';`).
+Accepts no parameters
+
+#### Prototype methods on Maybe (available on any instance of Some or None)
+
+##### `match(paths)`
+
+defers to `match` (see above), but will only pass a single payload parameter to
+a callback for Some (no parameters are passed to a None callback).
+
+##### `isSome()` and `isNone()`
+
+What you would hopefully expect :)
+
+```js
+import { Some, None } from 'results';
+assert(Some(1).isSome() && !Some(1).isNone());
+assert(!None().isSome() && None().isNone());
+```
+
+##### `unwrap()`
+
+Get the payload of a `Some()`, **or throw if it's `None()`**.
+
+##### `expect(err)`
+
+Like `unwrap()`, but throws a custom error if it is `None()`.
+
+- **`err`** The error to throw if it is `None()`
+
+```js
+import { Some, None } from 'results';
+const n = Some(1).unwrap();  // n === 1
+const m = None().unwrap();  // throws an Error instance
+const o = Some(1).expect('err')  // o === 1
+const p = None().expect('err')  // throws 'err'
+```
+
+##### `unwrapOr(def)`
+
+Like `unwrap()`, but returns `def` instead of throwing for `None()`
+
+- **`def`** A default value to use in case it's `None()`
+
+##### `unwrapOrElse(fn)`
+
+Like `unwrapOr`, but calls `fn()` to get a default value for `None()`
+
+- **`fn`** A callback accepting no parameters, returning a value for `None()`
+
+```js
+import { None } from 'results';
+const x = None().unwrapOr('z');  // x === 'z';
+const y = None().unwrapOrElse(() => new Date());  // y === the current date.
+```
+
+##### `okOr(err)`
+
+Get a `Result` from a `Maybe`
+
+- **`err`** an error payload for `Err()` if it's `None()`
+
+##### `okOrElse(errFn)`
+
+- **`errFn`** a callback to get a payload for `Err()` if it's `None()`
+
+```js
+import { Some, None } from 'results';
+assert(Some(1).okOr(2).isOk() && None().okOr(2).isErr());
+assert(None().okOrElse(() => 3).unwrapErr() === 3);
+```
+
+##### `promiseOr(err)` and `promiseOrElse(errFn)`
+
+Like `okOr` and `okOrElse`, but returning a resolved or rejected promise.
+
+```js
+import { Some, None } from 'results';
+// the following will log "Some"
+Some(1).promiseOr(2).then(d => console.log('Some'), e => console.error('None!'));
+None().promiseOrElse(() => 1).catch(err => console.log(err));  // logs 1
+```
+
+##### `and(other)` and `or(other)`
+
+- **`other`** `Some()` or `None()`, or any value of any type which will be
+  wrapped in `Some()`.
+
+Analogous to `&&` and `||`:
+
+```js
+import { Some, None } from 'results';
+Some(1).and(Some(2));  // Some(2)
+Some(1).and(None());  // None()
+None().and(Some(2));  // None()
+Some(1).or(Some(2)).or(None());  // Some(1)
+None().or(Some(1)).or(Some(2)); // Some(1);
+```
+
+##### `andThen(fn)`
+
+Like `and`, but call a function instead of providing a hard-coded value. If `fn`
+returns a raw value instead of a `Some` or a `None`, it will be wrapped in
+`Some()`.
+
+- **`fn`** If called on `Some`, `fn` is called with the payload as a param.
+
+##### `orElse(fn)`
+
+Like `andThen` but for `Err`s.
+
+- **`fn`** If called on `Err`, `fn` is called with the Error payload as a param.
+
+Since `andThen`'s callback is only executed if it's `Some()` and `orElse` if
+it's `None`, these two methods can be used like `.then` and `.catch` from
+Promise to chain data-processing tasks.
+
+
 Credits
 -------
 
