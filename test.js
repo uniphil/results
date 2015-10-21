@@ -22,6 +22,11 @@ describe('Union', () => {
     assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
   });
   describe('.match', () => {
+    it('should throw if the instance is not from this union', () => {
+      const U1 = Union({A: null});
+      const U2 = Union({A: null});
+      assert.throws(() => U1.match(U2.A(), {A: () => 1}));
+    });
     it('should throw if the match paths are not exhaustive', () => {
       const U = Union({A: 0, B: 0});
       assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), Error);
