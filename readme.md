@@ -329,6 +329,16 @@ Also exported as `Some` from Results (`import { Some } from 'results';`).
 Also exported as `None` from Results (`import { None } from 'results';`).
 Accepts no parameters
 
+#### `Maybe.all(maybes)`
+
+Like `Promise.all`: takes an array of `Some()`s and `None()`s, and returns a
+`Some([unwrapped maybes])` if they are all `Some()`, or `None()` if _any_ are
+`None()`. Values in `maybes` that are not instances of `Maybe.OptionClass` are
+wrapped in `Some()`.
+
+- **`maybes`** an array of `Some()`s and `None()`s or any other value.
+
+
 #### Prototype methods on Maybe (available on any instance of Some or None)
 
 ##### `match(paths)`
@@ -441,6 +451,134 @@ Like `andThen` but for `Err`s.
 
 Since `andThen`'s callback is only executed if it's `Some()` and `orElse` if
 it's `None`, these two methods can be used like `.then` and `.catch` from
+Promise to chain data-processing tasks.
+
+### `Result` -- `[Union { Ok, Err }]`
+
+An error-handling type.
+
+#### `Result.Ok(payload)`
+
+Also exported as `Ok` from Results (`import { Ok } from 'results';`).
+
+- **`payload`** A single parameter of any type.
+
+#### `Result.Err(err)`
+
+Also exported as `Err` from Results (`import { Err } from 'results';`).
+
+- **`err`** A single parameter of any type, but consider making it an instance
+  of `Error` to follow `Promise` conventions.
+
+#### `Result.all(results)`
+
+Like `Promise.all`: takes an array of `Ok()`s and `Err()`s, and returns a
+`Ok([unwrapped oks])` if they are all `Ok()`, or the first `Err()` if _any_ are
+`Err()`. Values in `results` that are not instances of `Result.OptionClass` are
+wrapped in `Ok()`.
+
+- **`results`** an array of `Ok()`s and `Err()`s or any other value.
+
+#### Prototype methods on Result (available on any instance of Ok or Err)
+
+##### `match(paths)`
+
+defers to `match` (see above), but will only pass a single payload parameter to
+a callback for Ok or Err.
+
+##### `isOk()` and `isErr()`
+
+What you would hopefully expect :)
+
+```js
+import { Ok, Err } from 'results';
+assert(Ok(1).isOk() && !Ok(1).isErr());
+assert(!Err(2).isOk() && Err(2).isErr());
+```
+
+##### `unwrap()`
+
+Get the payload of a `Ok()`, **or throw if it's `Err()`**.
+
+```js
+import { Ok, Err } from 'results';
+const n = Ok(1).unwrap();  // n === 1
+const m = Err(2).unwrap();  // throws an Error instance
+```
+
+##### `unwrapOr(def)`
+
+Like `unwrap()`, but returns `def` instead of throwing for `Err()`
+
+- **`def`** A default value to use in case it's `Err()`
+
+##### `unwrapOrElse(fn)`
+
+Like `unwrapOr`, but calls `fn()` to get a default value for `Err()`
+
+- **`fn`** A callback accepting the err payload as a parameter, returning a
+value for `Err()`
+
+```js
+import { Err } from 'results';
+const x = Err(1).unwrapOr('z');  // x === 'z';
+const y = Err(2).unwrapOrElse(e => e * 2);  // y === 4.
+```
+
+##### `ok()` and `err()`
+
+Get a `Maybe` from a `Result`
+
+```js
+import { Ok, Err } from 'results';
+assert(Ok(1).ok().isSome() && Err(2).err().isSome());
+assert(Err(2).ok().isNone());
+```
+
+##### `promise()` and `promiseErr()`
+
+Like `ok()` and `err()`, but returning a resolved or rejected promise.
+
+```js
+import { Ok, Err } from 'results';
+// the following will log "Ok"
+Ok(1).promise().then(d => console.log('Ok'), e => console.error('Err!'));
+Err(2).promise().catch(n => console.log(n));  // logs 2
+Err(2).promiseErr().then(n => console.log(n));  // logs 2
+```
+
+##### `and(other)` and `or(other)`
+
+- **`other`** `Ok()` or `Err()`, or any value of any type which will be
+  wrapped in `Ok()`.
+
+Analogous to `&&` and `||`:
+
+```js
+import { Ok, Err } from 'results';
+Ok(1).and(Ok(2));  // Ok(2)
+Ok(1).and(Err(8));  // Err(8)
+Err(8).and(Ok(2));  // Err(8)
+Ok(1).or(Ok(2)).or(Err(8));  // Ok(1)
+Err(8).or(Ok(1)).or(Ok(2)); // Ok(1);
+```
+
+##### `andThen(fn)`
+
+Like `and`, but call a function instead of providing a hard-coded value. If `fn`
+returns a raw value instead of a `Ok` or a `Err`, it will be wrapped in
+`Ok()`.
+
+- **`fn`** If called on `Ok`, `fn` is called with the payload as a param.
+
+##### `orElse(fn)`
+
+Like `andThen` but for `Err`s.
+
+- **`fn`** If called on `Err`, `fn` is called with the Error payload as a param.
+
+Since `andThen`'s callback is only executed if it's `Ok()` and `orElse` if
+it's `Err`, these two methods can be used like `.then` and `.catch` from
 Promise to chain data-processing tasks.
 
 
