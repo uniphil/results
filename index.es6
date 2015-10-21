@@ -9,30 +9,38 @@
 
 
 /**
- * @throws Error if the match is not exhaustive, or if there are weird keys
+ * @throws Error when the match is not exhaustive
+ * @throws Error when there are weird keys
+ * @throws Error when `option` is the wrong type for this match
+ * @param {EnumOption} option The instance to match against
+ * @param {Object} paths The optionName: callback mapping
+ * @returns {any} The result of calling the matching callback
  */
-function match(to) {
-  for (let k of Object.keys(to)) {
-    if (!this.options.hasOwnProperty(k) && k !== _) {
+function match(option, paths) {
+  if (!(option instanceof this.OptionClass)) {
+    throw new Error(`Union match: called on a non-member option: '${option}'`);
+  }
+  for (let k of Object.keys(paths)) {
+    if (!option.options.hasOwnProperty(k) && k !== _) {
       throw new Error(`Union match: unrecognized match option: '${k}'`);
     }
   }
-  if (typeof to[_] === 'function') {  // match is de-facto exhaustive w/ `_`
-    if (typeof to[this.name] === 'function') {
-      return to[this.name].apply(null, this.data);
+  if (typeof paths[_] === 'function') {  // match is de-facto exhaustive w/ `_`
+    if (typeof paths[option.name] === 'function') {
+      return paths[option.name](...option.data);
     } else {
-      return to[_](this);
+      return paths[_](option);
     }
   } else {
     // ensure match is exhaustive
-    for (let k in this.options) {
-      if (typeof to[k] !== 'function') {
+    for (let k in option.options) {
+      if (typeof paths[k] !== 'function') {
         throw new Error(`Union match: Non-exhaustive match is missing '${k}'`);
       }
     }
-    return to[this.name].apply(null, this.data);
+    return paths[option.name](...option.data);
   }
-};
+}
 
 
 function unionOptionToString() {
@@ -52,6 +60,9 @@ function Union(options, proto={}, static_={}, factory=_factory) {
   if (options.hasOwnProperty('toString')) {
     throw new Error('Union: cannot use reserved name `toString` as part of a Union');
   }
+  if (options.hasOwnProperty('match')) {
+    throw new Error('Union: cannot use reserved name `match` as part of a Union');
+  }
   if (options.hasOwnProperty('OptionClass')) {
     throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
   }
@@ -67,13 +78,13 @@ function Union(options, proto={}, static_={}, factory=_factory) {
     this.data = data;
   }
   UnionOption.prototype = {
-    match: match,
     toString: unionOptionToString,
     ...proto
   };
   const union = {
     OptionClass: UnionOption,
     toString: () => `[Union { ${Object.keys(options).join(', ')} }]`,
+    match,
     ...static_
   };
   for (let name of Object.keys(options)) {
@@ -90,16 +101,6 @@ const maybeProto = {
     } else {
       return Maybe.Some(value);
     }
-  },
-  /**
-   * @throws Error if the match is not exhaustive
-   */
-  match(paths) {
-    return match.call({
-      options: this.options,
-      name: this.name,
-      data: [this.data]
-    }, paths);
   },
   isSome() {
     return this.name === 'Some';
@@ -161,6 +162,10 @@ const maybeProto = {
 
 
 const maybeStatic = {
+  match(option, paths) {
+    const normalOption = new this.OptionClass(option.options, option.name, [option.data]);
+    return match.call(this, normalOption, paths);
+  },
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => maybeProto._promote(next)
       .andThen(v => Maybe.Some(resArr.concat(v))))
@@ -194,16 +199,6 @@ const resultProto = {
     } else {
       return Result.Ok(value);
     }
-  },
-  /**
-   * @throws Error if the match is not exhaustive
-   */
-  match(paths) {
-    return match.call({
-      options: this.options,
-      name: this.name,
-      data: [this.data]
-    }, paths);
   },
   isOk() {
     return this.name === 'Ok';
@@ -265,6 +260,10 @@ const resultProto = {
 
 
 const resultStatic = {
+  match(option, paths) {
+    const normalOption = new this.OptionClass(option.options, option.name, [option.data]);
+    return match.call(this, normalOption, paths);
+  },
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => resultProto._promote(next)
       .andThen(v => Result.Ok(resArr.concat(v))))
