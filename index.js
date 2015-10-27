@@ -169,13 +169,6 @@ function Union(options) {
 }
 
 var maybeProto = {
-  _promote: function _promote(value) {
-    if (value instanceof Maybe.OptionClass) {
-      return value;
-    } else {
-      return Maybe.Some(value);
-    }
-  },
   isSome: function isSome() {
     return this.name === 'Some';
   },
@@ -221,16 +214,16 @@ var maybeProto = {
     return this.name === 'Some' ? Promise.resolve(this.data) : Promise.reject(fn());
   },
   and: function and(other) {
-    return this.name === 'Some' ? this._promote(other) : this;
+    return this.name === 'Some' ? Maybe.Some(other) : this;
   },
   andThen: function andThen(fn) {
-    return this.name === 'Some' ? this._promote(fn(this.data)) : this;
+    return this.name === 'Some' ? Maybe.Some(fn(this.data)) : this;
   },
   or: function or(other) {
-    return this.name === 'Some' ? this : this._promote(other);
+    return this.name === 'Some' ? this : Maybe.Some(other);
   },
   orElse: function orElse(fn) {
-    return this.name === 'Some' ? this : this._promote(fn());
+    return this.name === 'Some' ? this : Maybe.Some(fn());
   }
 };
 
@@ -242,8 +235,8 @@ var maybeStatic = {
   all: function all(values) {
     return values.reduce(function (res, next) {
       return res.andThen(function (resArr) {
-        return maybeProto._promote(next).andThen(function (v) {
-          return Maybe.Some(resArr.concat(v));
+        return Maybe.Some(next).andThen(function (v) {
+          return resArr.concat(v);
         });
       });
     }, Maybe.Some([]));
@@ -257,8 +250,7 @@ var Maybe = Union({
   if (name === 'Some') {
     return function (value) {
       if (value instanceof UnionOptionClass) {
-        var unwrapped = value.unwrapOr(); // Some's value or Undefined
-        return new UnionOptionClass(options, 'Some', unwrapped);
+        return value;
       } else {
         return new UnionOptionClass(options, 'Some', value);
       }
@@ -272,13 +264,6 @@ var Maybe = Union({
 });
 
 var resultProto = {
-  _promote: function _promote(value) {
-    if (value instanceof Result.OptionClass) {
-      return value;
-    } else {
-      return Result.Ok(value);
-    }
-  },
   isOk: function isOk() {
     return this.name === 'Ok';
   },
@@ -298,16 +283,16 @@ var resultProto = {
     return this.name === 'Ok' ? Promise.reject(this.data) : Promise.resolve(this.data);
   },
   and: function and(other) {
-    return this.name === 'Ok' ? this._promote(other) : this;
+    return this.name === 'Ok' ? Result.Ok(other) : this;
   },
   andThen: function andThen(fn) {
-    return this.name === 'Ok' ? this._promote(fn(this.data)) : this;
+    return this.name === 'Ok' ? Result.Ok(fn(this.data)) : this;
   },
   or: function or(other) {
-    return this.name === 'Ok' ? this : this._promote(other);
+    return this.name === 'Ok' ? this : Result.Ok(other);
   },
   orElse: function orElse(fn) {
-    return this.name === 'Ok' ? this : this._promote(fn(this.data));
+    return this.name === 'Ok' ? this : Result.Ok(fn(this.data));
   },
   unwrapOr: function unwrapOr(def) {
     return this.name === 'Ok' ? this.data : def;
@@ -345,8 +330,8 @@ var resultStatic = {
   all: function all(values) {
     return values.reduce(function (res, next) {
       return res.andThen(function (resArr) {
-        return resultProto._promote(next).andThen(function (v) {
-          return Result.Ok(resArr.concat(v));
+        return Result.Ok(next).andThen(function (v) {
+          return resArr.concat(v);
         });
       });
     }, Result.Ok([]));
@@ -360,10 +345,7 @@ var Result = Union({
   if (name === 'Ok') {
     return function (value) {
       if (value instanceof UnionOptionClass) {
-        var unwrapped = value.unwrapOrElse(function (e) {
-          return e;
-        });
-        return new UnionOptionClass(options, 'Ok', unwrapped);
+        return value;
       } else {
         return new UnionOptionClass(options, 'Ok', value);
       }

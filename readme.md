@@ -607,6 +607,8 @@ Changes
 
 ### v0.9.0
 
+2015-10-27
+
 #### Breaking
 
   * **Result.Ok(value)** now **returns** `value` if it is an instance of

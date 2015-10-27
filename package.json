@@ -1,7 +1,7 @@
 {
   "name": "results",
-  "version": "0.8.0",
-  "description": "Rust-inspired Result and Option tools for javascript",
+  "version": "0.9.0",
+  "description": "Discriminated Unions including Maybe (an option type) and Result for javascript with fewer bugs",
   "main": "index.js",
   "scripts": {
     "gulp": "gulp",
@@ -15,11 +15,13 @@
     "Rust",
     "Result",
     "Option",
+    "Maybe",
     "Some",
     "None",
     "Ok",
     "Err",
     "Enum",
+    "Union",
     "Match"
   ],
   "contributors": [
