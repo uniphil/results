@@ -81,9 +81,9 @@ describe('Maybe', () => {
     assert.equal(Some(1).isNone(), false);
     assert.equal(None().isSome(), false);
   });
-  it('.Some should unwrap Maybes given to it', () => {
+  it('.Some should use Maybes given to it', () => {
     assert.equal(Some(Some(1)).unwrap(), 1);
-    assert.equal(Some(None()).unwrap(), undefined);
+    assert.equal(Some(None()).isNone(), true);
   });
   it('should throw or not for expect', () => {
     assert.doesNotThrow(() => {Some(1).expect('err')});
@@ -221,9 +221,9 @@ describe('Result', () => {
     assert.equal(Ok(1).isErr(), false);
     assert.equal(Err(2).isOk(), false);
   });
-  it('.Ok should unwrap Results given to it', () => {
+  it('.Ok should use a Result given to it', () => {
     assert.equal(Ok(Ok(1)).unwrap(), 1);
-    assert.equal(Ok(Err(2)).unwrap(), 2);
+    assert.equal(Ok(Err(2)).isErr(), true);
   });
   it('.Err should not unwrap Results given to it', () => {
     assert.ok(Err(Ok(1)).unwrapErr().isOk());

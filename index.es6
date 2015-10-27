@@ -95,13 +95,6 @@ function Union(options, proto={}, static_={}, factory=_factory) {
 
 
 const maybeProto = {
-  _promote(value) {
-    if (value instanceof Maybe.OptionClass) {
-      return value;
-    } else {
-      return Maybe.Some(value);
-    }
-  },
   isSome() {
     return this.name === 'Some';
   },
@@ -147,16 +140,16 @@ const maybeProto = {
     return (this.name === 'Some') ? Promise.resolve(this.data) : Promise.reject(fn());
   },
   and(other) {
-    return (this.name === 'Some') ? this._promote(other) : this;
+    return (this.name === 'Some') ? Maybe.Some(other) : this;
   },
   andThen(fn) {
-    return (this.name === 'Some') ? this._promote(fn(this.data)) : this;
+    return (this.name === 'Some') ? Maybe.Some(fn(this.data)) : this;
   },
   or(other) {
-    return (this.name === 'Some') ? this : this._promote(other);
+    return (this.name === 'Some') ? this : Maybe.Some(other);
   },
   orElse(fn) {
-    return (this.name === 'Some') ? this : this._promote(fn());
+    return (this.name === 'Some') ? this : Maybe.Some(fn());
   },
 };
 
@@ -167,8 +160,8 @@ const maybeStatic = {
     return match.call(this, normalOption, paths);
   },
   all: (values) => values.reduce((res, next) =>
-    res.andThen(resArr => maybeProto._promote(next)
-      .andThen(v => Maybe.Some(resArr.concat(v))))
+    res.andThen(resArr => Maybe.Some(next)
+      .andThen(v => resArr.concat(v)))
   , Maybe.Some([])),
 };
 
@@ -180,8 +173,7 @@ const Maybe = Union({
   if (name === 'Some') {
     return (value) => {
       if (value instanceof UnionOptionClass) {
-        const unwrapped = value.unwrapOr();  // Some's value or Undefined
-        return new UnionOptionClass(options, 'Some', unwrapped);
+        return value;
       } else {
         return new UnionOptionClass(options, 'Some', value);
       }
@@ -193,13 +185,6 @@ const Maybe = Union({
 
 
 const resultProto = {
-  _promote(value) {
-    if (value instanceof Result.OptionClass) {
-      return value;
-    } else {
-      return Result.Ok(value);
-    }
-  },
   isOk() {
     return this.name === 'Ok';
   },
@@ -219,16 +204,16 @@ const resultProto = {
     return (this.name === 'Ok') ? Promise.reject(this.data) : Promise.resolve(this.data);
   },
   and(other) {
-    return (this.name === 'Ok') ? this._promote(other) : this;
+    return (this.name === 'Ok') ? Result.Ok(other) : this;
   },
   andThen(fn) {
-    return (this.name === 'Ok') ? this._promote(fn(this.data)) : this;
+    return (this.name === 'Ok') ? Result.Ok(fn(this.data)) : this;
   },
   or(other) {
-    return (this.name === 'Ok') ? this : this._promote(other);
+    return (this.name === 'Ok') ? this : Result.Ok(other);
   },
   orElse(fn) {
-    return (this.name === 'Ok') ? this : this._promote(fn(this.data));
+    return (this.name === 'Ok') ? this : Result.Ok(fn(this.data));
   },
   unwrapOr(def) {
     return (this.name === 'Ok') ? this.data : def;
@@ -265,8 +250,8 @@ const resultStatic = {
     return match.call(this, normalOption, paths);
   },
   all: (values) => values.reduce((res, next) =>
-    res.andThen(resArr => resultProto._promote(next)
-      .andThen(v => Result.Ok(resArr.concat(v))))
+    res.andThen(resArr => Result.Ok(next)
+      .andThen(v => resArr.concat(v)))
   , Result.Ok([])),
 };
 
@@ -277,8 +262,7 @@ const Result = Union({
   if (name === 'Ok') {
     return (value) => {
       if (value instanceof UnionOptionClass) {
-        const unwrapped = value.unwrapOrElse(e => e);
-        return new UnionOptionClass(options, 'Ok', unwrapped);
+        return value;
       } else {
         return new UnionOptionClass(options, 'Ok', value);
       }
