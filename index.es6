@@ -180,8 +180,7 @@ const Maybe = Union({
   if (name === 'Some') {
     return (value) => {
       if (value instanceof UnionOptionClass) {
-        const unwrapped = value.unwrapOr();  // Some's value or Undefined
-        return new UnionOptionClass(options, 'Some', unwrapped);
+        return value;
       } else {
         return new UnionOptionClass(options, 'Some', value);
       }
@@ -277,8 +276,7 @@ const Result = Union({
   if (name === 'Ok') {
     return (value) => {
       if (value instanceof UnionOptionClass) {
-        const unwrapped = value.unwrapOrElse(e => e);
-        return new UnionOptionClass(options, 'Ok', unwrapped);
+        return value;
       } else {
         return new UnionOptionClass(options, 'Ok', value);
       }
