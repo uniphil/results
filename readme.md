@@ -328,7 +328,8 @@ An optional type.
 
 Also exported as `Some` from Results (`import { Some } from 'results';`).
 
-- **`payload`** A single parameter of any type.
+- **`payload`** A single parameter of any type. If it is an instance of
+  `Maybe.OptionClass`, it will just be returned.
 
 #### `Maybe.None()`
 
@@ -467,7 +468,8 @@ An error-handling type.
 
 Also exported as `Ok` from Results (`import { Ok } from 'results';`).
 
-- **`payload`** A single parameter of any type.
+- **`payload`** A single parameter of any type. If it is an instance of
+  `Result.OptionClass`, it will simply be returned.
 
 #### `Result.Err(err)`
 
@@ -602,6 +604,18 @@ The APIs for `Maybe`, and `Result` are _heavily_ influenced by
 
 Changes
 -------
+
+### v0.9.0
+
+#### Breaking
+
+  * **Result.Ok(value)** now **returns** `value` if it is an instance of
+    `Result.OptionClass`, instead of unwrapping and rewrapping as `Ok`, and
+  * **Maybe.Some(value)** now **returns** `value` if it's a `Maybe.OptionClass`,
+    instead of unwrapping and rewrapping as `Some`. These changes are included
+    to provide a way to "cast" arbitrary values to Result or Maybe, mirroring
+    `Promise.resolve(value)`.
+
 
 ### v0.8.0
 
