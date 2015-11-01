@@ -620,6 +620,14 @@ The APIs for `Maybe`, and `Result` are _heavily_ influenced by
 Changes
 -------
 
+### v0.10.0
+
+#### New features
+
+  * Added static methods `Result.try`, `Maybe.undefined`, and `Maybe.null` for
+    plain-js interop. See the docs for details.
+
+
 ### v0.9.0
 
 2015-10-27
