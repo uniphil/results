@@ -64,6 +64,21 @@ describe('Union', () => {
       assert.equal(U.match(U._(), {_: () => 1, A:   () => 0}), 1);
       assert.equal(U.match(U._(), {_: () => 1, [_]: () => 0}), 1);
     });
+    it('should give a useful error message for a non-function match prop', () => {
+      const U = Union({A: {}});
+      try {
+        U.match(U.A(), {});
+        assert.fail('should have thrown');
+      } catch (err) {
+        assert.equal(err.message, `Union match: Non-exhaustive match is missing 'A'`);
+      }
+      try {
+        U.match(U.A(), {A: 1});
+        assert.fail('should have thrown');
+      } catch (err) {
+        assert.equal(err.message, `Union match: Expected a function for 'A', but found a 'number'`);
+      }
+    });
   });
 });
 
