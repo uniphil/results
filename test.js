@@ -66,7 +66,12 @@ describe('Union', () => {
     });
     it('should give a useful error message for a non-function match prop', () => {
       const U = Union({A: {}});
-      let errMsg;
+      try {
+        U.match(U.A(), {});
+        assert.fail('should have thrown');
+      } catch (err) {
+        assert.equal(err.message, `Union match: Non-exhaustive match is missing 'A'`);
+      }
       try {
         U.match(U.A(), {A: 1});
         assert.fail('should have thrown');
