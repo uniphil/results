@@ -253,6 +253,13 @@ const resultStatic = {
     res.andThen(resArr => Result.Ok(next)
       .andThen(v => resArr.concat(v)))
   , Result.Ok([])),
+  try(maybeThrows) {
+    try {
+      return Result.Ok(maybeThrows());
+    } catch (err) {
+      return Result.Err(err);
+    }
+  },
 };
 
 const Result = Union({
