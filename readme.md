@@ -627,6 +627,12 @@ Changes
   * Added static methods `Result.try`, `Maybe.undefined`, and `Maybe.null` for
     plain-js interop. See the docs for details.
 
+#### Other changes
+
+  * Improved the error message when a property in a `.match` object is not a
+    function. It used to throw complaining that the prop was missing. Now it
+    says that the prop is the wrong type.
+
 
 ### v0.9.0
 
