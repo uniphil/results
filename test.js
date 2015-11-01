@@ -205,6 +205,31 @@ describe('Maybe', () => {
       assert(Maybe.all([1, None()]).isNone());
     });
   });
+  describe('Maybe.undefined', () => {
+    it('Should wrap any non-undefined value in Some', () => {
+      assert(Maybe.undefined(1).isSome());
+      assert.equal(Maybe.undefined(1).unwrap(), 1);
+      assert(Maybe.undefined(0).isSome());
+      assert.equal(Maybe.undefined(0).unwrap(), 0);
+      assert(Maybe.undefined(null).isSome());
+    });
+    it('Should return None() for undefined', () => {
+      assert(Maybe.undefined(undefined).isNone());
+      assert(Maybe.undefined().isNone());
+    });
+  });
+  describe('Maybe.null', () => {
+    it('Should wrap any non-null value in Some', () => {
+      assert(Maybe.null(1).isSome());
+      assert.equal(Maybe.null(1).unwrap(), 1);
+      assert(Maybe.null(0).isSome());
+      assert.equal(Maybe.null(0).unwrap(), 0);
+      assert(Maybe.null().isSome());
+    });
+    it('Should return None() for null', () => {
+      assert(Maybe.null(null).isNone());
+    });
+  });
 });
 
 
