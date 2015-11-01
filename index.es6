@@ -163,6 +163,8 @@ const maybeStatic = {
     res.andThen(resArr => Maybe.Some(next)
       .andThen(v => resArr.concat(v)))
   , Maybe.Some([])),
+  undefined: val => (typeof val === 'undefined') ? Maybe.None() : Maybe.Some(val),
+  null: val => val === null ? Maybe.None() : Maybe.Some(val),
 };
 
 

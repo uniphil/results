@@ -350,6 +350,14 @@ wrapped in `Some()`.
 
 - **`maybes`** an array of `Some()`s and `None()`s or any other value.
 
+#### `Maybe.undefined(value)`
+
+Returns `None()` if value is `undefined`, otherwise wraps it as `Some(value)`.
+
+#### `Maybe.null(value)`
+
+Like `Maybe.undefined(value)`, but returns `None()` when `value` is `null`
+instead of when it is `undefined`.
 
 #### Prototype methods on Maybe (available on any instance of Some or None)
 
