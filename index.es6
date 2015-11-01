@@ -35,7 +35,11 @@ function match(option, paths) {
     // ensure match is exhaustive
     for (let k in option.options) {
       if (typeof paths[k] !== 'function') {
-        throw new Error(`Union match: Non-exhaustive match is missing '${k}'`);
+        if (typeof paths[k] === 'undefined') {
+          throw new Error(`Union match: Non-exhaustive match is missing '${k}'`);
+        } else {
+          throw new Error(`Union match: Expected a function for '${k}', but found a '${typeof paths[k]}'`);
+        }
       }
     }
     return paths[option.name](...option.data);
