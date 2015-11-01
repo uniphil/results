@@ -478,12 +478,14 @@ Also exported as `Err` from Results (`import { Err } from 'results';`).
 - **`err`** A single parameter of any type, but consider making it an instance
   of `Error` to follow `Promise` conventions.
 
+#### Static methods on Result
+
 ##### `Result.match(thing, paths)`
 
 defers to `match` (see above), but will only pass a single payload parameter to
 a callback for Ok or Err.
 
-#### `Result.all(results)`
+##### `Result.all(results)`
 
 Like `Promise.all`: takes an array of `Ok()`s and `Err()`s, and returns a
 `Ok([unwrapped oks])` if they are all `Ok()`, or the first `Err()` if _any_ are
