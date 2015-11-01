@@ -492,6 +492,11 @@ wrapped in `Ok()`.
 
 - **`results`** an array of `Ok()`s and `Err()`s or any other value.
 
+##### `Result.try(fnMaybeThrows)`
+
+Return a `Result.Ok()` of the result of calling `fnMaybeThrows()`, or catch any
+error it throws and return it wrapped in `Result.Err()` instead.
+
 #### Prototype methods on Result (available on any instance of Ok or Err)
 
 ##### `isOk()` and `isErr()`
