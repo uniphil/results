@@ -361,4 +361,19 @@ describe('Result', () => {
       assert.equal(Result.all([0, Err(9)]).unwrapErr(), 9);
     });
   });
+
+  describe('Result.try', () => {
+    it('should return a Some(retVal) for functions that don\'t throw', () => {
+      const retVal = {};
+      const res = Result.try(() => retVal);
+      assert(res.isOk());
+      assert(res.unwrap() === retVal);
+    });
+    it('should return a None(err) for functions that throw', () => {
+      const err = new Error('an error');
+      const thrower = () => { throw err; }
+      assert(Result.try(thrower).isErr());
+      assert(Result.try(thrower).unwrapErr() === err);
+    });
+  });
 });
