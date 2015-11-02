@@ -217,7 +217,7 @@ Returns a `union` object.
   want to get down and dirty.
 
 
-#### `Union._` the catch-all symbol
+#### `Union._` the catch-all symbol (DEPRECATED)
 
 A reference to a symbol you can import and use as a computed property
 (`{[computedProp]: val}`) in a `match` to handle any unmatched paths.
@@ -225,6 +225,9 @@ A reference to a symbol you can import and use as a computed property
 Since `Union._` is a symbol, you technically _can_ also have `'_'` as a member
 of a union. But please don't :)
 
+_this symbol is deprecated, and will be gone in the next release after 0.10.
+To wild-card match, just use a normal string key _ instead of the symbol. _ is
+now back to a reserved match member name._
 
 ```js
 import { Union, _ } from 'results';
@@ -265,8 +268,12 @@ control program flow depending on which member of Union you are dealing with.
 - **`paths`** an object, mapping member names to callback functions. The object
   must _either_ exhaustively cover all members in the Union with callbacks, _or_
   map zero or more members to callbacks and provide a catch-all callback for the
-  symbol `_`, exported by Results. If the coverage is not exhaustive, or if
-  unrecognized names are included as keys, `.match` will throw.
+  name `'_'`. If the coverage is not exhaustive, or if unrecognized names are
+  included as keys, `.match` will throw.
+
+  DEPRECATED: Results exports a symbol `_` that can be used as a computed
+  property `[_]` in match for catch-all matching. This will be gone in the next
+  version.
 
 `.match` will synchronously call the matching callback and return its result,
 passing params to the callback as follows:
@@ -626,6 +633,20 @@ Changes
 
   * Added static methods `Result.try`, `Maybe.undefined`, and `Maybe.null` for
     plain-js interop. See the docs for details.
+
+#### Breaking changes
+
+  * Deprecating the `_` symbol has a breaking edge-case: A match from a union
+    containing a member called `"_"` that _also_ has a wild-card member `[_]`
+    (the symbol), will always take the `"_"` path instead of the catch-all
+    symbol path. I'm fairly confident this affects zero people.
+
+#### Deprecations
+
+  * The symbol exported from results as `_` is now deprecated. To do a catch-all
+    match, just use a normal `'_'` string key. For a cost of having one more
+    reserved member name (never ever used?), catch-all matching (frequently
+    used) is (back to) much more convenient.
 
 #### Other changes
 

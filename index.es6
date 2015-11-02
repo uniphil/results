@@ -21,15 +21,16 @@ function match(option, paths) {
     throw new Error(`Union match: called on a non-member option: '${option}'`);
   }
   for (let k of Object.keys(paths)) {
-    if (!option.options.hasOwnProperty(k) && k !== _) {
+    if (!option.options.hasOwnProperty(k) && k !== '_' && k !== _) {  // DEPRECATED symbol _
       throw new Error(`Union match: unrecognized match option: '${k}'`);
     }
   }
-  if (typeof paths[_] === 'function') {  // match is de-facto exhaustive w/ `_`
+  // DEPRECATED: symbol [_] catch-all will be removed after 0.10
+  if (typeof paths._ === 'function' || typeof paths[_] === 'function') {  // match is de-facto exhaustive w/ `_`
     if (typeof paths[option.name] === 'function') {
       return paths[option.name](...option.data);
     } else {
-      return paths[_](option);
+      return (paths._ || paths[_])(option);  // DEPRECATED symbol [_]
     }
   } else {
     // ensure match is exhaustive
@@ -75,6 +76,9 @@ function Union(options, proto={}, static_={}, factory=_factory) {
       throw new Error(`Union: cannot add static method '${k}' to Union which ` +
         `has the same name as a member (members: ${options.join(', ')}).`);
     }
+  }
+  if (options.hasOwnProperty('_')) {  // DEPRECATED
+    console.warn('DEPRECATION WARNING: The union member name "_" will be reserved and throw an error in the next version of Results.');
   }
   function UnionOption(options, name, data) {
     this.options = options;
@@ -288,7 +292,7 @@ const Result = Union({
 
 module.exports = {
   Union,
-  _,
+  _,  // DEPRECATED
 
   Maybe,
   Some: Maybe.Some,
