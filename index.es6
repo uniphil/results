@@ -77,6 +77,9 @@ function Union(options, proto={}, static_={}, factory=_factory) {
         `has the same name as a member (members: ${options.join(', ')}).`);
     }
   }
+  if (options.hasOwnProperty('_')) {  // DEPRECATED
+    console.warn('DEPRECATION WARNING: The union member name "_" will be reserved and throw an error in the next version of Results.');
+  }
   function UnionOption(options, name, data) {
     this.options = options;
     this.name = name;
