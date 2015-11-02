@@ -107,7 +107,7 @@ function get(obj, key) {
 #### `Union` as a powerful Enum
 
 ```js
-import { Union, _ } from 'results';
+import { Union } from 'results';
 
 const HTTPVerbs = Union({
   Options: {},  // the {} values are just place-holders, only the keys are used
@@ -121,7 +121,7 @@ const HTTPVerbs = Union({
   isIdempotent() {
     return HTTPVerbs.match(this, {
       Post: () => false,
-      [_]: () => true  // "_" is a Symbol to be used as a catch-all in match
+      _: () => true  // "_" is a Symbol to be used as a catch-all in match
     });
   }
 });
@@ -135,7 +135,7 @@ console.log(`Post ${myVerb.isIdempotent() ? 'is' : 'is not'} idempotent.`);
 
 HTTPVerbs.match(myVerb, {
   Delete: () => console.warn('some data was deleted!'),
-  [_]: () => null
+  _: () => null
 });
 ```
 
