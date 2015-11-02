@@ -75,6 +75,9 @@ function _factory(options, name, UnionOptionClass) {
 
 
 function Union(options, proto={}, static_={}, factory=_factory) {
+  if (typeof options !== 'object') {
+    throw new UnionError('Param `options` must be an object with keys for each member of the union');
+  }
   if (options.hasOwnProperty('toString')) {
     throw new UnionError('Cannot use reserved name `toString` as part of a Union');
   }

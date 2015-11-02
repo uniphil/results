@@ -91,7 +91,11 @@ describe('Union', () => {
   describe('errors thrown by results', () => {
     it('should be instance of UnionError and Error', () => {
       assert.throws(() => Union(), UnionError);  // no members
-      assert.throws(() => Union(), Error);
+      try {
+        assert.throws();
+      } catch (err) {
+        assert(err instanceof Error);
+      }
     });
   });
 });
