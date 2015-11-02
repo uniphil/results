@@ -1,11 +1,12 @@
 var assert = require('assert');
 // DEPPRECATED: _ will be removed soon
 var { Union, Result, Ok, Err, Maybe, Some, None, _ } = require('./index');
+var { Union, Result, Ok, Err, Maybe, Some, None, _, UnionError } = require('./index');
 
 
 describe('Union', () => {
   it('should fail if options are missing', () => {
-    assert.throws(() => Union(), Error);
+    assert.throws(() => Union(), UnionError);
   });
   it('should accept an object', () => {
     const U = Union({A: null});
@@ -26,11 +27,11 @@ describe('Union', () => {
     it('should throw if the instance is not from this union', () => {
       const U1 = Union({A: null});
       const U2 = Union({A: null});
-      assert.throws(() => U1.match(U2.A(), {A: () => 1}));
+      assert.throws(() => U1.match(U2.A(), {A: () => 1}), UnionError);
     });
     it('should throw if the match paths are not exhaustive', () => {
       const U = Union({A: 0, B: 0});
-      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), Error);
+      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), UnionError);
     });
     it('should always be exhaustive with a wildcard symbol match (DEPRECATED)', () => {
       const U = Union({A: 0, B: 0});
@@ -58,7 +59,7 @@ describe('Union', () => {
     it('should throw for unrecognized keys', () => {
       var U = Union({A: 0, B: 1});
       var f = () => null;
-      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), Error);
+      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), UnionError);
     });
     it('should allow _ as a key (though this is a terrible idea) DEPRECATED', () => {
       const U = Union({
@@ -76,14 +77,21 @@ describe('Union', () => {
         U.match(U.A(), {});
         assert.fail('should have thrown');
       } catch (err) {
-        assert.equal(err.message, `Union match: Non-exhaustive match is missing 'A'`);
+        assert(err instanceof UnionError);
+        assert.equal(err.message, `Non-exhaustive match is missing 'A'`);
       }
       try {
         U.match(U.A(), {A: 1});
         assert.fail('should have thrown');
       } catch (err) {
-        assert.equal(err.message, `Union match: Expected a function for 'A', but found a 'number'`);
+        assert.equal(err.message, `match expected a function for 'A', but found a 'number'`);
       }
+    });
+  });
+  describe('errors thrown by results', () => {
+    it('should be instance of UnionError and Error', () => {
+      assert.throws(() => Union(), UnionError);  // no members
+      assert.throws(() => Union(), Error);
     });
   });
 });
@@ -112,7 +120,7 @@ describe('Maybe', () => {
   });
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
-    assert.throws(() => None().unwrap(), Error);
+    assert.throws(() => None().unwrap(), UnionError);
   });
   it('should unwrap its value or a default for unwrapOr', () => {
     assert.equal(Some(1).unwrapOr(2), 1);
@@ -366,11 +374,11 @@ describe('Result', () => {
   });
   it('.unwrap', () => {
     assert.equal(Ok(1).unwrap(), 1);
-    assert.throws(() => None().unwrap(), Error);
+    assert.throws(() => None().unwrap(), UnionError);
   });
   it('.unwrapErr', () => {
     assert.equal(Err(1).unwrapErr(), 1);
-    assert.throws(() => Ok(1).unwrapErr());
+    assert.throws(() => Ok(1).unwrapErr(), UnionError);
   });
 
   describe('Result.all', () => {
