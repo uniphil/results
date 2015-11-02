@@ -612,6 +612,12 @@ it's `Err`, these two methods can be used like `.then` and `.catch` from
 Promise to chain data-processing tasks.
 
 
+### `Results.UnionError`
+
+All errors thrown by Results should be instances of this constructor. They will
+pass checks like `err instanceof Results.UnionError` _and_ `instanceof Error`.
+
+
 Credits
 -------
 
@@ -633,6 +639,8 @@ Changes
 
   * Added static methods `Result.try`, `Maybe.undefined`, and `Maybe.null` for
     plain-js interop. See the docs for details.
+  * All errors thrown are now instances of `Result.Error`, which should still
+    pass any `(err instanceof Error)` checks, so hopefully nothing breaks :)
 
 #### Breaking changes
 
