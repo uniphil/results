@@ -14,6 +14,23 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var _ = Symbol('Union match catch-all symbol');
 
 /**
+ * Custom error type from http://stackoverflow.com/a/17891099/1299695
+ * @param {string} message An associated message to explain the error
+ * @returns {Error} An instance of UnionError, which subclasses Error
+ */
+function UnionError(message) {
+  var realErr = Error.call(this, message);
+  this.name = realErr.name = 'UnionError';
+  this.stack = realErr.stack;
+  this.message = message;
+}
+UnionError.protoype = Object.create(Error.prototype, { constructor: {
+    value: UnionError,
+    writeable: true,
+    configurable: true
+  } });
+
+/**
  * @throws Error when the match is not exhaustive
  * @throws Error when there are weird keys
  * @throws Error when `option` is the wrong type for this match
@@ -23,7 +40,7 @@ var _ = Symbol('Union match catch-all symbol');
  */
 function _match(option, paths) {
   if (!(option instanceof this.OptionClass)) {
-    throw new Error('Union match: called on a non-member option: \'' + option + '\'');
+    throw new UnionError('match called on a non-member option: \'' + option + '\'');
   }
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -33,10 +50,12 @@ function _match(option, paths) {
     for (var _iterator = Object.keys(paths)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var k = _step.value;
 
-      if (!option.options.hasOwnProperty(k) && k !== _) {
-        throw new Error('Union match: unrecognized match option: \'' + k + '\'');
+      if (!option.options.hasOwnProperty(k) && k !== '_' && k !== _) {
+        // DEPRECATED symbol _
+        throw new UnionError('unrecognized match option: \'' + k + '\'');
       }
     }
+    // DEPRECATED: symbol [_] catch-all will be removed after 0.10
   } catch (err) {
     _didIteratorError = true;
     _iteratorError = err;
@@ -52,22 +71,26 @@ function _match(option, paths) {
     }
   }
 
-  if (typeof paths[_] === 'function') {
+  if (typeof paths._ === 'function' || typeof paths[_] === 'function') {
     // match is de-facto exhaustive w/ `_`
     if (typeof paths[option.name] === 'function') {
       return paths[option.name].apply(paths, _toConsumableArray(option.data));
     } else {
-      return paths[_](option);
+      return (paths._ || paths[_])(option); // DEPRECATED symbol [_]
     }
   } else {
-    // ensure match is exhaustive
-    for (var k in option.options) {
-      if (typeof paths[k] !== 'function') {
-        throw new Error('Union match: Non-exhaustive match is missing \'' + k + '\'');
+      // ensure match is exhaustive
+      for (var k in option.options) {
+        if (typeof paths[k] !== 'function') {
+          if (typeof paths[k] === 'undefined') {
+            throw new UnionError('Non-exhaustive match is missing \'' + k + '\'');
+          } else {
+            throw new UnionError('match expected a function for \'' + k + '\', but found a \'' + typeof paths[k] + '\'');
+          }
+        }
       }
+      return paths[option.name].apply(paths, _toConsumableArray(option.data));
     }
-    return paths[option.name].apply(paths, _toConsumableArray(option.data));
-  }
 }
 
 function unionOptionToString() {
@@ -89,14 +112,17 @@ function Union(options) {
   var static_ = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
   var factory = arguments.length <= 3 || arguments[3] === undefined ? _factory : arguments[3];
 
+  if (typeof options !== 'object') {
+    throw new UnionError('Param `options` must be an object with keys for each member of the union');
+  }
   if (options.hasOwnProperty('toString')) {
-    throw new Error('Union: cannot use reserved name `toString` as part of a Union');
+    throw new UnionError('Cannot use reserved name `toString` as part of a Union');
   }
   if (options.hasOwnProperty('match')) {
-    throw new Error('Union: cannot use reserved name `match` as part of a Union');
+    throw new UnionError('Cannot use reserved name `match` as part of a Union');
   }
   if (options.hasOwnProperty('OptionClass')) {
-    throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
+    throw new UnionError('Cannot use reserved name `UnionClass` as part of a Union');
   }
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
@@ -107,7 +133,7 @@ function Union(options) {
       var k = _step2.value;
 
       if (options.hasOwnProperty(k)) {
-        throw new Error('Union: cannot add static method \'' + k + '\' to Union which ' + ('has the same name as a member (members: ' + options.join(', ') + ').'));
+        throw new UnionError('Cannot add static method \'' + k + '\' to Union which ' + ('has the same name as a member (members: ' + options.join(', ') + ').'));
       }
     }
   } catch (err) {
@@ -125,6 +151,10 @@ function Union(options) {
     }
   }
 
+  if (options.hasOwnProperty('_')) {
+    // DEPRECATED
+    console.warn('DEPRECATION WARNING: The union member name "_" will be reserved and throw an error in the next version of Results.');
+  }
   function UnionOption(options, name, data) {
     this.options = options;
     this.name = name;
@@ -192,7 +222,7 @@ var maybeProto = {
     if (this.name === 'Some') {
       return this.data;
     } else {
-      throw new Error('Maybe Union: Tried to .unwrap() None as Some');
+      throw new UnionError('Tried to .unwrap() Maybe.None as Some');
     }
   },
   unwrapOr: function unwrapOr(def) {
@@ -240,6 +270,12 @@ var maybeStatic = {
         });
       });
     }, Maybe.Some([]));
+  },
+  undefined: function undefined(val) {
+    return typeof val === 'undefined' ? Maybe.None() : Maybe.Some(val);
+  },
+  'null': function _null(val) {
+    return val === null ? Maybe.None() : Maybe.Some(val);
   }
 };
 
@@ -307,7 +343,7 @@ var resultProto = {
     if (this.name === 'Ok') {
       return this.data;
     } else {
-      throw new Error('Result Union: Tried to .unwrap() Err as Ok');
+      throw new UnionError('tried to .unwrap() Result.Err as Ok');
     }
   },
   /**
@@ -315,7 +351,7 @@ var resultProto = {
    */
   unwrapErr: function unwrapErr() {
     if (this.name === 'Ok') {
-      throw new Error('Result Union: Tried to .unwrap() Ok as Err');
+      throw new UnionError('Tried to .unwrap() Result.Ok as Err');
     } else {
       return this.data;
     }
@@ -335,6 +371,13 @@ var resultStatic = {
         });
       });
     }, Result.Ok([]));
+  },
+  'try': function _try(maybeThrows) {
+    try {
+      return Result.Ok(maybeThrows());
+    } catch (err) {
+      return Result.Err(err);
+    }
   }
 };
 
@@ -359,7 +402,8 @@ var Result = Union({
 
 module.exports = {
   Union: Union,
-  _: _,
+  UnionError: UnionError,
+  _: _, // DEPRECATED
 
   Maybe: Maybe,
   Some: Maybe.Some,

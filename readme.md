@@ -635,6 +635,8 @@ Changes
 
 ### v0.10.0
 
+2015-11-02
+
 #### New features
 
   * Added static methods `Result.try`, `Maybe.undefined`, and `Maybe.null` for

@@ -1,6 +1,6 @@
 {
   "name": "results",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Discriminated Unions including Maybe (an option type) and Result for javascript with fewer bugs",
   "main": "index.js",
   "scripts": {
