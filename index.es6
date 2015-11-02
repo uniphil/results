@@ -7,7 +7,11 @@
 
  const _ = Symbol('Union match catch-all symbol');
 
-
+/**
+ * Custom error type from http://stackoverflow.com/a/17891099/1299695
+ * @param {string} message An associated message to explain the error
+ * @returns {Error} An instance of UnionError, which subclasses Error
+ */
 function UnionError(message) {
   const realErr = Error.call(this, message);
   this.name = realErr.name = 'UnionError';
