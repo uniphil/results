@@ -1,4 +1,5 @@
 var assert = require('assert');
+// DEPPRECATED: _ will be removed soon
 var { Union, Result, Ok, Err, Maybe, Some, None, _ } = require('./index');
 
 
@@ -31,10 +32,15 @@ describe('Union', () => {
       const U = Union({A: 0, B: 0});
       assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), Error);
     });
-    it('should always be exhaustive with a wildcard match', () => {
+    it('should always be exhaustive with a wildcard symbol match (DEPRECATED)', () => {
       const U = Union({A: 0, B: 0});
       assert.equal(U.match(U.A(), {[_]: () => 42}), 42);
       assert.equal(U.match(U.B(), {[_]: () => 42}), 42);
+    });
+    it('should allow literal _ as a key (not just the imported symbol)', () => {
+      const U = Union({A: 0, B: 0});
+      assert.equal(U.match(U.A(), {_: () => 42}), 42);
+      assert.equal(U.match(U.B(), {_: () => 42}), 42);
     });
     it('should pass a value to `match` callbacks', () => {
       const U = Union({A: 1});
@@ -54,13 +60,13 @@ describe('Union', () => {
       var f = () => null;
       assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), Error);
     });
-    it('should allow _ as a key (though this is a terrible idea)', () => {
+    it('should allow _ as a key (though this is a terrible idea) DEPRECATED', () => {
       const U = Union({
         A: null,
         _: null,
       });
       assert.equal(U.match(U.A(), {_: () => 0, A:   () => 1}), 1);
-      assert.equal(U.match(U.A(), {_: () => 0, [_]: () => 1}), 1);
+      // assert.equal(U.match(U.A(), {_: () => 0, [_]: () => 1}), 1);
       assert.equal(U.match(U._(), {_: () => 1, A:   () => 0}), 1);
       assert.equal(U.match(U._(), {_: () => 1, [_]: () => 0}), 1);
     });
