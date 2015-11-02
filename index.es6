@@ -8,6 +8,19 @@
  const _ = Symbol('Union match catch-all symbol');
 
 
+function UnionError(message) {
+  const realErr = Error.call(this, message);
+  this.name = realErr.name = 'UnionError';
+  this.stack = realErr.stack;
+  this.message = message;
+}
+UnionError.protoype = Object.create(Error.prototype, { constructor: {
+  value: UnionError,
+  writeable: true,
+  configurable: true,
+}});
+
+
 /**
  * @throws Error when the match is not exhaustive
  * @throws Error when there are weird keys
@@ -18,11 +31,11 @@
  */
 function match(option, paths) {
   if (!(option instanceof this.OptionClass)) {
-    throw new Error(`Union match: called on a non-member option: '${option}'`);
+    throw new UnionError(`match called on a non-member option: '${option}'`);
   }
   for (let k of Object.keys(paths)) {
     if (!option.options.hasOwnProperty(k) && k !== '_' && k !== _) {  // DEPRECATED symbol _
-      throw new Error(`Union match: unrecognized match option: '${k}'`);
+      throw new UnionError(`unrecognized match option: '${k}'`);
     }
   }
   // DEPRECATED: symbol [_] catch-all will be removed after 0.10
@@ -37,9 +50,9 @@ function match(option, paths) {
     for (let k in option.options) {
       if (typeof paths[k] !== 'function') {
         if (typeof paths[k] === 'undefined') {
-          throw new Error(`Union match: Non-exhaustive match is missing '${k}'`);
+          throw new UnionError(`Non-exhaustive match is missing '${k}'`);
         } else {
-          throw new Error(`Union match: Expected a function for '${k}', but found a '${typeof paths[k]}'`);
+          throw new UnionError(`match expected a function for '${k}', but found a '${typeof paths[k]}'`);
         }
       }
     }
@@ -62,18 +75,21 @@ function _factory(options, name, UnionOptionClass) {
 
 
 function Union(options, proto={}, static_={}, factory=_factory) {
+  if (typeof options !== 'object') {
+    throw new UnionError('Param `options` must be an object with keys for each member of the union');
+  }
   if (options.hasOwnProperty('toString')) {
-    throw new Error('Union: cannot use reserved name `toString` as part of a Union');
+    throw new UnionError('Cannot use reserved name `toString` as part of a Union');
   }
   if (options.hasOwnProperty('match')) {
-    throw new Error('Union: cannot use reserved name `match` as part of a Union');
+    throw new UnionError('Cannot use reserved name `match` as part of a Union');
   }
   if (options.hasOwnProperty('OptionClass')) {
-    throw new Error('Union: cannot use reserved name `UnionClass` as part of a Union');
+    throw new UnionError('Cannot use reserved name `UnionClass` as part of a Union');
   }
   for (let k of Object.keys(static_)) {
     if (options.hasOwnProperty(k)) {
-      throw new Error(`Union: cannot add static method '${k}' to Union which ` +
+      throw new UnionError(`Cannot add static method '${k}' to Union which ` +
         `has the same name as a member (members: ${options.join(', ')}).`);
     }
   }
@@ -126,7 +142,7 @@ const maybeProto = {
     if (this.name === 'Some') {
       return this.data;
     } else {
-      throw new Error('Maybe Union: Tried to .unwrap() None as Some');
+      throw new UnionError('Tried to .unwrap() Maybe.None as Some');
     }
   },
   unwrapOr(def) {
@@ -238,7 +254,7 @@ const resultProto = {
     if (this.name === 'Ok') {
       return this.data;
     } else {
-      throw new Error('Result Union: Tried to .unwrap() Err as Ok');
+      throw new UnionError('tried to .unwrap() Result.Err as Ok');
     }
   },
   /**
@@ -246,7 +262,7 @@ const resultProto = {
    */
   unwrapErr() {
     if (this.name === 'Ok') {
-      throw new Error('Result Union: Tried to .unwrap() Ok as Err');
+      throw new UnionError('Tried to .unwrap() Result.Ok as Err');
     } else {
       return this.data;
     }
@@ -292,6 +308,7 @@ const Result = Union({
 
 module.exports = {
   Union,
+  UnionError,
   _,  // DEPRECATED
 
   Maybe,
