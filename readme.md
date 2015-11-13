@@ -217,6 +217,28 @@ Returns a `union` object.
   want to get down and dirty.
 
 
+#### `Union.is(first, second)`
+
+Deeply checks two union option members. This passes if:
+
+- `first` and `second` are strictly equal (`===`), or
+- They are instances of the same `UnionOptionClass`, and
+  - They are the same member of the `UnionOptionClass`, and
+  - Each matching payload parameter satisfies:
+    - A recursive check of equality as defined by `Union.is`
+- or they both implement `.valueOf` which passes strict equality, or
+- they both implement `.equals` and `first.equals(second)`
+
+These criteria and the implementation are <del>stolen</del> borrowed from
+[Immutable](https://github.com/facebook/immutable-js/blob/master/src/is.js), and
+in fact `results`'s equality checks are compatible with Immutable's. Nesting
+Immutable collections in `OptionClassInstance`s, and nesting
+`OptionClassInstance` in immutable collections are both supported.
+
+This compatibility is totally decoupled from immutablejs -- `results` has no
+dependency on immutable whatsoever.
+
+
 #### `Union._` the catch-all symbol (DEPRECATED)
 
 A reference to a symbol you can import and use as a computed property
@@ -325,6 +347,12 @@ property names are:
   `Maybe.None().name === 'None'`.
 - **`.data`** All payloads provided to `OptionClassFactory` in an array.
   `Stoplight.Red(1, 2, 3).data` is `[1, 2, 3]`.
+
+
+#### `OptionClassInstance.equals(other)`
+
+Deep equality testing with another instance of a union option. See `Union.is`
+above. As with `Union.is`, this method is fully compatible with ImmutableJS.
 
 
 ### `Maybe` -- `[Union { Some, None }]`
