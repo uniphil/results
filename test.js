@@ -1,4 +1,9 @@
 var assert = require('assert');
+try {
+  var Immutable = require('immutable');
+} catch (err) {
+  throw new Error('Immutablejs must be installed to run tests');
+}
 // DEPPRECATED: _ will be removed soon
 var { Union, Result, Ok, Err, Maybe, Some, None, _ } = require('./index');
 var { Union, Result, Ok, Err, Maybe, Some, None, _, UnionError } = require('./index');
@@ -493,6 +498,32 @@ describe('Result', () => {
       const thrower = () => { throw err; }
       assert(Result.try(thrower).isErr());
       assert(Result.try(thrower).unwrapErr() === err);
+    });
+  });
+});
+
+describe('compatibility', () => {
+  describe('immutablejs', () => {
+    it('should not be destroyed by Map or .fromJS', () => {
+      const U = Union({A: null});
+      const m = Immutable.Map({ a: U.A() });
+      assert(m.get('a').equals(U.A()));
+      const fjs = Immutable.fromJS({ a: U.A() });
+      assert(fjs.get('a').equals(U.A()));
+    });
+    it('.equals should recurse into immutablejs structures', () => {
+      const U = Union({A: null});
+      const immuInUnion = U.A(Immutable.List([1]));
+
+      assert.ok(immuInUnion.equals(U.A(Immutable.List([1]))), 'union .equals recurses into immutable .equals');
+      assert.ifError(immuInUnion.equals(U.A(Immutable.List([2]))));
+    });
+    it('immutable .equals should recurse into results structures', () => {
+      const U = Union({A: null});
+      const unionInImmu = Immutable.List([U.A(1)]);
+
+      assert.ok(unionInImmu.equals(Immutable.List([U.A(1)])));
+      assert.ifError(unionInImmu.equals(Immutable.List([U.A(2)])));
     });
   });
 });

@@ -91,14 +91,17 @@ function _equals(a, b) {
     return a.data.every((el, i) => _equals(el, b.data[i]));
   }
 
+  // I hate this block. Blame immutablejs :)
   if (typeof a.valueOf === 'function' &&
       typeof b.valueOf === 'function') {
-    const va = a.valueOf();
-    const vb = b.valueOf();
-    if (va === vb || (va !== va && vb !== vb)) {
+    a = a.valueOf();
+    b = b.valueOf();
+    if (a === b || (a !== a && b !== b)) {
       return true;
     }
-    return false;
+    if (!a || !b) {
+      return false;
+    }
   }
   if (typeof a.equals === 'function' &&
       typeof b.equals === 'function') {
