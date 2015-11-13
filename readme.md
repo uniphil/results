@@ -661,6 +661,27 @@ The APIs for `Maybe`, and `Result` are _heavily_ influenced by
 Changes
 -------
 
+### v0.11.0
+
+2015-11-13
+
+#### New features
+
+  * Added a static `.is(first, second)` function to `Union` for deep equality
+    testing.
+  * Added `.equals` proto method to all union option instances
+  * Added `.hashCode` proto method to all union option instances (currently
+    always returns `42`).
+  * These methods are equivalent to and compatible with ImmutableJS
+
+#### Breaking fixes
+
+  * Union options instances' `.constructor` property is now a reference to its
+    union's `OptionClass`, as it always should have been. Before this release
+    it was `Object`. This shouldn't break anything unless you're doing _really_
+    weird stuff :)
+
+
 ### v0.10.0
 
 2015-11-02
