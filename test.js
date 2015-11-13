@@ -1,4 +1,9 @@
 var assert = require('assert');
+try {
+  var Immutable = require('immutable');
+} catch (err) {
+  throw new Error('Immutablejs must be installed to run tests');
+}
 // DEPPRECATED: _ will be removed soon
 var { Union, Result, Ok, Err, Maybe, Some, None, _ } = require('./index');
 var { Union, Result, Ok, Err, Maybe, Some, None, _, UnionError } = require('./index');
@@ -22,6 +27,54 @@ describe('Union', () => {
     assert.equal(String(u.A()), `[UnionOption A() from Union { A }]`);
     assert.equal(String(u.A(1)), `[UnionOption A(1) from Union { A }]`);
     assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
+  });
+  describe('.equals', () => {
+    const U = Union({A: null, B: null});
+    const ae1 = U.A();
+    const ae2 = U.A();
+    const a1a = U.A('a');
+    const a1a2 = U.A('a');
+    const a1ab = U.A('b');
+    const a2a = U.A('a', 'b');
+    const a2a2 = U.A('a', 'b');
+    const be1 = U.B();
+    const b1a = U.B('a');
+    const ar = U.A(U.A(U.A()));
+    const ar2 = U.A(U.A(U.A()));
+    const arn = U.A(U.A(U.B()));
+    it('should be true for the same instance', () => {
+      assert.ok(ae1.equals(ae1));
+    });
+    it('should be true for the same member with the same params', () => {
+      assert.ok(ae1.equals(ae2));
+      assert.ok(a1a.equals(a1a2));
+      assert.ok(a2a.equals(a2a2));
+    });
+    it('should be false for the same member with different params', () => {
+      assert.ifError(ae1.equals(a1a));
+      assert.ifError(a1a.equals(a1ab));
+      assert.ifError(a1a.equals(a2a));
+    });
+    it('should be false for different members with any params', () => {
+      assert.ifError(ae1.equals(be1));
+      assert.ifError(a1a.equals(b1a));
+    });
+    it('should check recursively', () => {
+      assert.ok(ar.equals(ar2));
+      assert.ifError(ar.equals(arn));
+    });
+  });
+  describe('.hashCode', () => {
+    it('should return a 32-bit int', () => {
+      const hashCode = Union({A: null}).A().hashCode();
+      assert.strictEqual(Number(hashCode), hashCode);
+      assert.equal(hashCode % 1, 0);  // remainder zero only if it's an int
+    });
+    it('should be equal for equivalent members', () => {
+      const { A } = Union({A: null});
+      assert.equal(A().hashCode(), A().hashCode());
+      assert.equal(A(1).hashCode(), A(1).hashCode());
+    });
   });
   describe('.match', () => {
     it('should throw if the instance is not from this union', () => {
@@ -96,6 +149,13 @@ describe('Union', () => {
       } catch (err) {
         assert(err instanceof Error);
       }
+    });
+  });
+  describe('is', () => {
+    it('should deep-check equality for two union option members', () => {
+      const U = Union({A: null});
+      assert.ok(Union.is(U.A(1), U.A(1)));
+      assert.ifError(Union.is(U.A(1), U.A(2)));
     });
   });
 });
@@ -206,6 +266,12 @@ describe('Maybe', () => {
   it('.orElse should promote non-Maybe to Some', () => {
     assert.ok(None().orElse(() => 1).isSome());
     assert.equal(None().orElse(() => 1).unwrap(), 1);
+  });
+  it('.equals should work', () => {
+    assert.ok(None().equals(None()));
+    assert.ifError(None().equals(Some()));
+    assert.ok(Some(1).equals(Some(1)));
+    assert.ifError(Some(1).equals(Some(2)));
   });
   describe('Maybe.all', () => {
     it('should make an empty Some for an empty array', () => {
@@ -384,6 +450,13 @@ describe('Result', () => {
     assert.equal(Err(1).unwrapErr(), 1);
     assert.throws(() => Ok(1).unwrapErr(), UnionError);
   });
+  it('.equals should work', () => {
+    assert.ok(Ok(1).equals(Ok(1)));
+    assert.ifError(Ok(1).equals(Ok(2)));
+    assert.ok(Err(1).equals(Err(1)));
+    assert.ifError(Err(1).equals(Err(2)));
+    assert.ifError(Ok(1).equals(Err(1)));
+  });
 
   describe('Result.all', () => {
     it('should make an empty Ok for an empty array', () => {
@@ -432,6 +505,32 @@ describe('Result', () => {
       const thrower = () => { throw err; }
       assert(Result.try(thrower).isErr());
       assert(Result.try(thrower).unwrapErr() === err);
+    });
+  });
+});
+
+describe('compatibility', () => {
+  describe('immutablejs', () => {
+    it('should not be destroyed by Map or .fromJS', () => {
+      const U = Union({A: null});
+      const m = Immutable.Map({ a: U.A() });
+      assert(m.get('a').equals(U.A()));
+      const fjs = Immutable.fromJS({ a: U.A() });
+      assert(fjs.get('a').equals(U.A()));
+    });
+    it('.equals should recurse into immutablejs structures', () => {
+      const U = Union({A: null});
+      const immuInUnion = U.A(Immutable.List([1]));
+
+      assert.ok(immuInUnion.equals(U.A(Immutable.List([1]))), 'union .equals recurses into immutable .equals');
+      assert.ifError(immuInUnion.equals(U.A(Immutable.List([2]))));
+    });
+    it('immutable .equals should recurse into results structures', () => {
+      const U = Union({A: null});
+      const unionInImmu = Immutable.List([U.A(1)]);
+
+      assert.ok(unionInImmu.equals(Immutable.List([U.A(1)])));
+      assert.ifError(unionInImmu.equals(Immutable.List([U.A(2)])));
     });
   });
 });
