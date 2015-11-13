@@ -38,7 +38,7 @@ UnionError.protoype = Object.create(Error.prototype, { constructor: {
  * @param {Object} paths The optionName: callback mapping
  * @returns {any} The result of calling the matching callback
  */
-function _match(option, paths) {
+function match(option, paths) {
   if (!(option instanceof this.OptionClass)) {
     throw new UnionError('match called on a non-member option: \'' + option + '\'');
   }
@@ -91,6 +91,57 @@ function _match(option, paths) {
       }
       return paths[option.name].apply(paths, _toConsumableArray(option.data));
     }
+}
+
+// Useful in general, but specifically motivated by and inspired by immutablejs
+// https://github.com/facebook/immutable-js/blob/master/src/is.js
+function _equals(a, b) {
+  if (a === b || a !== a && b !== b) {
+    // true for NaNs
+    return true;
+  }
+
+  // There is probably a cleaner way to do this check
+  // Blame TDD :)
+  if (a && typeof a.constructor === 'function' && b && typeof b.constructor === 'function' && a.constructor.unionFactory === Union && b.constructor.unionFactory === Union) {
+
+    if (a.constructor !== b.constructor) {
+      return false;
+    }
+    if (a.name !== b.name) {
+      return false;
+    }
+    if (a.data.length !== b.data.length) {
+      return false;
+    }
+    return a.data.every(function (el, i) {
+      return _equals(el, b.data[i]);
+    });
+  }
+
+  // I hate this block. Blame immutablejs :)
+  if (typeof a.valueOf === 'function' && typeof b.valueOf === 'function') {
+    a = a.valueOf();
+    b = b.valueOf();
+    if (a === b || a !== a && b !== b) {
+      return true;
+    }
+    if (!a || !b) {
+      return false;
+    }
+  }
+  if (typeof a.equals === 'function' && typeof b.equals === 'function') {
+    return a.equals(b);
+  }
+  return false;
+}
+
+function equalsProto(other) {
+  return _equals(this, other);
+}
+
+function hashCode() {
+  return 42; // TODO: this is valid, but inefficient. Actually implement this :)
 }
 
 function unionOptionToString() {
@@ -160,15 +211,23 @@ function Union(options) {
     this.name = name;
     this.data = data;
   }
-  UnionOption.prototype = _extends({
-    toString: unionOptionToString
-  }, proto);
+  UnionOption.prototype.toString = unionOptionToString;
+  UnionOption.prototype.equals = equalsProto;
+  UnionOption.prototype.hashCode = hashCode;
+  Object.keys(proto).forEach(function (k) {
+    return UnionOption.prototype[k] = proto[k];
+  });
+
+  // put a ref on the union option class back to Union so we can trace things
+  // back to see if they are from Union
+  UnionOption.unionFactory = Union;
+
   var union = _extends({
     OptionClass: UnionOption,
     toString: function toString() {
       return '[Union { ' + Object.keys(options).join(', ') + ' }]';
     },
-    match: _match
+    match: match
   }, static_);
   var _iteratorNormalCompletion3 = true;
   var _didIteratorError3 = false;
@@ -198,6 +257,9 @@ function Union(options) {
   return union;
 }
 
+// deep-check equality between two union option instances, compatible with immutablejs
+Union.is = _equals;
+
 var maybeProto = {
   isSome: function isSome() {
     return this.name === 'Some';
@@ -210,7 +272,7 @@ var maybeProto = {
    */
   expect: function expect(err) {
     if (this.name === 'Some') {
-      return this.data;
+      return this.data[0];
     } else {
       throw err;
     }
@@ -220,34 +282,34 @@ var maybeProto = {
    */
   unwrap: function unwrap() {
     if (this.name === 'Some') {
-      return this.data;
+      return this.data[0];
     } else {
       throw new UnionError('Tried to .unwrap() Maybe.None as Some');
     }
   },
   unwrapOr: function unwrapOr(def) {
-    return this.name === 'Some' ? this.data : def;
+    return this.name === 'Some' ? this.data[0] : def;
   },
   unwrapOrElse: function unwrapOrElse(fn) {
-    return this.name === 'Some' ? this.data : fn();
+    return this.name === 'Some' ? this.data[0] : fn();
   },
   okOr: function okOr(err) {
-    return this.name === 'Some' ? Result.Ok(this.data) : Result.Err(err);
+    return this.name === 'Some' ? Result.Ok(this.data[0]) : Result.Err(err);
   },
   okOrElse: function okOrElse(errFn) {
-    return this.name === 'Some' ? Result.Ok(this.data) : Result.Err(errFn());
+    return this.name === 'Some' ? Result.Ok(this.data[0]) : Result.Err(errFn());
   },
   promiseOr: function promiseOr(err) {
-    return this.name === 'Some' ? Promise.resolve(this.data) : Promise.reject(err);
+    return this.name === 'Some' ? Promise.resolve(this.data[0]) : Promise.reject(err);
   },
   promiseOrElse: function promiseOrElse(fn) {
-    return this.name === 'Some' ? Promise.resolve(this.data) : Promise.reject(fn());
+    return this.name === 'Some' ? Promise.resolve(this.data[0]) : Promise.reject(fn());
   },
   and: function and(other) {
     return this.name === 'Some' ? Maybe.Some(other) : this;
   },
   andThen: function andThen(fn) {
-    return this.name === 'Some' ? Maybe.Some(fn(this.data)) : this;
+    return this.name === 'Some' ? Maybe.Some(fn(this.data[0])) : this;
   },
   or: function or(other) {
     return this.name === 'Some' ? this : Maybe.Some(other);
@@ -258,10 +320,6 @@ var maybeProto = {
 };
 
 var maybeStatic = {
-  match: function match(option, paths) {
-    var normalOption = new this.OptionClass(option.options, option.name, [option.data]);
-    return _match.call(this, normalOption, paths);
-  },
   all: function all(values) {
     return values.reduce(function (res, next) {
       return res.andThen(function (resArr) {
@@ -288,13 +346,13 @@ var Maybe = Union({
       if (value instanceof UnionOptionClass) {
         return value;
       } else {
-        return new UnionOptionClass(options, 'Some', value);
+        return new UnionOptionClass(options, 'Some', [value]);
       }
     };
   } else {
     // None
     return function () {
-      return new UnionOptionClass(options, 'None', null);
+      return new UnionOptionClass(options, 'None', []);
     };
   }
 });
@@ -307,41 +365,41 @@ var resultProto = {
     return this.name === 'Err';
   },
   ok: function ok() {
-    return this.name === 'Ok' ? Maybe.Some(this.data) : Maybe.None();
+    return this.name === 'Ok' ? Maybe.Some(this.data[0]) : Maybe.None();
   },
   err: function err() {
-    return this.name === 'Ok' ? Maybe.None() : Maybe.Some(this.data);
+    return this.name === 'Ok' ? Maybe.None() : Maybe.Some(this.data[0]);
   },
   promise: function promise() {
-    return this.name === 'Ok' ? Promise.resolve(this.data) : Promise.reject(this.data);
+    return this.name === 'Ok' ? Promise.resolve(this.data[0]) : Promise.reject(this.data[0]);
   },
   promiseErr: function promiseErr() {
-    return this.name === 'Ok' ? Promise.reject(this.data) : Promise.resolve(this.data);
+    return this.name === 'Ok' ? Promise.reject(this.data[0]) : Promise.resolve(this.data[0]);
   },
   and: function and(other) {
     return this.name === 'Ok' ? Result.Ok(other) : this;
   },
   andThen: function andThen(fn) {
-    return this.name === 'Ok' ? Result.Ok(fn(this.data)) : this;
+    return this.name === 'Ok' ? Result.Ok(fn(this.data[0])) : this;
   },
   or: function or(other) {
     return this.name === 'Ok' ? this : Result.Ok(other);
   },
   orElse: function orElse(fn) {
-    return this.name === 'Ok' ? this : Result.Ok(fn(this.data));
+    return this.name === 'Ok' ? this : Result.Ok(fn(this.data[0]));
   },
   unwrapOr: function unwrapOr(def) {
-    return this.name === 'Ok' ? this.data : def;
+    return this.name === 'Ok' ? this.data[0] : def;
   },
   unwrapOrElse: function unwrapOrElse(fn) {
-    return this.name === 'Ok' ? this.data : fn(this.data);
+    return this.name === 'Ok' ? this.data[0] : fn(this.data[0]);
   },
   /**
    * @throws the value from Err(value)
    */
   unwrap: function unwrap() {
     if (this.name === 'Ok') {
-      return this.data;
+      return this.data[0];
     } else {
       throw new UnionError('tried to .unwrap() Result.Err as Ok');
     }
@@ -353,16 +411,12 @@ var resultProto = {
     if (this.name === 'Ok') {
       throw new UnionError('Tried to .unwrap() Result.Ok as Err');
     } else {
-      return this.data;
+      return this.data[0];
     }
   }
 };
 
 var resultStatic = {
-  match: function match(option, paths) {
-    var normalOption = new this.OptionClass(option.options, option.name, [option.data]);
-    return _match.call(this, normalOption, paths);
-  },
   all: function all(values) {
     return values.reduce(function (res, next) {
       return res.andThen(function (resArr) {
@@ -390,12 +444,12 @@ var Result = Union({
       if (value instanceof UnionOptionClass) {
         return value;
       } else {
-        return new UnionOptionClass(options, 'Ok', value);
+        return new UnionOptionClass(options, 'Ok', [value]);
       }
     };
   } else {
     return function (err) {
-      return new UnionOptionClass(options, 'Err', err);
+      return new UnionOptionClass(options, 'Err', [err]);
     };
   }
 });
