@@ -65,6 +65,59 @@ function match(option, paths) {
 }
 
 
+// Useful in general, but specifically motivated by and inspired by immutablejs
+// https://github.com/facebook/immutable-js/blob/master/src/is.js
+function _equals(a, b) {
+  if (a === b || (a !== a && b !== b)) {  // true for NaNs
+    return true;
+  }
+
+  // There is probably a cleaner way to do this check
+  // Blame TDD :)
+  if (a && typeof a.constructor === 'function' &&
+      b && typeof b.constructor === 'function' &&
+      a.constructor.unionFactory === Union &&
+      b.constructor.unionFactory === Union) {
+
+    if (a.constructor !== b.constructor) {
+      return false;
+    }
+    if (a.name !== b.name) {
+      return false;
+    }
+    if (a.data.length !== b.data.length) {
+      return false;
+    }
+    return a.data.every((el, i) => _equals(el, b.data[i]));
+  }
+
+  if (typeof a.valueOf === 'function' &&
+      typeof b.valueOf === 'function') {
+    const va = a.valueOf();
+    const vb = b.valueOf();
+    if (va === vb || (va !== va && vb !== vb)) {
+      return true;
+    }
+    return false;
+  }
+  if (typeof a.equals === 'function' &&
+      typeof b.equals === 'function') {
+    return a.equals(b);
+  }
+  return false;
+}
+
+
+function equalsProto(other) {
+  return _equals(this, other);
+}
+
+
+function hashCode() {
+  return 42;  // TODO: this is valid, but inefficient. Actually implement this :)
+}
+
+
 function unionOptionToString() {
   return `[UnionOption ${this.name}(${this.data.join(', ')}) ` +
     `from Union { ${Object.keys(this.options).join(', ')} }]`;
@@ -105,10 +158,15 @@ function Union(options, proto={}, static_={}, factory=_factory) {
     this.name = name;
     this.data = data;
   }
-  UnionOption.prototype = {
-    toString: unionOptionToString,
-    ...proto
-  };
+  UnionOption.prototype.toString = unionOptionToString;
+  UnionOption.prototype.equals = equalsProto;
+  UnionOption.prototype.hashCode = hashCode;
+  Object.keys(proto).forEach(k => UnionOption.prototype[k] = proto[k]);
+
+  // put a ref on the union option class back to Union so we can trace things
+  // back to see if they are from Union
+  UnionOption.unionFactory = Union;
+
   const union = {
     OptionClass: UnionOption,
     toString: () => `[Union { ${Object.keys(options).join(', ')} }]`,

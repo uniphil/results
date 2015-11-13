@@ -23,6 +23,54 @@ describe('Union', () => {
     assert.equal(String(u.A(1)), `[UnionOption A(1) from Union { A }]`);
     assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
   });
+  describe('.equals', () => {
+    const U = Union({A: null, B: null});
+    const ae1 = U.A();
+    const ae2 = U.A();
+    const a1a = U.A('a');
+    const a1a2 = U.A('a');
+    const a1ab = U.A('b');
+    const a2a = U.A('a', 'b');
+    const a2a2 = U.A('a', 'b');
+    const be1 = U.B();
+    const b1a = U.B('a');
+    const ar = U.A(U.A(U.A()));
+    const ar2 = U.A(U.A(U.A()));
+    const arn = U.A(U.A(U.B()));
+    it('should be true for the same instance', () => {
+      assert.ok(ae1.equals(ae1));
+    });
+    it('should be true for the same member with the same params', () => {
+      assert.ok(ae1.equals(ae2));
+      assert.ok(a1a.equals(a1a2));
+      assert.ok(a2a.equals(a2a2));
+    });
+    it('should be false for the same member with different params', () => {
+      assert.ifError(ae1.equals(a1a));
+      assert.ifError(a1a.equals(a1ab));
+      assert.ifError(a1a.equals(a2a));
+    });
+    it('should be false for different members with any params', () => {
+      assert.ifError(ae1.equals(be1));
+      assert.ifError(a1a.equals(b1a));
+    });
+    it('should check recursively', () => {
+      assert.ok(ar.equals(ar2));
+      assert.ifError(ar.equals(arn));
+    });
+  });
+  describe('.hashCode', () => {
+    it('should return a 32-bit int', () => {
+      const hashCode = Union({A: null}).A().hashCode();
+      assert.strictEqual(Number(hashCode), hashCode);
+      assert.equal(hashCode % 1, 0);  // remainder zero only if it's an int
+    });
+    it('should be equal for equivalent members', () => {
+      const { A } = Union({A: null});
+      assert.equal(A().hashCode(), A().hashCode());
+      assert.equal(A(1).hashCode(), A(1).hashCode());
+    });
+  });
   describe('.match', () => {
     it('should throw if the instance is not from this union', () => {
       const U1 = Union({A: null});
