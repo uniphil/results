@@ -182,6 +182,9 @@ function Union(options, proto={}, static_={}, factory=_factory) {
   return union;
 }
 
+// deep-check equality between two union option instances, compatible with immutablejs
+Union.is = _equals;
+
 
 const maybeProto = {
   isSome() {

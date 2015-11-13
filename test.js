@@ -151,6 +151,13 @@ describe('Union', () => {
       }
     });
   });
+  describe('is', () => {
+    it('should deep-check equality for two union option members', () => {
+      const U = Union({A: null});
+      assert.ok(Union.is(U.A(1), U.A(1)));
+      assert.ifError(Union.is(U.A(1), U.A(2)));
+    });
+  });
 });
 
 
