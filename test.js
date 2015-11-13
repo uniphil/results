@@ -255,6 +255,12 @@ describe('Maybe', () => {
     assert.ok(None().orElse(() => 1).isSome());
     assert.equal(None().orElse(() => 1).unwrap(), 1);
   });
+  it('.equals should work', () => {
+    assert.ok(None().equals(None()));
+    assert.ifError(None().equals(Some()));
+    assert.ok(Some(1).equals(Some(1)));
+    assert.ifError(Some(1).equals(Some(2)));
+  });
   describe('Maybe.all', () => {
     it('should make an empty Some for an empty array', () => {
       var a = [];
@@ -431,6 +437,13 @@ describe('Result', () => {
   it('.unwrapErr', () => {
     assert.equal(Err(1).unwrapErr(), 1);
     assert.throws(() => Ok(1).unwrapErr(), UnionError);
+  });
+  it('.equals should work', () => {
+    assert.ok(Ok(1).equals(Ok(1)));
+    assert.ifError(Ok(1).equals(Ok(2)));
+    assert.ok(Err(1).equals(Err(1)));
+    assert.ifError(Err(1).equals(Err(2)));
+    assert.ifError(Ok(1).equals(Err(1)));
   });
 
   describe('Result.all', () => {
