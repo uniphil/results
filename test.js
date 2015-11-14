@@ -532,5 +532,13 @@ describe('compatibility', () => {
       assert.ok(unionInImmu.equals(Immutable.List([U.A(1)])));
       assert.ifError(unionInImmu.equals(Immutable.List([U.A(2)])));
     });
+    it('should be comparable by immutable.is', () => {
+      const { A } = Union({A: null});
+      const a1 = A();
+      const a2 = A();
+      const aNE = A(1);
+      assert.ok(Immutable.is(a1, a2));
+      assert.ifError(Immutable.is(a1, aNE));
+    });
   });
 });
