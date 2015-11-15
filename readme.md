@@ -394,6 +394,11 @@ Returns `None()` if value is `undefined`, otherwise wraps it as `Some(value)`.
 Like `Maybe.undefined(value)`, but returns `None()` when `value` is `null`
 instead of when it is `undefined`.
 
+#### `Maybe.nan(value)`
+
+Like `Maybe.undefined` and `Maybe.null` but returns `None()` when `value` is
+`NaN`.
+
 #### Prototype methods on Maybe (available on any instance of Some or None)
 
 ##### `isSome()` and `isNone()`
@@ -660,6 +665,13 @@ The APIs for `Maybe`, and `Result` are _heavily_ influenced by
 
 Changes
 -------
+
+### V0.12.0
+
+#### New features
+
+  * Added static method `Maybe.nan`, like `Maybe.undefined` and `Maybe.null`.
+
 
 ### v0.11.0
 
