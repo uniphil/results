@@ -253,6 +253,7 @@ const maybeStatic = {
   , Maybe.Some([])),
   undefined: val => (typeof val === 'undefined') ? Maybe.None() : Maybe.Some(val),
   null: val => val === null ? Maybe.None() : Maybe.Some(val),
+  nan: val => (val !== val) ? Maybe.None() : Maybe.Some(val),
 };
 
 

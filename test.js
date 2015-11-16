@@ -329,6 +329,16 @@ describe('Maybe', () => {
       assert(Maybe.null(null).isNone());
     });
   });
+  describe('Maybe.nan', () => {
+    it('should wrap any non-nan in Some', () => {
+      assert(Maybe.nan(1).isSome());
+      assert.equal(Maybe.nan(1).unwrap(), 1);
+      assert(Maybe.nan().isSome());
+    });
+    it('should return None() for nan', () => {
+      assert(Maybe.nan(NaN).isNone());
+    });
+  });
 });
 
 
