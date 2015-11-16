@@ -44,7 +44,7 @@ function match(option, paths) {
     if (typeof paths[option.name] === 'function') {
       return paths[option.name](...option.data);
     } else {
-      return paths._(option);
+      return paths._.apply(null, option.data);
     }
   } else {
     // ensure match is exhaustive

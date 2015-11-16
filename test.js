@@ -97,10 +97,10 @@ describe('Union', () => {
       const U = Union({A: 2});
       assert.equal(U.match(U.A(42, 41), {A: (v, z) => z}), 41);
     });
-    it('should pass itself to catch-all `match` callbacks', () => {
+    it('should apply its payloads to the catch-all handler', () => {
       const U = Union({A: 1});
-      assert.equal(U.match(U.A(42), {_: (en) => en.name}), 'A');
-      assert.equal(U.match(U.A(42), {_: (en) => en.data[0]}), 42);
+      assert.equal(U.match(U.A(42), {_: n => n}), 42);
+      assert.equal(U.match(U.A(2, 3), {_: (a, b) => a * b}), 6);
     });
     it('should throw for unrecognized keys', () => {
       var U = Union({A: 0, B: 1});
