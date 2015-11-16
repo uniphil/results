@@ -121,7 +121,7 @@ const HTTPVerbs = Union({
   isIdempotent() {
     return HTTPVerbs.match(this, {
       Post: () => false,
-      _: () => true  // "_" is a Symbol to be used as a catch-all in match
+      _: () => true  // "_" is reserved as a catch-all in match
     });
   }
 });
@@ -239,32 +239,6 @@ This compatibility is totally decoupled from immutablejs -- `results` has no
 dependency on immutable whatsoever.
 
 
-#### `Union._` the catch-all symbol (DEPRECATED)
-
-A reference to a symbol you can import and use as a computed property
-(`{[computedProp]: val}`) in a `match` to handle any unmatched paths.
-
-Since `Union._` is a symbol, you technically _can_ also have `'_'` as a member
-of a union. But please don't :)
-
-_this symbol is deprecated, and will be gone in the next release after 0.10.
-To wild-card match, just use a normal string key _ instead of the symbol. _ is
-now back to a reserved match member name._
-
-```js
-import { Union, _ } from 'results';
-const Stoplight = Union({  // Union(), creating a `union` object called StopLight.
-  Red: {},
-  Amber: {},
-  Green: {}
-});
-Stoplight.match(Stoplight.Green(), {
-  Red: () => console.error('red'),
-  Amber: () => console.warn('amber'),
-  [_]: () => console.info('any other colour')  // The wildcard symbol reference "_" used via a computed property
-});
-```
-
 #### `union` object
 
 Created by `Union()`, this is an object with a key for each member of the union,
@@ -293,10 +267,6 @@ control program flow depending on which member of Union you are dealing with.
   name `'_'`. If the coverage is not exhaustive, or if unrecognized names are
   included as keys, `.match` will throw.
 
-  DEPRECATED: Results exports a symbol `_` that can be used as a computed
-  property `[_]` in match for catch-all matching. This will be gone in the next
-  version.
-
 `.match` will synchronously call the matching callback and return its result,
 passing params to the callback as follows:
 
@@ -305,6 +275,21 @@ passing params to the callback as follows:
 
 - callback function for the _catch-all key "_`_`_"_ will be provided a single
   param: the `OptionClassInstance` being matched against (aka `option`).
+
+
+```js
+import { Union } from 'results';
+const Stoplight = Union({  // Union(), creating a `union` object called StopLight.
+  Red: {},
+  Amber: {},
+  Green: {}
+});
+Stoplight.match(Stoplight.Green(), {
+  Red: () => console.error('STOP!!!'),
+  Amber: () => console.warn('stop if you can'),
+  Green: () => console.info('ok, continue')
+});
+```
 
 
 ### `OptionClass()` constructor
@@ -671,6 +656,29 @@ Changes
 #### New features
 
   * Added static method `Maybe.nan`, like `Maybe.undefined` and `Maybe.null`.
+
+#### Breaking changes
+
+  * The `_` symbol for match catch-all has been removed, after being deprecated
+    since v0.10. The string `'_'` is now reserved and cannot be used as a Union
+    member option, and is the way to do catch-all matches going forward.
+
+    Before:
+    ```js
+    import { Maybe, Some, _ } from 'results';
+    Maybe.match(Some(1), {
+      Some: n => console.log('some', n),
+      [_]: () => console.log('not some')
+    });
+    ```
+    Going forward:
+    ```js
+    import { Maybe, Some } from 'results';
+    Maybe.match(Some(1), {
+      Some: n => console.log('some', n),
+      _: () => console.log('not some')
+    });
+    ```
 
 
 ### v0.11.0
