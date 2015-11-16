@@ -307,6 +307,16 @@ const resultProto = {
     return (this.name === 'Ok') ? this.data[0] : fn(this.data[0]);
   },
   /**
+   * @throws err
+   */
+  expect(err) {
+    if (this.name === 'Ok') {
+      return this.data[0];
+    } else {
+      throw err;
+    }
+  },
+  /**
    * @throws the value from Err(value)
    */
   unwrap() {
@@ -325,7 +335,7 @@ const resultProto = {
       if (this.data[0] && typeof this.data[0].toString === 'function') {
         hint = `: ${this.data[0].toString()}`;
       }
-      throw new UnionError(`Tried to .unwrap() Result.Ok as Err: ${hint}`);
+      throw new UnionError(`Tried to .unwrap() Result.Ok as Err${hint}`);
     } else {
       return this.data[0];
     }
