@@ -546,7 +546,7 @@ assert(!Err(2).isOk() && Err(2).isErr());
 
 ##### `unwrap()`
 
-Get the payload of a `Ok()`, **or throw if it's `Err()`**.
+Get the payload of a `Ok()`, **or throw `payload` if it's `Err(payload)`**.
 
 ```js
 import { Ok, Err } from 'results';
@@ -679,6 +679,7 @@ Changes
       _: () => console.log('not some')
     });
     ```
+  * `Err(payload).unwrap()` now throws `payload` instead of a `UnionError`.
 
 
 ### v0.11.0
