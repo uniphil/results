@@ -4,9 +4,7 @@ try {
 } catch (err) {
   throw new Error('Immutablejs must be installed to run tests');
 }
-// DEPPRECATED: _ will be removed soon
-var { Union, Result, Ok, Err, Maybe, Some, None, _ } = require('./index');
-var { Union, Result, Ok, Err, Maybe, Some, None, _, UnionError } = require('./index');
+var { Union, Result, Ok, Err, Maybe, Some, None, UnionError } = require('./index');
 
 
 describe('Union', () => {
@@ -86,11 +84,6 @@ describe('Union', () => {
       const U = Union({A: 0, B: 0});
       assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), UnionError);
     });
-    it('should always be exhaustive with a wildcard symbol match (DEPRECATED)', () => {
-      const U = Union({A: 0, B: 0});
-      assert.equal(U.match(U.A(), {[_]: () => 42}), 42);
-      assert.equal(U.match(U.B(), {[_]: () => 42}), 42);
-    });
     it('should allow literal _ as a key (not just the imported symbol)', () => {
       const U = Union({A: 0, B: 0});
       assert.equal(U.match(U.A(), {_: () => 42}), 42);
@@ -106,23 +99,13 @@ describe('Union', () => {
     });
     it('should pass itself to catch-all `match` callbacks', () => {
       const U = Union({A: 1});
-      assert.equal(U.match(U.A(42), {[_]: (en) => en.name}), 'A');
-      assert.equal(U.match(U.A(42), {[_]: (en) => en.data[0]}), 42);
+      assert.equal(U.match(U.A(42), {_: (en) => en.name}), 'A');
+      assert.equal(U.match(U.A(42), {_: (en) => en.data[0]}), 42);
     });
     it('should throw for unrecognized keys', () => {
       var U = Union({A: 0, B: 1});
       var f = () => null;
       assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), UnionError);
-    });
-    it('should allow _ as a key (though this is a terrible idea) DEPRECATED', () => {
-      const U = Union({
-        A: null,
-        _: null,
-      });
-      assert.equal(U.match(U.A(), {_: () => 0, A:   () => 1}), 1);
-      // assert.equal(U.match(U.A(), {_: () => 0, [_]: () => 1}), 1);
-      assert.equal(U.match(U._(), {_: () => 1, A:   () => 0}), 1);
-      assert.equal(U.match(U._(), {_: () => 1, [_]: () => 0}), 1);
     });
     it('should give a useful error message for a non-function match prop', () => {
       const U = Union({A: {}});
