@@ -544,6 +544,11 @@ assert(Ok(1).isOk() && !Ok(1).isErr());
 assert(!Err(2).isOk() && Err(2).isErr());
 ```
 
+##### `expect(err)`
+
+Returns the payload from an `Ok(payload)`, or throws `err`.
+
+
 ##### `unwrap()`
 
 Get the payload of a `Ok()`, **or throw `payload` if it's `Err(payload)`**.
@@ -656,6 +661,7 @@ Changes
 #### New features
 
   * Added static method `Maybe.nan`, like `Maybe.undefined` and `Maybe.null`.
+  * Added missing `.expect()` method to `Result`.
 
 #### Breaking changes
 
