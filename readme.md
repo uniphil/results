@@ -652,6 +652,8 @@ Changes
 
 ### V0.12.0
 
+2015-11-15
+
 #### New features
 
   * Added static method `Maybe.nan`, like `Maybe.undefined` and `Maybe.null`.

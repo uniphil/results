@@ -5,19 +5,17 @@
  * @author uniphil
  */
 
+/**
+ * Custom error type from http://stackoverflow.com/a/17891099/1299695
+ * @param {string} message An associated message to explain the error
+ * @returns {Error} An instance of UnionError, which subclasses Error
+ */
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
-var _ = Symbol('Union match catch-all symbol');
-
-/**
- * Custom error type from http://stackoverflow.com/a/17891099/1299695
- * @param {string} message An associated message to explain the error
- * @returns {Error} An instance of UnionError, which subclasses Error
- */
 function UnionError(message) {
   var realErr = Error.call(this, message);
   this.name = realErr.name = 'UnionError';
@@ -50,12 +48,10 @@ function match(option, paths) {
     for (var _iterator = Object.keys(paths)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var k = _step.value;
 
-      if (!option.options.hasOwnProperty(k) && k !== '_' && k !== _) {
-        // DEPRECATED symbol _
+      if (!option.options.hasOwnProperty(k) && k !== '_') {
         throw new UnionError('unrecognized match option: \'' + k + '\'');
       }
     }
-    // DEPRECATED: symbol [_] catch-all will be removed after 0.10
   } catch (err) {
     _didIteratorError = true;
     _iteratorError = err;
@@ -71,26 +67,26 @@ function match(option, paths) {
     }
   }
 
-  if (typeof paths._ === 'function' || typeof paths[_] === 'function') {
+  if (typeof paths._ === 'function') {
     // match is de-facto exhaustive w/ `_`
     if (typeof paths[option.name] === 'function') {
       return paths[option.name].apply(paths, _toConsumableArray(option.data));
     } else {
-      return (paths._ || paths[_])(option); // DEPRECATED symbol [_]
+      return paths._.apply(null, option.data);
     }
   } else {
-      // ensure match is exhaustive
-      for (var k in option.options) {
-        if (typeof paths[k] !== 'function') {
-          if (typeof paths[k] === 'undefined') {
-            throw new UnionError('Non-exhaustive match is missing \'' + k + '\'');
-          } else {
-            throw new UnionError('match expected a function for \'' + k + '\', but found a \'' + typeof paths[k] + '\'');
-          }
+    // ensure match is exhaustive
+    for (var k in option.options) {
+      if (typeof paths[k] !== 'function') {
+        if (typeof paths[k] === 'undefined') {
+          throw new UnionError('Non-exhaustive match is missing \'' + k + '\'');
+        } else {
+          throw new UnionError('match expected a function for \'' + k + '\', but found a \'' + typeof paths[k] + '\'');
         }
       }
-      return paths[option.name].apply(paths, _toConsumableArray(option.data));
     }
+    return paths[option.name].apply(paths, _toConsumableArray(option.data));
+  }
 }
 
 // Useful in general, but specifically motivated by and inspired by immutablejs
@@ -202,10 +198,6 @@ function Union(options) {
     }
   }
 
-  if (options.hasOwnProperty('_')) {
-    // DEPRECATED
-    console.warn('DEPRECATION WARNING: The union member name "_" will be reserved and throw an error in the next version of Results.');
-  }
   function UnionOption(options, name, data) {
     this.options = options;
     this.name = name;
@@ -334,6 +326,9 @@ var maybeStatic = {
   },
   'null': function _null(val) {
     return val === null ? Maybe.None() : Maybe.Some(val);
+  },
+  nan: function nan(val) {
+    return val !== val ? Maybe.None() : Maybe.Some(val);
   }
 };
 
@@ -395,13 +390,23 @@ var resultProto = {
     return this.name === 'Ok' ? this.data[0] : fn(this.data[0]);
   },
   /**
+   * @throws err
+   */
+  expect: function expect(err) {
+    if (this.name === 'Ok') {
+      return this.data[0];
+    } else {
+      throw err;
+    }
+  },
+  /**
    * @throws the value from Err(value)
    */
   unwrap: function unwrap() {
     if (this.name === 'Ok') {
       return this.data[0];
     } else {
-      throw new UnionError('tried to .unwrap() Result.Err as Ok');
+      throw this.data[0];
     }
   },
   /**
@@ -409,7 +414,11 @@ var resultProto = {
    */
   unwrapErr: function unwrapErr() {
     if (this.name === 'Ok') {
-      throw new UnionError('Tried to .unwrap() Result.Ok as Err');
+      var hint = '';
+      if (this.data[0] && typeof this.data[0].toString === 'function') {
+        hint = ': ' + this.data[0].toString();
+      }
+      throw new UnionError('Tried to .unwrap() Result.Ok as Err' + hint);
     } else {
       return this.data[0];
     }
@@ -457,7 +466,6 @@ var Result = Union({
 module.exports = {
   Union: Union,
   UnionError: UnionError,
-  _: _, // DEPRECATED
 
   Maybe: Maybe,
   Some: Maybe.Some,
