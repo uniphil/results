@@ -268,13 +268,7 @@ control program flow depending on which member of Union you are dealing with.
   included as keys, `.match` will throw.
 
 `.match` will synchronously call the matching callback and return its result,
-passing params to the callback as follows:
-
-- callback function for _member name_ keys will be passed all payloads provided
-  to `OptionClassFactory` as params.
-
-- callback function for the _catch-all key "_`_`_"_ will be provided a single
-  param: the `OptionClassInstance` being matched against (aka `option`).
+passing all arguments given to the Union Option as arguments to the callback.
 
 
 ```js
@@ -685,7 +679,18 @@ Changes
       _: () => console.log('not some')
     });
     ```
+
   * `Err(payload).unwrap()` now throws `payload` instead of a `UnionError`.
+
+  * `.match`'s `_` catch-all handler now gets all the union option payloads
+    applied to it instead of just passing in the union option itself. Passing in
+    the union option was pretty useless, since you already have a ref to it if
+    you can call `.match` in the first place, and accessing it's `.data` array
+    was a little sketch.
+
+    For Unions where all options accept the same kind of payload, accepting it
+    as a argument to the catch-all handler can be pretty useful, even if it's
+    maybe a little unsafe in general.
 
 
 ### v0.11.0
