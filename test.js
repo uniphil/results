@@ -380,6 +380,10 @@ describe('Result', () => {
       .then(v => v === 1 ? v :
         Promise.reject(new Error(`got '${v}', expected 1`)));
   });
+  it('.expect', () => {
+    assert.equal(Ok(1).expect(), 1);
+    assert.throws(() => Err(1).expect(new Error('asdf')), Error);
+  });
   it('.and', () => {
     assert.ok(Ok(1).and(Ok(-1)).isOk());
     assert.equal(Ok(1).and(Ok(-1)).unwrap(), -1);
