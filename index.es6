@@ -313,7 +313,7 @@ const resultProto = {
     if (this.name === 'Ok') {
       return this.data[0];
     } else {
-      throw new UnionError('tried to .unwrap() Result.Err as Ok');
+      throw this.data[0];
     }
   },
   /**
@@ -321,7 +321,11 @@ const resultProto = {
    */
   unwrapErr() {
     if (this.name === 'Ok') {
-      throw new UnionError('Tried to .unwrap() Result.Ok as Err');
+      let hint = '';
+      if (this.data[0] && typeof this.data[0].toString === 'function') {
+        hint = `: ${this.data[0].toString()}`;
+      }
+      throw new UnionError(`Tried to .unwrap() Result.Ok as Err: ${hint}`);
     } else {
       return this.data[0];
     }
