@@ -437,7 +437,12 @@ describe('Result', () => {
   });
   it('.unwrap', () => {
     assert.equal(Ok(1).unwrap(), 1);
-    assert.throws(() => None().unwrap(), UnionError);
+    try {
+      Err(42).unwrap();
+      assert.fail('should have thrown when unwrapping Err()');
+    } catch (err) {
+      assert.equal(err, 42);
+    }
   });
   it('.unwrapErr', () => {
     assert.equal(Err(1).unwrapErr(), 1);
