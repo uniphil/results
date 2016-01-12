@@ -1,6 +1,15 @@
 Changes
 =======
 
+### v0.12.1
+
+2016-01-12
+
+#### Bug Fix
+
+  * Return false for `Union({A:1}).A().equals(Immutable.Map())` instead of
+    recursing infinitely.
+
 
 ### V0.12.0
 
