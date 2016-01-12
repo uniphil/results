@@ -99,8 +99,10 @@ function _equals(a, b) {
 
   // There is probably a cleaner way to do this check
   // Blame TDD :)
-  if (a && typeof a.constructor === 'function' && b && typeof b.constructor === 'function' && a.constructor.unionFactory === Union && b.constructor.unionFactory === Union) {
-
+  if (a && typeof a.constructor === 'function' && a.constructor.unionFactory === Union) {
+    if (!(b && typeof b.constructor === 'function' && b.constructor.unionFactory === Union)) {
+      return false;
+    }
     if (a.constructor !== b.constructor) {
       return false;
     }
