@@ -61,6 +61,10 @@ describe('Union', () => {
       assert.ok(ar.equals(ar2));
       assert.ifError(ar.equals(arn));
     });
+    it('should return false for another instance implementing .equals', () => {
+      const alien = { equals: () => true };
+      assert.ifError(ae1.equals(alien));
+    });
   });
   describe('.hashCode', () => {
     it('should return a 32-bit int', () => {
