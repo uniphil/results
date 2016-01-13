@@ -16,7 +16,7 @@ function UnionError(message) {
   this.stack = realErr.stack;
   this.message = message;
 }
-UnionError.protoype = Object.create(Error.prototype, { constructor: {
+UnionError.prototype = Object.create(Error.prototype, { constructor: {
   value: UnionError,
   writeable: true,
   configurable: true,
