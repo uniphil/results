@@ -1,6 +1,16 @@
 Changes
 =======
 
+
+### v0.12.2
+
+2016-01-12
+
+#### Bug Fix
+
+  * `UnionError` should have passed `instanceof Error` checks. Now they do.
+
+
 ### v0.12.1
 
 2016-01-12
