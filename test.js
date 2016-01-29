@@ -290,6 +290,10 @@ describe('Maybe', () => {
       assert(Maybe.all([None(), 1]).isNone());
       assert(Maybe.all([1, None()]).isNone());
     });
+    it('regression: should not flatten arrays', () => {
+      assert.deepEqual(Maybe.all([[]]).unwrap(), [[]]);
+      assert.deepEqual(Maybe.all([Some(1), Some([2])]).unwrap(), [1, [2]]);
+    });
   });
   describe('Maybe.undefined', () => {
     it('Should wrap any non-undefined value in Some', () => {
@@ -496,6 +500,10 @@ describe('Result', () => {
 
       assert.equal(Result.all([Err(9), Err(8)]).unwrapErr(), 9);
       assert.equal(Result.all([0, Err(9)]).unwrapErr(), 9);
+    });
+    it('regression: should not flatten arrays', () => {
+      assert.deepEqual(Result.all([[]]).unwrap(), [[]]);
+      assert.deepEqual(Result.all([Ok(1), Ok([2])]).unwrap(), [1, [2]]);
     });
   });
 
