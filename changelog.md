@@ -2,6 +2,15 @@ Changes
 =======
 
 
+### v0.12.3
+
+2016-01-29
+
+#### Bug Fix
+
+  * `Maybe.all` and `Promise.all` should not flatten arrays in their `Some`s and
+    `Ok`s. Now they don't.
+
 ### v0.12.2
 
 2016-01-12
