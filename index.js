@@ -318,7 +318,7 @@ var maybeStatic = {
     return values.reduce(function (res, next) {
       return res.andThen(function (resArr) {
         return Maybe.Some(next).andThen(function (v) {
-          return resArr.concat(v);
+          return resArr.concat([v]);
         });
       });
     }, Maybe.Some([]));
@@ -432,7 +432,7 @@ var resultStatic = {
     return values.reduce(function (res, next) {
       return res.andThen(function (resArr) {
         return Result.Ok(next).andThen(function (v) {
-          return resArr.concat(v);
+          return resArr.concat([v]);
         });
       });
     }, Result.Ok([]));

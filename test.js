@@ -291,8 +291,8 @@ describe('Maybe', () => {
       assert(Maybe.all([1, None()]).isNone());
     });
     it('regression: should not flatten arrays', () => {
-      assert(Maybe.all([[]]).equals(Some([[]])));
-      assert(Maybe.all([Some(1), Some([2])]).equals(Some([1, [2]])));
+      assert.deepEqual(Maybe.all([[]]).unwrap(), [[]]);
+      assert.deepEqual(Maybe.all([Some(1), Some([2])]).unwrap(), [1, [2]]);
     });
   });
   describe('Maybe.undefined', () => {
@@ -502,8 +502,8 @@ describe('Result', () => {
       assert.equal(Result.all([0, Err(9)]).unwrapErr(), 9);
     });
     it('regression: should not flatten arrays', () => {
-      assert(Result.all([[]]).equals(Ok([[]])));
-      assert(Result.all([Ok(1), Ok([2])]).equals(Ok([1, [2]])));
+      assert.deepEqual(Result.all([[]]).unwrap(), [[]]);
+      assert.deepEqual(Result.all([Ok(1), Ok([2])]).unwrap(), [1, [2]]);
     });
   });
 

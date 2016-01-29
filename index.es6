@@ -244,7 +244,7 @@ const maybeProto = {
 const maybeStatic = {
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => Maybe.Some(next)
-      .andThen(v => resArr.concat(v)))
+      .andThen(v => resArr.concat([v])))
   , Maybe.Some([])),
   undefined: val => (typeof val === 'undefined') ? Maybe.None() : Maybe.Some(val),
   null: val => val === null ? Maybe.None() : Maybe.Some(val),
@@ -347,7 +347,7 @@ const resultProto = {
 const resultStatic = {
   all: (values) => values.reduce((res, next) =>
     res.andThen(resArr => Result.Ok(next)
-      .andThen(v => resArr.concat(v)))
+      .andThen(v => resArr.concat([v])))
   , Result.Ok([])),
   try(maybeThrows) {
     try {
