@@ -3,6 +3,8 @@ Changes
 
 ### v0.13.0
 
+2016-03-23
+
 Version 13 introduces a bunch of breaking changes, without deprecation warnings.
 Version 12 is still stable, so if you depend on stuff that's changing, you don't
 have to upgrade.
