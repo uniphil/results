@@ -78,6 +78,12 @@ describe('Union', () => {
       const U1 = Union({A: null});
       const U2 = Union({A: null});
       assert.throws(() => U1.match(U2.A(), {A: () => 1}), UnionError);
+      try {
+        U1.match(U2.A(1), {A: () => 1});
+        assert.fail('should have thrown for non-member');
+      } catch (err) {
+        assert.equal(err.message, 'match called on a non-member option: \'[A(1) from Union{ A }]\'. Expected a member from Union{ A }');
+      }
     });
     it('should throw if the match paths are not exhaustive', () => {
       const U = Union({A: 0, B: 0});

@@ -11,6 +11,15 @@ The changes are based off of close to half a year of full-time work building
 [OpenRide](https://openride.co) with lots of our data wrapped up in Results
 instances. I think all of it takes results in a better direction.
 
+
+#### Enhancements
+
+  * Improved error reporting for "match called on non-member option"
+
+    ```
+    UnionError: match called on a non-member option: '[A(42) from Union{ A, B }]'. Expected a member from { X, Y }'
+    ```
+
 #### Breaking changes
 
   * Unions now only accept a single payload param.

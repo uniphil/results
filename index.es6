@@ -33,7 +33,11 @@ UnionError.prototype = Object.create(Error.prototype, { constructor: {
  */
 function match(option, paths) {
   if (!(option instanceof this.OptionClass)) {
-    throw new UnionError(`match called on a non-member option: '${option}'`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(`Not a member from { ${Object.keys(paths).join(', ')} }:`, option);
+    }
+    throw new UnionError(`match called on a non-member option: '${String(option)}'. ` +
+      `Expected a member from Union{ ${Object.keys(paths).join(', ')} }`);
   }
   for (let k of Object.keys(paths)) {
     if (!option.options.hasOwnProperty(k) && k !== '_') {
