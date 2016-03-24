@@ -110,7 +110,7 @@ function get(obj, key) {
 import { Union } from 'results';
 
 const HTTPVerbs = Union({
-  Options: {},  // the {} values are just place-holders, only the keys are used
+  Options: {},  // the {} values are just placeholders, only the keys are used
   Head: {},
   Get: {},
   Post: {},
@@ -139,7 +139,8 @@ HTTPVerbs.match(myVerb, {
 });
 ```
 
-While there is nothing react-specific in Results, it does enable some nice patterns:
+While there is nothing react-specific in Results, it does enable some nice
+patterns:
 
 ```js
 import React from 'react';
@@ -177,6 +178,9 @@ class Spinner extends React.Component {
   }
 }
 ```
+
+
+---
 
 API
 ---
@@ -306,17 +310,16 @@ functions create the "values" used in result. `Maybe.Some()`, `Maybe.None()`,
 `Result.Ok()`, and `Result.Err()` are all OptionClass factories. In the
 `Stoplight` example above, `Stoplight.Green` is an OptionClassFactory.
 
-- **`payloads`** Zero or more arguments of any type can be passed as params.
-  They will be stored on the `OptionClass` instance, and are accessible via
-  `.match` callbacks, or via properties on `OptionClassInstance`s.
+- **`payloads`** a payload of any type can be passed as the only param. It will
+  be stored on the `OptionClass` instance, and is accessible via `.match`.
+  Proto methods may also extract the value for you, like `.unwrap()` on `Maybe`.
 
 
 #### `OptionClassInstance` objects
 
 The values that are usually passed around when using Results. They have three
-properties that are public, but it is recommended that you _only_ access these
-properties via methods on the object, like the default `match` method provided
-for every union, or methods you passed to `Union()` via the `proto` param. The
+properties that you should consider an implementation detail, never access
+directly. Custom proto methods may access these properties if they wish. The
 property names are:
 
 - **`.options`** A reference to the object used to create the union with
@@ -324,8 +327,8 @@ property names are:
   union.
 - **`.name`** The member name of this OptionClass instance.
   `Maybe.None().name === 'None'`.
-- **`.data`** All payloads provided to `OptionClassFactory` in an array.
-  `Stoplight.Red(1, 2, 3).data` is `[1, 2, 3]`.
+- **`.payload`** The payload provided to `OptionClassFactory`.
+  `Stoplight.Red(1).payload` is `1`.
 
 
 #### `OptionClassInstance.equals(other)`
@@ -627,12 +630,6 @@ Like `andThen` but for `Err`s.
 Since `andThen`'s callback is only executed if it's `Ok()` and `orElse` if
 it's `Err`, these two methods can be used like `.then` and `.catch` from
 Promise to chain data-processing tasks.
-
-
-### `Results.UnionError`
-
-All errors thrown by Results should be instances of this constructor. They will
-pass checks like `err instanceof Results.UnionError` _and_ `instanceof Error`.
 
 
 Credits

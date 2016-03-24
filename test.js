@@ -4,12 +4,12 @@ try {
 } catch (err) {
   throw new Error('Immutablejs must be installed to run tests');
 }
-var { Union, Result, Ok, Err, Maybe, Some, None, UnionError } = require('./index');
+var { Union, Result, Ok, Err, Maybe, Some, None } = require('./index');
 
 
 describe('Union', () => {
   it('should fail if options are missing', () => {
-    assert.throws(() => Union(), UnionError);
+    assert.throws(() => Union());
   });
   it('should accept an object', () => {
     const U = Union({A: null});
@@ -22,9 +22,8 @@ describe('Union', () => {
     assert.equal(String(Union({A: null})), '[Union { A }]');
     assert.equal(String(Union({A: null, B: null})), '[Union { A, B }]');
     const u = Union({A: null});
-    assert.equal(String(u.A()), `[UnionOption A() from Union { A }]`);
-    assert.equal(String(u.A(1)), `[UnionOption A(1) from Union { A }]`);
-    assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
+    assert.equal(String(u.A()), `[A(undefined) from Union{ A }]`);
+    assert.equal(String(u.A(1)), `[A(1) from Union{ A }]`);
   });
   describe('.equals', () => {
     const U = Union({A: null, B: null});
@@ -33,8 +32,6 @@ describe('Union', () => {
     const a1a = U.A('a');
     const a1a2 = U.A('a');
     const a1ab = U.A('b');
-    const a2a = U.A('a', 'b');
-    const a2a2 = U.A('a', 'b');
     const be1 = U.B();
     const b1a = U.B('a');
     const ar = U.A(U.A(U.A()));
@@ -46,12 +43,10 @@ describe('Union', () => {
     it('should be true for the same member with the same params', () => {
       assert.ok(ae1.equals(ae2));
       assert.ok(a1a.equals(a1a2));
-      assert.ok(a2a.equals(a2a2));
     });
     it('should be false for the same member with different params', () => {
       assert.ifError(ae1.equals(a1a));
       assert.ifError(a1a.equals(a1ab));
-      assert.ifError(a1a.equals(a2a));
     });
     it('should be false for different members with any params', () => {
       assert.ifError(ae1.equals(be1));
@@ -82,11 +77,17 @@ describe('Union', () => {
     it('should throw if the instance is not from this union', () => {
       const U1 = Union({A: null});
       const U2 = Union({A: null});
-      assert.throws(() => U1.match(U2.A(), {A: () => 1}), UnionError);
+      assert.throws(() => U1.match(U2.A(), {A: () => 1}));
+      try {
+        U1.match(U2.A(1), {A: () => 1});
+        assert.fail('should have thrown for non-member');
+      } catch (err) {
+        assert.equal(err.message, 'match called on a non-member option: \'[A(1) from Union{ A }]\'. Expected a member from Union{ A }');
+      }
     });
     it('should throw if the match paths are not exhaustive', () => {
       const U = Union({A: 0, B: 0});
-      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), UnionError);
+      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}));
     });
     it('should allow literal _ as a key (not just the imported symbol)', () => {
       const U = Union({A: 0, B: 0});
@@ -97,19 +98,14 @@ describe('Union', () => {
       const U = Union({A: 1});
       assert.equal(U.match(U.A(42), {A: (v) => v}), 42);
     });
-    it('should pass all values to `match` callbacks', () => {
-      const U = Union({A: 2});
-      assert.equal(U.match(U.A(42, 41), {A: (v, z) => z}), 41);
-    });
     it('should apply its payloads to the catch-all handler', () => {
       const U = Union({A: 1});
       assert.equal(U.match(U.A(42), {_: n => n}), 42);
-      assert.equal(U.match(U.A(2, 3), {_: (a, b) => a * b}), 6);
     });
     it('should throw for unrecognized keys', () => {
       var U = Union({A: 0, B: 1});
       var f = () => null;
-      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), UnionError);
+      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}));
     });
     it('should give a useful error message for a non-function match prop', () => {
       const U = Union({A: {}});
@@ -117,7 +113,7 @@ describe('Union', () => {
         U.match(U.A(), {});
         assert.fail('should have thrown');
       } catch (err) {
-        assert(err instanceof UnionError);
+        assert(err instanceof Error);
         assert.equal(err.message, `Non-exhaustive match is missing 'A'`);
       }
       try {
@@ -129,8 +125,8 @@ describe('Union', () => {
     });
   });
   describe('errors thrown by results', () => {
-    it('should be instance of UnionError and Error', () => {
-      assert.throws(() => Union(), UnionError);  // no members
+    it('should be instance of Error', () => {
+      assert.throws(() => Union());  // no members
       try {
         Union();
       } catch (err) {
@@ -171,7 +167,7 @@ describe('Maybe', () => {
   });
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
-    assert.throws(() => None().unwrap(), UnionError);
+    assert.throws(() => None().unwrap());
   });
   it('should unwrap its value or a default for unwrapOr', () => {
     assert.equal(Some(1).unwrapOr(2), 1);
@@ -458,7 +454,7 @@ describe('Result', () => {
   });
   it('.unwrapErr', () => {
     assert.equal(Err(1).unwrapErr(), 1);
-    assert.throws(() => Ok(1).unwrapErr(), UnionError);
+    assert.throws(() => Ok(1).unwrapErr());
   });
   it('.equals should work', () => {
     assert.ok(Ok(1).equals(Ok(1)));

@@ -5,23 +5,6 @@
  * @author uniphil
  */
 
-/**
- * Custom error type from http://stackoverflow.com/a/17891099/1299695
- * @param {string} message An associated message to explain the error
- * @returns {Error} An instance of UnionError, which subclasses Error
- */
-function UnionError(message) {
-  const realErr = Error.call(this, message);
-  this.name = realErr.name = 'UnionError';
-  this.stack = realErr.stack;
-  this.message = message;
-}
-UnionError.prototype = Object.create(Error.prototype, { constructor: {
-  value: UnionError,
-  writeable: true,
-  configurable: true,
-}});
-
 
 /**
  * @throws Error when the match is not exhaustive
@@ -33,31 +16,35 @@ UnionError.prototype = Object.create(Error.prototype, { constructor: {
  */
 function match(option, paths) {
   if (!(option instanceof this.OptionClass)) {
-    throw new UnionError(`match called on a non-member option: '${option}'`);
+    if (process.env.NODE_ENV !== 'production' && process) {
+      console.error(`Not a member from { ${Object.keys(paths).join(', ')} }:`, option);
+    }
+    throw new Error(`match called on a non-member option: '${String(option)}'. ` +
+      `Expected a member from Union{ ${Object.keys(paths).join(', ')} }`);
   }
   for (let k of Object.keys(paths)) {
     if (!option.options.hasOwnProperty(k) && k !== '_') {
-      throw new UnionError(`unrecognized match option: '${k}'`);
+      throw new Error(`unrecognized match option: '${k}'`);
     }
   }
   if (typeof paths._ === 'function') {  // match is de-facto exhaustive w/ `_`
     if (typeof paths[option.name] === 'function') {
-      return paths[option.name](...option.data);
+      return paths[option.name](option.payload);
     } else {
-      return paths._.apply(null, option.data);
+      return paths._(option.payload);
     }
   } else {
     // ensure match is exhaustive
     for (let k in option.options) {
       if (typeof paths[k] !== 'function') {
         if (typeof paths[k] === 'undefined') {
-          throw new UnionError(`Non-exhaustive match is missing '${k}'`);
+          throw new Error(`Non-exhaustive match is missing '${k}'`);
         } else {
-          throw new UnionError(`match expected a function for '${k}', but found a '${typeof paths[k]}'`);
+          throw new Error(`match expected a function for '${k}', but found a '${typeof paths[k]}'`);
         }
       }
     }
-    return paths[option.name](...option.data);
+    return paths[option.name](option.payload);
   }
 }
 
@@ -67,6 +54,10 @@ function match(option, paths) {
 function _equals(a, b) {
   if (a === b || (a !== a && b !== b)) {  // true for NaNs
     return true;
+  }
+
+  if (!a || !b) {
+    return false;
   }
 
   // There is probably a cleaner way to do this check
@@ -83,10 +74,7 @@ function _equals(a, b) {
     if (a.name !== b.name) {
       return false;
     }
-    if (a.data.length !== b.data.length) {
-      return false;
-    }
-    return a.data.every((el, i) => _equals(el, b.data[i]));
+    return _equals(a.payload, b.payload);
   }
 
   // I hate this block. Blame immutablejs :)
@@ -120,41 +108,41 @@ function hashCode() {
 
 
 function unionOptionToString() {
-  return `[UnionOption ${this.name}(${this.data.join(', ')}) ` +
-    `from Union { ${Object.keys(this.options).join(', ')} }]`;
+  return `[${this.name}(${this.payload}) ` +
+    `from Union{ ${Object.keys(this.options).join(', ')} }]`;
 }
 
 
 function _factory(options, name, UnionOptionClass) {
-  return function(...data) {
-    return new UnionOptionClass(options, name, data);
+  return function(payload) {
+    return new UnionOptionClass(options, name, payload);
   };
 }
 
 
 function Union(options, proto={}, static_={}, factory=_factory) {
   if (typeof options !== 'object') {
-    throw new UnionError('Param `options` must be an object with keys for each member of the union');
+    throw new Error('Param `options` must be an object with keys for each member of the union');
   }
   if (options.hasOwnProperty('toString')) {
-    throw new UnionError('Cannot use reserved name `toString` as part of a Union');
+    throw new Error('Cannot use reserved name `toString` as part of a Union');
   }
   if (options.hasOwnProperty('match')) {
-    throw new UnionError('Cannot use reserved name `match` as part of a Union');
+    throw new Error('Cannot use reserved name `match` as part of a Union');
   }
   if (options.hasOwnProperty('OptionClass')) {
-    throw new UnionError('Cannot use reserved name `UnionClass` as part of a Union');
+    throw new Error('Cannot use reserved name `UnionClass` as part of a Union');
   }
   for (let k of Object.keys(static_)) {
     if (options.hasOwnProperty(k)) {
-      throw new UnionError(`Cannot add static method '${k}' to Union which ` +
+      throw new Error(`Cannot add static method '${k}' to Union which ` +
         `has the same name as a member (members: ${options.join(', ')}).`);
     }
   }
-  function UnionOption(options, name, data) {
+  function UnionOption(options, name, payload) {
     this.options = options;
     this.name = name;
-    this.data = data;
+    this.payload = payload;
   }
   UnionOption.prototype.toString = unionOptionToString;
   UnionOption.prototype.equals = equalsProto;
@@ -193,7 +181,7 @@ const maybeProto = {
    */
   expect(err) {
     if (this.name === 'Some') {
-      return this.data[0];
+      return this.payload;
     } else {
       throw err;
     }
@@ -203,34 +191,34 @@ const maybeProto = {
    */
   unwrap() {
     if (this.name === 'Some') {
-      return this.data[0];
+      return this.payload;
     } else {
-      throw new UnionError('Tried to .unwrap() Maybe.None as Some');
+      throw new Error('Tried to .unwrap() Maybe.None as Some');
     }
   },
   unwrapOr(def) {
-    return (this.name === 'Some') ? this.data[0] : def;
+    return (this.name === 'Some') ? this.payload : def;
   },
   unwrapOrElse(fn) {
-    return (this.name === 'Some') ? this.data[0] : fn();
+    return (this.name === 'Some') ? this.payload : fn();
   },
   okOr(err) {
-    return (this.name === 'Some') ? Result.Ok(this.data[0]) : Result.Err(err);
+    return (this.name === 'Some') ? Result.Ok(this.payload) : Result.Err(err);
   },
   okOrElse(errFn) {
-    return (this.name === 'Some') ? Result.Ok(this.data[0]) : Result.Err(errFn());
+    return (this.name === 'Some') ? Result.Ok(this.payload) : Result.Err(errFn());
   },
   promiseOr(err) {
-    return (this.name === 'Some') ? Promise.resolve(this.data[0]) : Promise.reject(err);
+    return (this.name === 'Some') ? Promise.resolve(this.payload) : Promise.reject(err);
   },
   promiseOrElse(fn) {
-    return (this.name === 'Some') ? Promise.resolve(this.data[0]) : Promise.reject(fn());
+    return (this.name === 'Some') ? Promise.resolve(this.payload) : Promise.reject(fn());
   },
   and(other) {
     return (this.name === 'Some') ? Maybe.Some(other) : this;
   },
   andThen(fn) {
-    return (this.name === 'Some') ? Maybe.Some(fn(this.data[0])) : this;
+    return (this.name === 'Some') ? Maybe.Some(fn(this.payload)) : this;
   },
   or(other) {
     return (this.name === 'Some') ? this : Maybe.Some(other);
@@ -261,11 +249,11 @@ const Maybe = Union({
       if (value instanceof UnionOptionClass) {
         return value;
       } else {
-        return new UnionOptionClass(options, 'Some', [value]);
+        return new UnionOptionClass(options, 'Some', value);
       }
     };
   } else {  // None
-    return () => new UnionOptionClass(options, 'None', []);
+    return () => new UnionOptionClass(options, 'None');
   }
 });
 
@@ -278,41 +266,41 @@ const resultProto = {
     return this.name === 'Err';
   },
   ok() {
-    return (this.name === 'Ok') ? Maybe.Some(this.data[0]) : Maybe.None();
+    return (this.name === 'Ok') ? Maybe.Some(this.payload) : Maybe.None();
   },
   err() {
-    return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.data[0]);
+    return (this.name === 'Ok') ? Maybe.None() : Maybe.Some(this.payload);
   },
   promise() {
-    return (this.name === 'Ok') ? Promise.resolve(this.data[0]) : Promise.reject(this.data[0]);
+    return (this.name === 'Ok') ? Promise.resolve(this.payload) : Promise.reject(this.payload);
   },
   promiseErr() {
-    return (this.name === 'Ok') ? Promise.reject(this.data[0]) : Promise.resolve(this.data[0]);
+    return (this.name === 'Ok') ? Promise.reject(this.payload) : Promise.resolve(this.payload);
   },
   and(other) {
     return (this.name === 'Ok') ? Result.Ok(other) : this;
   },
   andThen(fn) {
-    return (this.name === 'Ok') ? Result.Ok(fn(this.data[0])) : this;
+    return (this.name === 'Ok') ? Result.Ok(fn(this.payload)) : this;
   },
   or(other) {
     return (this.name === 'Ok') ? this : Result.Ok(other);
   },
   orElse(fn) {
-    return (this.name === 'Ok') ? this : Result.Ok(fn(this.data[0]));
+    return (this.name === 'Ok') ? this : Result.Ok(fn(this.payload));
   },
   unwrapOr(def) {
-    return (this.name === 'Ok') ? this.data[0] : def;
+    return (this.name === 'Ok') ? this.payload : def;
   },
   unwrapOrElse(fn) {
-    return (this.name === 'Ok') ? this.data[0] : fn(this.data[0]);
+    return (this.name === 'Ok') ? this.payload : fn(this.payload);
   },
   /**
    * @throws err
    */
   expect(err) {
     if (this.name === 'Ok') {
-      return this.data[0];
+      return this.payload;
     } else {
       throw err;
     }
@@ -322,9 +310,9 @@ const resultProto = {
    */
   unwrap() {
     if (this.name === 'Ok') {
-      return this.data[0];
+      return this.payload;
     } else {
-      throw this.data[0];
+      throw this.payload;
     }
   },
   /**
@@ -333,12 +321,12 @@ const resultProto = {
   unwrapErr() {
     if (this.name === 'Ok') {
       let hint = '';
-      if (this.data[0] && typeof this.data[0].toString === 'function') {
-        hint = `: ${this.data[0].toString()}`;
+      if (this.payload && typeof this.payload.toString === 'function') {
+        hint = `: ${this.payload.toString()}`;
       }
-      throw new UnionError(`Tried to .unwrap() Result.Ok as Err${hint}`);
+      throw new Error(`Tried to .unwrap() Result.Ok as Err${hint}`);
     } else {
-      return this.data[0];
+      return this.payload;
     }
   },
 };
@@ -367,18 +355,17 @@ const Result = Union({
       if (value instanceof UnionOptionClass) {
         return value;
       } else {
-        return new UnionOptionClass(options, 'Ok', [value]);
+        return new UnionOptionClass(options, 'Ok', value);
       }
     }
   } else {
-    return (err) => new UnionOptionClass(options, 'Err', [err]);
+    return (err) => new UnionOptionClass(options, 'Err', err);
   }
 });
 
 
 module.exports = {
   Union,
-  UnionError,
 
   Maybe,
   Some: Maybe.Some,
