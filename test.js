@@ -4,12 +4,12 @@ try {
 } catch (err) {
   throw new Error('Immutablejs must be installed to run tests');
 }
-var { Union, Result, Ok, Err, Maybe, Some, None, UnionError } = require('./index');
+var { Union, Result, Ok, Err, Maybe, Some, None } = require('./index');
 
 
 describe('Union', () => {
   it('should fail if options are missing', () => {
-    assert.throws(() => Union(), UnionError);
+    assert.throws(() => Union());
   });
   it('should accept an object', () => {
     const U = Union({A: null});
@@ -77,7 +77,7 @@ describe('Union', () => {
     it('should throw if the instance is not from this union', () => {
       const U1 = Union({A: null});
       const U2 = Union({A: null});
-      assert.throws(() => U1.match(U2.A(), {A: () => 1}), UnionError);
+      assert.throws(() => U1.match(U2.A(), {A: () => 1}));
       try {
         U1.match(U2.A(1), {A: () => 1});
         assert.fail('should have thrown for non-member');
@@ -87,7 +87,7 @@ describe('Union', () => {
     });
     it('should throw if the match paths are not exhaustive', () => {
       const U = Union({A: 0, B: 0});
-      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}), UnionError);
+      assert.throws(() => U.match(U.A(), {a: () => 'whatever'}));
     });
     it('should allow literal _ as a key (not just the imported symbol)', () => {
       const U = Union({A: 0, B: 0});
@@ -105,7 +105,7 @@ describe('Union', () => {
     it('should throw for unrecognized keys', () => {
       var U = Union({A: 0, B: 1});
       var f = () => null;
-      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}), UnionError);
+      assert.throws(() => U.match(U.A(), {A: f, B: f, C: f}));
     });
     it('should give a useful error message for a non-function match prop', () => {
       const U = Union({A: {}});
@@ -113,7 +113,7 @@ describe('Union', () => {
         U.match(U.A(), {});
         assert.fail('should have thrown');
       } catch (err) {
-        assert(err instanceof UnionError);
+        assert(err instanceof Error);
         assert.equal(err.message, `Non-exhaustive match is missing 'A'`);
       }
       try {
@@ -125,8 +125,8 @@ describe('Union', () => {
     });
   });
   describe('errors thrown by results', () => {
-    it('should be instance of UnionError and Error', () => {
-      assert.throws(() => Union(), UnionError);  // no members
+    it('should be instance of Error', () => {
+      assert.throws(() => Union());  // no members
       try {
         Union();
       } catch (err) {
@@ -167,7 +167,7 @@ describe('Maybe', () => {
   });
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
-    assert.throws(() => None().unwrap(), UnionError);
+    assert.throws(() => None().unwrap());
   });
   it('should unwrap its value or a default for unwrapOr', () => {
     assert.equal(Some(1).unwrapOr(2), 1);
@@ -454,7 +454,7 @@ describe('Result', () => {
   });
   it('.unwrapErr', () => {
     assert.equal(Err(1).unwrapErr(), 1);
-    assert.throws(() => Ok(1).unwrapErr(), UnionError);
+    assert.throws(() => Ok(1).unwrapErr());
   });
   it('.equals should work', () => {
     assert.ok(Ok(1).equals(Ok(1)));

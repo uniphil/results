@@ -22,6 +22,8 @@ instances. I think all of it takes results in a better direction.
 
 #### Breaking changes
 
+  * `UnionError` is gone. Results now just throws `Error`s.
+
   * Unions now only accept a single payload param.
     * Unions now store that payload at `instance.payload` instead of as an array
       in `instance.data`. You really shouldn't be accessing `instance.data`

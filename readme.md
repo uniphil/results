@@ -632,12 +632,6 @@ it's `Err`, these two methods can be used like `.then` and `.catch` from
 Promise to chain data-processing tasks.
 
 
-### `Results.UnionError`
-
-All errors thrown by Results should be instances of this constructor. They will
-pass checks like `err instanceof Results.UnionError` _and_ `instanceof Error`.
-
-
 Credits
 -------
 

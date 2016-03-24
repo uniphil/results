@@ -5,23 +5,6 @@
  * @author uniphil
  */
 
-/**
- * Custom error type from http://stackoverflow.com/a/17891099/1299695
- * @param {string} message An associated message to explain the error
- * @returns {Error} An instance of UnionError, which subclasses Error
- */
-function UnionError(message) {
-  const realErr = Error.call(this, message);
-  this.name = realErr.name = 'UnionError';
-  this.stack = realErr.stack;
-  this.message = message;
-}
-UnionError.prototype = Object.create(Error.prototype, { constructor: {
-  value: UnionError,
-  writeable: true,
-  configurable: true,
-}});
-
 
 /**
  * @throws Error when the match is not exhaustive
@@ -33,15 +16,15 @@ UnionError.prototype = Object.create(Error.prototype, { constructor: {
  */
 function match(option, paths) {
   if (!(option instanceof this.OptionClass)) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' && process) {
       console.error(`Not a member from { ${Object.keys(paths).join(', ')} }:`, option);
     }
-    throw new UnionError(`match called on a non-member option: '${String(option)}'. ` +
+    throw new Error(`match called on a non-member option: '${String(option)}'. ` +
       `Expected a member from Union{ ${Object.keys(paths).join(', ')} }`);
   }
   for (let k of Object.keys(paths)) {
     if (!option.options.hasOwnProperty(k) && k !== '_') {
-      throw new UnionError(`unrecognized match option: '${k}'`);
+      throw new Error(`unrecognized match option: '${k}'`);
     }
   }
   if (typeof paths._ === 'function') {  // match is de-facto exhaustive w/ `_`
@@ -55,9 +38,9 @@ function match(option, paths) {
     for (let k in option.options) {
       if (typeof paths[k] !== 'function') {
         if (typeof paths[k] === 'undefined') {
-          throw new UnionError(`Non-exhaustive match is missing '${k}'`);
+          throw new Error(`Non-exhaustive match is missing '${k}'`);
         } else {
-          throw new UnionError(`match expected a function for '${k}', but found a '${typeof paths[k]}'`);
+          throw new Error(`match expected a function for '${k}', but found a '${typeof paths[k]}'`);
         }
       }
     }
@@ -139,20 +122,20 @@ function _factory(options, name, UnionOptionClass) {
 
 function Union(options, proto={}, static_={}, factory=_factory) {
   if (typeof options !== 'object') {
-    throw new UnionError('Param `options` must be an object with keys for each member of the union');
+    throw new Error('Param `options` must be an object with keys for each member of the union');
   }
   if (options.hasOwnProperty('toString')) {
-    throw new UnionError('Cannot use reserved name `toString` as part of a Union');
+    throw new Error('Cannot use reserved name `toString` as part of a Union');
   }
   if (options.hasOwnProperty('match')) {
-    throw new UnionError('Cannot use reserved name `match` as part of a Union');
+    throw new Error('Cannot use reserved name `match` as part of a Union');
   }
   if (options.hasOwnProperty('OptionClass')) {
-    throw new UnionError('Cannot use reserved name `UnionClass` as part of a Union');
+    throw new Error('Cannot use reserved name `UnionClass` as part of a Union');
   }
   for (let k of Object.keys(static_)) {
     if (options.hasOwnProperty(k)) {
-      throw new UnionError(`Cannot add static method '${k}' to Union which ` +
+      throw new Error(`Cannot add static method '${k}' to Union which ` +
         `has the same name as a member (members: ${options.join(', ')}).`);
     }
   }
@@ -210,7 +193,7 @@ const maybeProto = {
     if (this.name === 'Some') {
       return this.payload;
     } else {
-      throw new UnionError('Tried to .unwrap() Maybe.None as Some');
+      throw new Error('Tried to .unwrap() Maybe.None as Some');
     }
   },
   unwrapOr(def) {
@@ -341,7 +324,7 @@ const resultProto = {
       if (this.payload && typeof this.payload.toString === 'function') {
         hint = `: ${this.payload.toString()}`;
       }
-      throw new UnionError(`Tried to .unwrap() Result.Ok as Err${hint}`);
+      throw new Error(`Tried to .unwrap() Result.Ok as Err${hint}`);
     } else {
       return this.payload;
     }
@@ -383,7 +366,6 @@ const Result = Union({
 
 module.exports = {
   Union,
-  UnionError,
 
   Maybe,
   Some: Maybe.Some,
