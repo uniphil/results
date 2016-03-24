@@ -1,6 +1,25 @@
 Changes
 =======
 
+### v0.13.0
+
+Version 13 introduces a bunch of breaking changes, without deprecation warnings.
+Version 12 is still stable, so if you depend on stuff that's changing, you don't
+have to upgrade.
+
+The changes are based off of close to half a year of full-time work building
+[OpenRide](https://openride.co) with lots of our data wrapped up in Results
+instances. I think all of it takes results in a better direction.
+
+#### Breaking changes
+
+  * Unions now only accept a single payload param.
+    * Unions now store that payload at `instance.payload` instead of as an array
+      in `instance.data`. You really shouldn't be accessing `instance.data`
+      directly anyway, but if you do, this change breaks that.
+    * Implementing custom factories will also be broken -- please pass back the
+      raw `value` for payload instead of wrapping it in an Array.
+
 
 ### v0.12.3
 

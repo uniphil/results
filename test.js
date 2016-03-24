@@ -22,9 +22,8 @@ describe('Union', () => {
     assert.equal(String(Union({A: null})), '[Union { A }]');
     assert.equal(String(Union({A: null, B: null})), '[Union { A, B }]');
     const u = Union({A: null});
-    assert.equal(String(u.A()), `[UnionOption A() from Union { A }]`);
-    assert.equal(String(u.A(1)), `[UnionOption A(1) from Union { A }]`);
-    assert.equal(String(u.A(1, 2)), `[UnionOption A(1, 2) from Union { A }]`);
+    assert.equal(String(u.A()), `[A(undefined) from Union{ A }]`);
+    assert.equal(String(u.A(1)), `[A(1) from Union{ A }]`);
   });
   describe('.equals', () => {
     const U = Union({A: null, B: null});
@@ -33,8 +32,6 @@ describe('Union', () => {
     const a1a = U.A('a');
     const a1a2 = U.A('a');
     const a1ab = U.A('b');
-    const a2a = U.A('a', 'b');
-    const a2a2 = U.A('a', 'b');
     const be1 = U.B();
     const b1a = U.B('a');
     const ar = U.A(U.A(U.A()));
@@ -46,12 +43,10 @@ describe('Union', () => {
     it('should be true for the same member with the same params', () => {
       assert.ok(ae1.equals(ae2));
       assert.ok(a1a.equals(a1a2));
-      assert.ok(a2a.equals(a2a2));
     });
     it('should be false for the same member with different params', () => {
       assert.ifError(ae1.equals(a1a));
       assert.ifError(a1a.equals(a1ab));
-      assert.ifError(a1a.equals(a2a));
     });
     it('should be false for different members with any params', () => {
       assert.ifError(ae1.equals(be1));
@@ -97,14 +92,9 @@ describe('Union', () => {
       const U = Union({A: 1});
       assert.equal(U.match(U.A(42), {A: (v) => v}), 42);
     });
-    it('should pass all values to `match` callbacks', () => {
-      const U = Union({A: 2});
-      assert.equal(U.match(U.A(42, 41), {A: (v, z) => z}), 41);
-    });
     it('should apply its payloads to the catch-all handler', () => {
       const U = Union({A: 1});
       assert.equal(U.match(U.A(42), {_: n => n}), 42);
-      assert.equal(U.match(U.A(2, 3), {_: (a, b) => a * b}), 6);
     });
     it('should throw for unrecognized keys', () => {
       var U = Union({A: 0, B: 1});
