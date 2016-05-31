@@ -160,6 +160,9 @@ function Union(options) {
   if (options.hasOwnProperty('match')) {
     throw new Error('Cannot use reserved name `match` as part of a Union');
   }
+  if (options.hasOwnProperty('options')) {
+    throw new UnionError('Cannot use reserved name `options` as part of a Union');
+  }
   if (options.hasOwnProperty('OptionClass')) {
     throw new Error('Cannot use reserved name `UnionClass` as part of a Union');
   }
@@ -207,6 +210,7 @@ function Union(options) {
   UnionOption.unionFactory = Union;
 
   var union = _extends({
+    options: options,
     OptionClass: UnionOption,
     toString: function toString() {
       return '[Union { ' + Object.keys(options).join(', ') + ' }]';

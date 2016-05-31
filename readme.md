@@ -290,11 +290,18 @@ Stoplight.match(Stoplight.Green(), {
 ```
 
 
+#### `options` static property on `union` object
+
+After creating a `union` object, the `.options` property references an object
+containing keys for each union option specified. It's not usually that useful
+unless you want to introspect the union and see what options it has -- powerful,
+but usually not necessary!
+
+
 ### `OptionClass()` constructor
 
 A function for creating OptionClass instances. You should not call this
-constructor directly, but rather use one of the factories attached to the
-`union` object via keys named after the union's members.
+constructor directly -- it's exposed just for `instanceof` checks.
 
 In the `Stoplight` example above, the following is ok:
 

@@ -1,6 +1,15 @@
 Changes
 =======
 
+### v0.14.0
+
+2016-05-31
+
+### Breaking changes
+
+  * `options` is now a reserved key that can't be used as a union member.
+
+
 ### v0.13.0
 
 2016-03-23
