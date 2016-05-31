@@ -130,6 +130,9 @@ function Union(options, proto={}, static_={}, factory=_factory) {
   if (options.hasOwnProperty('match')) {
     throw new Error('Cannot use reserved name `match` as part of a Union');
   }
+  if (options.hasOwnProperty('options')) {
+    throw new UnionError('Cannot use reserved name `options` as part of a Union');
+  }
   if (options.hasOwnProperty('OptionClass')) {
     throw new Error('Cannot use reserved name `UnionClass` as part of a Union');
   }
@@ -154,6 +157,7 @@ function Union(options, proto={}, static_={}, factory=_factory) {
   UnionOption.unionFactory = Union;
 
   const union = {
+    options: options,
     OptionClass: UnionOption,
     toString: () => `[Union { ${Object.keys(options).join(', ')} }]`,
     match,

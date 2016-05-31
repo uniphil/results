@@ -124,6 +124,19 @@ describe('Union', () => {
       }
     });
   });
+  describe('.options', () => {
+    it('should be exposed', () => {
+      const U = Union({A: null});
+      assert.deepEqual(U.options, {A: null});
+    });
+    it('should have all the options', () => {
+      const U = Union({A: null, B: null, C: null});
+      assert.deepEqual(U.options, {A: null, B: null, C: null});
+    });
+    it('should throw if constructed with `options` as an option', () => {
+      assert.throws(() => Union({options: null}));
+    });
+  });
   describe('errors thrown by results', () => {
     it('should be instance of Error', () => {
       assert.throws(() => Union());  // no members
