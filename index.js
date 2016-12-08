@@ -304,6 +304,13 @@ var maybeProto = {
   },
   orElse: function orElse(fn) {
     return this.name === 'Some' ? this : Maybe.Some(fn());
+  },
+  filter: function filter(fn) {
+    var _this = this;
+
+    return this.andThen(function (x) {
+      return fn(x) ? _this : Maybe.None();
+    });
   }
 };
 

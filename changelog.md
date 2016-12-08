@@ -1,11 +1,21 @@
 Changes
 =======
 
+### v0.14.1
+
+2016-12-08
+
+#### New features
+
+  * Add Maybe.prototype.filter(fn) for chaining in conditionals to payload
+    processing
+
+
 ### v0.14.0
 
 2016-05-31
 
-### Breaking changes
+#### Breaking changes
 
   * `options` is now a reserved key that can't be used as a union member.
 

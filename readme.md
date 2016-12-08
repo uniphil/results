@@ -497,7 +497,7 @@ Since `andThen`'s callback is only executed if it's `Some()` and `orElse` if
 it's `None`, these two methods can be used like `.then` and `.catch` from
 Promise to chain data-processing tasks.
 
-#### `filter(fn)`
+##### `filter(fn)`
 
 Test a condition against the payload of a `Some(payload)`. If `fn` returns
 something false-y, `None` is returned. Otherwise, the same `Some(payload)` is
