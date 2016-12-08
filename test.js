@@ -560,5 +560,11 @@ describe('compatibility', () => {
       assert.ok(unionInImmu.equals(Immutable.List([U.A(1)])));
       assert.ifError(unionInImmu.equals(Immutable.List([U.A(2)])));
     });
+    it('regression: should pass .equals for date instances', () => {
+      const U = Union({ A: null });
+      const a = U.A(new Date('2016-01-01'));
+      const b = U.A(new Date('2016-01-01'));
+      assert.ok(a.equals(b));
+    });
   });
 });
