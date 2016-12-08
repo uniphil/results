@@ -1,6 +1,14 @@
 Changes
 =======
 
+### v0.15.0
+
+#### Breaking changes
+
+  * .expect(msg) for both `Maybe` and `Result` now wrap their payload in `new
+    Error()` instead of just throwing the payload directly.
+
+
 ### v0.14.1
 
 2016-12-08

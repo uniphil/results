@@ -181,13 +181,13 @@ const maybeProto = {
     return this.name === 'None';
   },
   /**
-   * @throws whatever is passed as the arg
+   * @throws Error(msg)
    */
-  expect(err) {
+  expect(msg) {
     if (this.name === 'Some') {
       return this.payload;
     } else {
-      throw err;
+      throw new Error(msg);
     }
   },
   /**
@@ -303,13 +303,13 @@ const resultProto = {
     return (this.name === 'Ok') ? this.payload : fn(this.payload);
   },
   /**
-   * @throws err
+   * @throws Error(err)
    */
   expect(err) {
     if (this.name === 'Ok') {
       return this.payload;
     } else {
-      throw err;
+      throw new Error(err);
     }
   },
   /**

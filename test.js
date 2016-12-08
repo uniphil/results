@@ -176,7 +176,13 @@ describe('Maybe', () => {
   });
   it('should throw or not for expect', () => {
     assert.doesNotThrow(() => {Some(1).expect('err')});
-    assert.throws(() => {None().expect('err')}, 'err');
+    assert.throws(() => {None().expect('err')}, Error);
+    try {
+      None().expect('hello 123');
+      assert.fail('Should have thrown');
+    } catch (err) {
+      assert.equal(err.message, 'hello 123');
+    }
   });
   it('should unwrap or throw', () => {
     assert.equal(Some(1).unwrap(), 1);
@@ -404,7 +410,13 @@ describe('Result', () => {
   });
   it('.expect', () => {
     assert.equal(Ok(1).expect(), 1);
-    assert.throws(() => Err(1).expect(new Error('asdf')), Error);
+    assert.throws(() => Err(1).expect('asdf'), Error);
+    try {
+      Err('fdsa').expect('hello 123');
+      assert.fail('Should have thrown');
+    } catch (err) {
+      assert.equal(err.message, 'hello 123');
+    }
   });
   it('.and', () => {
     assert.ok(Ok(1).and(Ok(-1)).isOk());
