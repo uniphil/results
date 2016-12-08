@@ -404,18 +404,18 @@ assert(!None().isSome() && None().isNone());
 
 Get the payload of a `Some()`, **or throw if it's `None()`**.
 
-##### `expect(err)`
+##### `expect(msg)`
 
-Like `unwrap()`, but throws a custom error if it is `None()`.
+Like `unwrap()`, but throws an Error(msg) if it is `None()`.
 
-- **`err`** The error to throw if it is `None()`
+- **`msg`** The message to throw with if it is `None()`
 
 ```js
 import { Some, None } from 'results';
 const n = Some(1).unwrap();  // n === 1
 const m = None().unwrap();  // throws an Error instance
-const o = Some(1).expect('err')  // o === 1
-const p = None().expect('err')  // throws 'err'
+const o = Some(1).expect('msg')  // o === 1
+const p = None().expect('msg')  // throws Error('msg')
 ```
 
 ##### `unwrapOr(def)`
@@ -567,7 +567,7 @@ assert(!Err(2).isOk() && Err(2).isErr());
 
 ##### `expect(err)`
 
-Returns the payload from an `Ok(payload)`, or throws `err`.
+Returns the payload from an `Ok(payload)`, or throws `Error(err)`.
 
 
 ##### `unwrap()`
