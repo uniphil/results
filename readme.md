@@ -497,6 +497,23 @@ Since `andThen`'s callback is only executed if it's `Some()` and `orElse` if
 it's `None`, these two methods can be used like `.then` and `.catch` from
 Promise to chain data-processing tasks.
 
+#### `filter(fn)`
+
+Test a condition against the payload of a `Some(payload)`. If `fn` returns
+something false-y, `None` is returned. Otherwise, the same `Some(payload)` is
+returned.
+
+- **`fn`** If called on `Some`, `fn` is called with the payload as a param.
+
+```js
+import { Maybe } from 'results';
+
+const isEven = x => x % 2 === 0;
+
+Maybe.Some(42).filter(isEven);  // Some(42)
+Maybe.Some(41).filter(isEven);  // None()
+```
+
 ### `Result` -- `[Union { Ok, Err }]`
 
 An error-handling type.

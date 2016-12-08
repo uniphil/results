@@ -263,6 +263,11 @@ describe('Maybe', () => {
     assert.ok(None().orElse(() => 1).isSome());
     assert.equal(None().orElse(() => 1).unwrap(), 1);
   });
+  it('.filter should none-ify false-y returns', () => {
+    assert.ok(None().filter(x => true).isNone());
+    assert.equal(Some(1).filter(x => true).unwrap(), 1);
+    assert.ok(Some(1).filter(x => false).isNone());
+  });
   it('.equals should work', () => {
     assert.ok(None().equals(None()));
     assert.ifError(None().equals(Some()));
