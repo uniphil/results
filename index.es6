@@ -230,6 +230,9 @@ const maybeProto = {
   orElse(fn) {
     return (this.name === 'Some') ? this : Maybe.Some(fn());
   },
+  filter(fn) {
+    return this.andThen(x => fn(x) ? this : Maybe.None());
+  }
 };
 
 
