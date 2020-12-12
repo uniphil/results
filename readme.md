@@ -1,3 +1,11 @@
+⚠️ Consider alternatives ⚠️
+---------------------------
+
+You may want to consider tools like TypeScript, which can now cover most of the use cases for `results`. (IMO less ergonomically in some ways, but, :shrug:)
+
+While short of what I might call "complete", I do still use this on projects where I just want to write reasonable JS code that runs directly in the browser. It's been pretty solid, and I'll probably continue using it! But it's unlikely to change much. So, use it or don't, but don't expect much evolution beyond bug-fixes :)
+
+
 Results [![Build Status](https://travis-ci.org/uniphil/results.svg)](https://travis-ci.org/uniphil/results)
 =======
 
